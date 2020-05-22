@@ -47,7 +47,9 @@ These translation files need to be placed in a folder called *Translations* insi
 You're welcome to add additional translation files by createing a pull request.
 
 Naming convention for translation files: `<plugin name>.<language identifier>.language.xml`
+
 Example: `EarlyUpdateCheck.de.language.xml`
   
-The language identifier in the filename must match the language identifier inside the KeePass language that you can select using *View -> Change language..."
+The language identifier in the filename must match the language identifier inside the KeePass language that you can select using *View -> Change language...*
+
 This identifier is shown there as well.
