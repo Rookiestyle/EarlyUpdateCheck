@@ -1,4 +1,8 @@
 # EarlyUpdateCheck
+[![Version](https://img.shields.io/github/release/rookiestyle/earlyupdatecheck)](https://github.com/rookiestyle/earlyupdatecheck/releases/latest)
+[![Releasedate](https://img.shields.io/github/release-date/rookiestyle/earlyupdatecheck)](https://github.com/rookiestyle/earlyupdatecheck/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/rookiestyle/earlyupdatecheck/total?color=%2300cc00)](https://github.com/rookiestyle/earlyupdatecheck/releases/latest)
+[![License: GPL v3](https://img.shields.io/github/license/rookiestyle/earlyupdatecheck)](https://www.gnu.org/licenses/gpl-3.0)
 
 Keepass performs its update check only after all initialization is done and - if configured - the most recently used database has been opened.
 
