@@ -788,14 +788,15 @@ namespace EarlyUpdateCheck
 		private delegate string GetUpdateUrl(string baseurl, UpdateInfo upd, string language);
 		private string GetUpdateUrlSF(string baseurl, UpdateInfo upd, string language)
 		{
-			if (language == null)
-				return baseurl + "files/latest/download";
-			return baseurl + "files/Translations/" + language + "/download";
+			//Only convert Sourceforge url to Github url
+			//All new releases for plugins will be released on Github
+			baseurl = baseurl.Replace("https://sourceforge.net/projects/", "https://github.com/rookiestyle/");
+			return GetUpdateUrlGH(baseurl, upd, language);
 		}
 
 		private string GetUpdateUrlGH(string baseurl, UpdateInfo upd, string language)
 		{
-			if (language == null)
+			if (string.IsNullOrEmpty(language))
 				return baseurl + "releases/download/v" + upd.VersionAvailable.ToString() + "/" + upd.Name + ".plgx";
 			return baseurl.Replace("github.com", "raw.githubusercontent.com") + "master/Translations/" + language;
 		}
