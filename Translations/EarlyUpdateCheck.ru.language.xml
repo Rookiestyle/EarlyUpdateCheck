@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Translation provided by ArtyoZ@sourceforge -->
+<Translation>
+  <TranslationVersion>2</TranslationVersion>
+  <item>
+    <key>Active</key>
+    <value>Включить</value>
+  </item>
+  <item>
+    <key>CheckSync</key>
+    <value>Выполнение проверки на переднем плане</value>
+  </item>
+  <item>
+    <key>CheckSyncDesc</key>
+    <value>Когда плагин включен, проверка обновлений всегда начинается в кратчайшие сроки.
+
+Если эта опция включена, плагин дополнительно гарантирует, что проверка обновлений завершена ДО отображения окна с открытой базой данных.
+Вы можете продолжить проверку обновлений в фоне, если не хотите ждать ее завершения.</value>
+  </item>
+  <item>
+    <key>EnterBackgroundMode</key>
+    <value>Продолжить в фоне</value>
+  </item>
+  <item>
+	<key>PluginUpdateOneClick</key>
+    <value>Обновление плагинов в один клик</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClickDesc</key>
+    <value>Установите новые версии моих плагинов щелчком по плагину в окне "Проверка обновлений".
+
+Требуется доступ на запись к каталогу плагинов KeePass.
+
+Для использования новой версии плагина KeePass необходимо перезапустить.</value>
+  </item>
+  <item>
+    <key>PluginUpdate</key>
+    <value>Можно обновить</value>
+  </item>
+  <item>
+    <key>PluginUpdateSelected</key>
+    <value>Обновить</value>
+  </item>
+  <item>
+    <key>PluginUpdateCaption</key>
+    <value>Early Update Check - Обновление плагинов</value>
+  </item>
+  <item>
+	<key>PluginUpdating</key>
+	<value>Обновляется {0}, пожалуйста, ждите...</value>
+  </item>
+  <item>
+	<key>PluginUpdateSuccess</key>
+	<value>Обновление завершилось успешно. Новые версии плагинов будут использоваться после перезапуска KeePass.
+Перезапустить сейчас?</value>
+  </item>  
+  <item>
+	<key>PluginUpdateFailed</key>
+		<value>Перемещение загруженных файлов завершилось с ошибкой. Открыть каталог с временными файлами?</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailedSpecific</key>
+    <value>Плагин: {0}
+Обновление завершилось с ошибкой.</value>
+  </item>
+  <item>
+	<key>PluginTranslationUpdateFailed</key>
+	<value>Плагин: {0}
+Обновление файла перевода {1} завершилось с ошибкой.</value>
+  </item>
+  <item>
+    <key>TryUAC</key>
+    <value>Обновление не может быть завершено. Попробовать альтернативный способ?
+Появится окно контроля учетных записей Windows (UAC) с запросом подтверждения дальнейших действий.</value>
+  </item>
+  <item>
+    <key>OpenTempFolder</key>
+    <value>Открыть каталог временных файлов с загруженными файлами?</value>
+  </item>
+  <item>
+    <key>TranslationDownload_Update</key>
+    <value>Обновление файлов переводов вручную</value>
+  </item>
+  <item>
+    <key>TranslationDownload_DownloadCurrent</key>
+    <value>Всегда загружать файл перевода для текущего языка: {0}</value>
+  </item>
+  <item>
+    <key>TranslationUpdateForm</key>
+    <value>Early Update Check - Обновить файлы переводов</value>
+  </item>
+  <item>
+    <key>SelectPluginsForTranslationUpdate</key>
+    <value>Пожалуйста, выберите плагины, для которых следует обновить файлы переводов</value>
+  </item>
+</Translation>

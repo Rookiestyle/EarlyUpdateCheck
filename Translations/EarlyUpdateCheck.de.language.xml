@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translation>
+  <TranslationVersion>3</TranslationVersion>
+  <item>
+    <key>Active</key>
+    <value>Aktiv</value>
+  </item>
+  <item>
+    <key>CheckSync</key>
+    <value>Update-Überprüfung im Vordergrund durchführen</value>
+  </item>
+  <item>
+    <key>CheckSyncDesc</key>
+    <value>Wenn EarlyUpdateCheck aktiv ist, wird die Update-Überprüfung IMMER zum frühestmöglichen Zeitpunkt gestartet.
+
+Wenn diese Option aktiv ist, dann wird zusätzlich das Fenster 'Datenbank öffnen' erst nach Abschluss der Update-Überprüfung angezeigt.</value>
+  </item>
+  <item>
+    <key>EnterBackgroundMode</key>
+    <value>Im Hintergrund weitersuchen</value>
+  </item>
+  <item>
+	<key>PluginUpdateOneClick</key>
+    <value>Ein-Klick Plugin-Update</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClickDesc</key>
+    <value>Neue Versionen meiner Plugins können durch Klick auf das Plugin im Fenster 'Update-Überprüfung' installiert werden.
+Schreibzugriff auf den Plugin-Ordner von KeePass ist erforderlich.
+Um die neuen Versionen zu nutzen, muss KeePass neu gestartet werden.</value>
+  </item>
+  <item>
+  <key>PluginUpdateSelected</key>
+  <value>Update starten</value>
+  </item>
+  <item>
+	<key>PluginUpdating</key>
+	<value>Update von {0} läuft, bitte warten...</value>
+  </item>
+    <item>
+	<key>PluginUpdateSuccess</key>
+	<value>Das Update war erfolgreich. Neue Pluginversionen sind nach einem Neustart von KeePass aktiv.
+Jetzt neu starten?</value>
+  </item>  
+  <item>
+	<key>PluginUpdateFailed</key>
+		<value>Die heruntergeladenen Dateien konnten nicht in den Plugin-Ordner verschoben werden.
+Temporären Ordner mit heruntergeladenen Dateien anzeigen?</value>
+  </item>
+  <item>
+	<key>PluginUpdateFailedSpecific</key>
+	<value>Plugin: {0}
+Das Update ist fehlgeschlagen.</value>
+  </item>
+  <item>
+	<key>PluginTranslationUpdateFailed</key>
+	<value>Plugin: {0}
+Das Update der Sprachdatei {1} ist fehlgeschlagen.</value>
+  </item>
+  <item>
+    <key>TryUAC</key>
+    <value>Das Update konnte nicht abgeschlossen werden. Alternative Möglichkeit versuchen?
+Die Windows Benutzerkontensteuerung wird eventuell angezeigt und muss bestätigt werden.</value>
+  </item>
+  <item>
+    <key>OpenTempFolder</key>
+    <value>Temporären Ordner mit heruntergeladenen Dateien anzeigen?</value>
+  </item>
+  <item>
+    <key>TranslationDownload_Update</key>
+    <value>Übersetzungen aktualisieren</value>
+  </item>
+  <item>
+    <key>TranslationDownload_DownloadCurrent</key>
+    <value>Immer Übesetzung für aktive Sprache aktualisieren: {0}</value>
+  </item>
+  <item>
+    <key>TranslationUpdateForm</key>
+    <value>Early Update Check - Übersetzungen aktualisieren</value>
+  </item>
+  <item>
+    <key>SelectPluginsForTranslationUpdate</key>
+    <value>Bitte wähle die Plugins aus, bei denen aktualisierte Übersetzungen installiert werden sollen.</value>
+  </item>
+</Translation>

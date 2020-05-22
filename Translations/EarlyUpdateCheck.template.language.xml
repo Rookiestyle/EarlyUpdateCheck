@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translation>
+  <TranslationVersion>0</TranslationVersion>
+  <item>
+    <key>Active</key>
+    <value>Active</value>
+  </item>
+  <item>
+    <key>CheckSync</key>
+    <value>Update check in foreground</value>
+  </item>
+  <item>
+    <key>CheckSyncDesc</key>
+    <value>EarlyUpdateCheck will always start the update check at the earliest possible time.
+
+If this option is active, EarlyUpdateCheck will additionally ensure the update check is finished BEFORE the 'Open Database' window is shown.
+You may have the upgrade check continue in background if you don't want to wait for its completion.</value>
+  </item>
+  <item>
+    <key>EnterBackgroundMode</key>
+    <value>Continue in background</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClick</key>
+    <value>One-Click plugin update</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClickDesc</key>
+    <value>Install new versions of my plugins by clicking the plugin in the 'Update Check' window.
+This requires write access to KeePass' plugin folder.
+KeePass needs to be restarted afterwards in order to use the new version.</value>
+  </item>
+  <item>
+    <key>PluginUpdate</key>
+    <value>Update</value>
+  </item>
+  <item>
+    <key>PluginUpdateSelected</key>
+    <value>Start update</value>
+  </item>
+  <item>
+    <key>PluginUpdateCaption</key>
+    <value>Early Update Check - Plugin Updater</value>
+  </item>
+  <item>
+    <key>PluginUpdating</key>
+    <value>Updating {0}, please wait...</value>
+  </item>
+  <item>
+    <key>PluginUpdateSuccess</key>
+    <value>The update was successful, the new version(s) will be active after a restart of KeePass.
+Restart now?</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailed</key>
+    <value>Moving downloaded files failed. Open temporary folder instead?</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailedSpecific</key>
+    <value>Plugin: {0}
+The update failed</value>
+  </item>
+  <item>
+    <key>PluginTranslationUpdateFailed</key>
+    <value>Plugin: {0}
+Update of language file {1} failed</value>
+  </item>
+  <item>
+    <key>TryUAC</key>
+    <value>Update could not be finished. Try alternative method?
+This might show the UAC prompt.</value>
+  </item>
+  <item>
+    <key>OpenTempFolder</key>
+    <value>Open temporary folder containing the updated files?</value>
+  </item>
+  <item>
+    <key>TranslationDownload_Update</key>
+    <value>Manually update translations</value>
+  </item>
+  <item>
+    <key>TranslationDownload_DownloadCurrent</key>
+    <value>Always download translations for active language: {0}</value>
+  </item>
+  <item>
+    <key>TranslationUpdateForm</key>
+    <value>Early Update Check - Update translations</value>
+  </item>
+  <item>
+    <key>SelectPluginsForTranslationUpdate</key>
+    <value>Please select plugins for which translations shall be updated</value>
+  </item>
+</Translation>
