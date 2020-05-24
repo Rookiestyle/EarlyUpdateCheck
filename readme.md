@@ -20,6 +20,7 @@ Details can be found in the configuration settings.
 - [Configuration](#configuration)
 - [One-click plugin update](#one-click-plugin-update)
 - [Translations](#translations)
+- [Requirements](#requirements)
 
 # Configuration
 EarlyUpdateCheck integrates into KeePass' options form.
@@ -53,3 +54,6 @@ Example: `EarlyUpdateCheck.de.language.xml`
   
 The language identifier in the filename must match the language identifier inside the KeePass language that you can select using *View -> Change language...*\
 This identifier is shown there as well.
+
+# Requirements
+* KeePass: 2.38

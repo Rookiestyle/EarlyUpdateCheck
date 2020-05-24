@@ -8,9 +8,9 @@ assignees: ''
 ---
 
 ## Summary
-[TIP]:  # (DO NOT include screenshots of your actual database)
+[TIP]: # (DO NOT include screenshots of your actual database)
 [TIP]: # (DO NOT post sensitive data of any kind)
-[NOTE]: # (Provide a brief overview of what the new feature is all about )
+[NOTE]: # (Provide a brief overview of what the new feature is all about)
 
 
 ## Added value
@@ -18,4 +18,4 @@ assignees: ''
 
 
 ## Example
-[NOTE]: (Show a picture or a mock-up if applicable)
+[NOTE]: # (Show a picture or a mock-up if applicable)
