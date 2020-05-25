@@ -226,7 +226,7 @@ namespace PluginTools
 			GetLoadedPluginsName().TryGetValue(sPluginName.Replace("Ext", string.Empty) + "." + sPluginName, out v);
 			string ver = v.ToString();
 			if (ver.EndsWith(".0")) ver = ver.Substring(0, ver.Length - 2);
-			else ver += " (Dev)"; 
+			else ver += " (Dev)";
 			lvi.SubItems.Add(ver);
 			lv.Items.Add(lvi);
 			tcPlugins.TabPages.Remove(tpOverview);
@@ -291,7 +291,7 @@ namespace PluginTools
 		private static void AddPluginLink(UserControl uc)
 		{
 			LinkLabel llUrl = new LinkLabel();
-			llUrl.Links.Add(0, 0, PluginURL);
+			llUrl.Links.Add(0, PluginURL.Length, PluginURL);
 			llUrl.Text = PluginURL;
 			uc.Controls.Add(llUrl);
 			llUrl.Dock = DockStyle.Bottom;
@@ -488,8 +488,8 @@ namespace PluginTools
 
 	public static class PluginDebug
 	{
-		[Flags] 
-		public enum LogLevelFlags 
+		[Flags]
+		public enum LogLevelFlags
 		{
 			None = 0,
 			Info = 1,
@@ -517,7 +517,7 @@ namespace PluginTools
 				if (m_DebugMode == value) return;
 				bool b = m_DebugMode;
 				m_DebugMode = true;
-				AddInfo("DebugMode changed", "Old: " + b.ToString(), "New: "+value.ToString());
+				AddInfo("DebugMode changed", "Old: " + b.ToString(), "New: " + value.ToString());
 				m_DebugMode = value;
 			}
 		}
@@ -536,7 +536,7 @@ namespace PluginTools
 			ulong uInst = KeePass.Util.WinUtil.GetMaxNetFrameworkVersion();
 			DotNetVersion = new Version(StrUtil.VersionToString(uInst));
 			RegistryKey rkRel = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full", false);
-			try	{ m_DotNetRelease = (int)rkRel.GetValue("Release"); }
+			try { m_DotNetRelease = (int)rkRel.GetValue("Release"); }
 			catch { }
 			if (rkRel != null) rkRel.Close();
 
@@ -705,7 +705,7 @@ namespace PluginTools
 		{
 			if (m_DebugEntries.Count == 0) return;
 			SaveDebugMessages();
-			if (AutoOpen || (AskOpen && Tools.AskYesNo("DebugFile: "+DebugFile+"\n\nOpen debug file?") == DialogResult.Yes))
+			if (AutoOpen || (AskOpen && Tools.AskYesNo("DebugFile: " + DebugFile + "\n\nOpen debug file?") == DialogResult.Yes))
 				System.Diagnostics.Process.Start(DebugFile);
 		}
 
@@ -871,7 +871,7 @@ namespace PluginTools
 					foreach (var f in sf)
 					{
 						xw.WriteStartElement("StackFrame");
-						xw.WriteElementString("Method", f.GetMethod().Name + " ("+ f.GetMethod().DeclaringType.FullName + ")");
+						xw.WriteElementString("Method", f.GetMethod().Name + " (" + f.GetMethod().DeclaringType.FullName + ")");
 						xw.WriteElementString("FileName", System.IO.Path.GetFileName(f.GetFileName()));
 						xw.WriteElementString("Line", f.GetFileLineNumber().ToString());
 						xw.WriteEndElement();
