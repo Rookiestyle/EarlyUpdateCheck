@@ -1,7 +1,7 @@
 @echo off
 set plgxnet=%1
-set plgxkp=2.38
-set plgxos=
+set plgxkp=%2
+set plgxos=%3
 
 cls
 cd %~dp0
