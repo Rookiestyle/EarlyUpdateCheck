@@ -1,7 +1,7 @@
 # EarlyUpdateCheck
 [![Version](https://img.shields.io/github/release/rookiestyle/earlyupdatecheck)](https://github.com/rookiestyle/earlyupdatecheck/releases/latest)
 [![Releasedate](https://img.shields.io/github/release-date/rookiestyle/earlyupdatecheck)](https://github.com/rookiestyle/earlyupdatecheck/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/rookiestyle/earlyupdatecheck/total?color=%2300cc00)](https://github.com/rookiestyle/earlyupdatecheck/releases/latest)\
+[![Downloads](https://img.shields.io/github/downloads/rookiestyle/earlyupdatecheck/total?color=%2300cc00)](https://github.com/rookiestyle/earlyupdatecheck/releases/latest/download/EarlyUpdateCheck.plgx)\
 [![License: GPL v3](https://img.shields.io/github/license/rookiestyle/earlyupdatecheck)](https://www.gnu.org/licenses/gpl-3.0)
 
 Keepass performs its update check only after all initialization is done and - if configured - the most recently used database has been opened.
@@ -20,7 +20,7 @@ Details can be found in the configuration settings.
 - [Configuration](#configuration)
 - [One-click plugin update](#one-click-plugin-update)
 - [Translations](#translations)
-- [Requirements](#requirements)
+- [Download and Requirements](#download-and-requirements)
 
 # Configuration
 EarlyUpdateCheck integrates into KeePass' options form.
@@ -55,5 +55,12 @@ Example: `EarlyUpdateCheck.de.language.xml`
 The language identifier in the filename must match the language identifier inside the KeePass language that you can select using *View -> Change language...*\
 This identifier is shown there as well.
 
-# Requirements
+# Download and Requirements
+## Download
+Please follow these links to download the plugin file itself.
+- [Download newest release](https://github.com/rookiestyle/earlyupdatecheck/releases/latest/download/EarlyUpdateCheck.plgx)
+- [Download history](https://github.com/rookiestyle/earlyupdatecheck/releases)
+
+If you're interested in any of the available translations in addition, please download them from the [Translations](Translations) folder.
+## Reuirements
 * KeePass: 2.38
