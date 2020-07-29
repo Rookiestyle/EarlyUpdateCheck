@@ -28,7 +28,7 @@ EarlyUpdateCheck integrates into KeePass' options form.
 
 The upper part defines whether the update check shall start even before a database is opened.
 In this  case, the update check is triggered as early as possible.
-As the update check runs in a separate thread, it is stll possible that you opened a database while the update check is still running.
+As the update check runs in a separate thread, it is still possible that you opened a database while the update check is still running.
 
 To avoid this, check *Update check in foregound*. KeePass will then wait for the update check to be finished.
 In case of network issues you may have this update check continue in background.\
@@ -45,7 +45,7 @@ Once the plugins have been updated, you need to restart KeePass.\
 
 # Translations
 My plugins are provided with english language built-in and allow usage of translation files.
-These translation files need to be placed in a folder called *Translations* inside in your plugin folder.
+These translation files need to be placed in a folder called *Translations* inside your plugin folder.
 If a text is missing in the translation file, it is backfilled with the english text.
 You're welcome to add additional translation files by creating a pull request.
 
@@ -62,5 +62,5 @@ Please follow these links to download the plugin file itself.
 - [Download history](https://github.com/rookiestyle/earlyupdatecheck/releases)
 
 If you're interested in any of the available translations in addition, please download them from the [Translations](Translations) folder.
-## Reuirements
+## Requirements
 * KeePass: 2.38
