@@ -159,6 +159,7 @@ namespace EarlyUpdateCheck
 			ListView m_lvLanguages = Tools.GetControl("m_lvLanguages", fLang) as ListView;
 			if (m_lvLanguages == null) return;
 			m_lvLanguages.BeginUpdate();
+			int[] aWidths = StrUtil.DeserializeIntArray(UIUtil.GetColumnWidths(m_lvLanguages) + " " + DpiUtil.ScaleIntX(60).ToString());
 			int iCol = m_lvLanguages.Columns.Add("L-ID").Index;
 			foreach (ListViewItem i in m_lvLanguages.Items)
 			{
@@ -170,6 +171,7 @@ namespace EarlyUpdateCheck
 				}
 				catch { if (string.IsNullOrEmpty(i.Tag as string)) i.SubItems.Add("en"); }
 			}
+			UIUtil.ResizeColumns(m_lvLanguages, aWidths, true);
 			m_lvLanguages.EndUpdate();
 		}
 
