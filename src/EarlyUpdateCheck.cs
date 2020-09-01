@@ -896,6 +896,8 @@ namespace EarlyUpdateCheck
 					s.Close();
 					byte[] pb = ms.ToArray();
 					ms.Close();
+					string sTargetDir = UrlUtil.GetShortestAbsolutePath(UrlUtil.GetFileDirectory(target, false, true));
+					if (!System.IO.Directory.Exists(sTargetDir)) System.IO.Directory.CreateDirectory(sTargetDir);
 					System.IO.File.WriteAllBytes(target, pb);
 					PluginDebug.AddInfo("Download success", 0, "Source: " + source, "Target: " + target, "Download attempt: " + iAttempts.ToString());
 					return true;
