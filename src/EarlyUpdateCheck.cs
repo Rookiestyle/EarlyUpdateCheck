@@ -211,9 +211,16 @@ namespace EarlyUpdateCheck
 			//==> Update window might be shown AFTER "Open Database" window is shown
 			if (PluginConfig.CheckSync)
 			{
+				PluginDebug.AddInfo("UpdateCheck start", 0, DebugPrint);
 				m_bRestartInvoke = true;
-				m_slUpdateCheck = CreateUpdateCheckLogger();
-				PluginDebug.AddInfo("UpdateCheck start", DebugPrint);
+				try
+				{
+					m_slUpdateCheck = CreateUpdateCheckLogger();
+				}
+				catch (Exception ex)
+				{
+					PluginDebug.AddError("UpdateCheck error", 0, "Initialising StatusLogger failed", ex.Message, DebugPrint);
+				}
 				ThreadPool.QueueUserWorkItem(new WaitCallback(CheckForUpdates));
 				while (true)
 				{
@@ -225,7 +232,7 @@ namespace EarlyUpdateCheck
 					}
 				}
 				if (m_slUpdateCheck != null) m_slUpdateCheck.EndLogging();
-				PluginDebug.AddInfo("UpdateCheck finished ", DebugPrint);
+				PluginDebug.AddInfo("UpdateCheck finished ", 0, DebugPrint);
 			}
 			if ((m_UpdateCheckStatus == UpdateCheckStatus.NotChecked) || (m_UpdateCheckStatus == UpdateCheckStatus.Error)) UpdateCheckEx.Run(false, null);
 			CheckPluginLanguages();
@@ -283,7 +290,7 @@ namespace EarlyUpdateCheck
 
 		private IStatusLogger CreateUpdateCheckLogger()
 		{
-			IStatusLogger sl = StatusUtil.CreateStatusDialog(m_host.MainWindow, out m_CheckProgress,
+			IStatusLogger sl = StatusUtil.CreateStatusDialog(null, out m_CheckProgress,
 				KeePass.Resources.KPRes.UpdateCheck, KeePass.Resources.KPRes.CheckingForUpd + "...", true, true);
 			Button btnCancel = (Button)Tools.GetControl("m_btnCancel", m_CheckProgress);
 			if (btnCancel != null)
