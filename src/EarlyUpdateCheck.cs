@@ -37,6 +37,7 @@ namespace EarlyUpdateCheck
 		private IStatusLogger m_slUpdateCheck = null;
 		private Form m_CheckProgress = null;
 		private bool m_bRestartInvoke = false;
+		private bool m_bRestartTriggered = false;
 		private IStatusLogger m_slUpdatePlugins = null;
 		private string m_LanguageIso = null;
 		private bool m_bUpdateCheckDone = false;
@@ -136,7 +137,7 @@ namespace EarlyUpdateCheck
 		private void WindowAdded(object sender, GwmWindowEventArgs e)
 		{
 			if (!PluginConfig.Active) return;
-			PluginDebug.AddInfo("Form added", e.Form.Name, e.Form.GetType().FullName, DebugPrint);
+			PluginDebug.AddInfo("Form added", 0, e.Form.Name, e.Form.GetType().FullName, DebugPrint);
 			if (e.Form is UpdateCheckForm)
 			{
 				if (m_CheckProgress != null)
@@ -177,8 +178,7 @@ namespace EarlyUpdateCheck
 
 		private void WindowRemoved(object sender, GwmWindowEventArgs e)
 		{
-			if ((m_kpf != null) && (e.Form is KeyPromptForm))
-				m_kpf = null;
+			if ((m_kpf != null) && (e.Form is KeyPromptForm))	m_kpf = null;
 		}
 
 		#region Check for updates
@@ -235,6 +235,11 @@ namespace EarlyUpdateCheck
 				PluginDebug.AddInfo("UpdateCheck finished ", 0, DebugPrint);
 			}
 			if ((m_UpdateCheckStatus == UpdateCheckStatus.NotChecked) || (m_UpdateCheckStatus == UpdateCheckStatus.Error)) UpdateCheckEx.Run(false, null);
+			if (m_bRestartTriggered)
+			{
+				m_bRestartTriggered = false;
+				return;
+			}
 			CheckPluginLanguages();
 		}
 
@@ -501,7 +506,7 @@ namespace EarlyUpdateCheck
 
 			foreach (ListViewItem item in lvPlugins.Items)
 			{
-				PluginDebug.AddInfo("Check plugin update status", item.SubItems[0].Text, item.SubItems[1].Text);
+				PluginDebug.AddInfo("Check plugin update status", 0, item.SubItems[0].Text, item.SubItems[1].Text);
 				if (!item.SubItems[1].Text.Contains(KeePass.Resources.KPRes.NewVersionAvailable)) continue;
 				foreach (UpdateInfo upd in Plugins)
 				{
@@ -928,6 +933,7 @@ namespace EarlyUpdateCheck
 			PluginDebug.AddInfo("Restart started", DebugPrint);
 			if (m_kpf != null)
 			{
+				PluginDebug.AddInfo("Closing KeyPromptForm", 0, DebugPrint);
 				m_kpf.DialogResult = DialogResult.Cancel;
 				m_kpf.Close();
 				m_kpf.Dispose();
@@ -936,6 +942,7 @@ namespace EarlyUpdateCheck
 			}
 			if (m_slUpdateCheck != null)
 			{
+				PluginDebug.AddInfo("Closing update check progress form", 0, DebugPrint);
 				m_slUpdateCheck.EndLogging();
 			}
 			FieldInfo fi = m_host.MainWindow.GetType().GetField("m_bRestart", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -944,6 +951,7 @@ namespace EarlyUpdateCheck
 				PluginDebug.AddInfo("Restart started, m_bRestart found", DebugPrint);
 				HandleMutex(true);
 				fi.SetValue(m_host.MainWindow, true);
+				m_bRestartTriggered = true;
 				m_host.MainWindow.ProcessAppMessage((IntPtr)KeePass.Program.AppMessage.Exit, IntPtr.Zero);
 				HandleMutex(false);
 			}
@@ -962,6 +970,19 @@ namespace EarlyUpdateCheck
 			lStrings.Add("Mutex: " + KeePass.App.AppDefs.MutexName);
 			lStrings.Add("Release: " + release.ToString());
 			lStrings.Add("Single Instance: " + KeePass.Program.Config.Integration.LimitToSingleInstance.ToString());
+
+			//Get number of loaded databases
+			//KeePass creates an initial PwDocument during startup which must NOT be considered here
+			//
+			//Initial = No LockedIoc and PwDatabase is not opened (!IsOpen)
+			int iOpenedDB = 0;
+			foreach (PwDocument pd in KeePass.Program.MainForm.DocumentManager.Documents)
+			{
+				if (!string.IsNullOrEmpty(pd.LockedIoc.Path)) iOpenedDB++;
+				else if ((pd.Database != null) && pd.Database.IsOpen) iOpenedDB++;
+			}
+			lStrings.Add("Opened databases: " + iOpenedDB.ToString());
+
 			if (!KeePass.Program.Config.Integration.LimitToSingleInstance)
 			{
 				lStrings.Add("Action required: No");
@@ -976,7 +997,7 @@ namespace EarlyUpdateCheck
 				PluginDebug.AddInfo("Handle global mutex", 0, lStrings.ToArray());
 				return;
 			}
-			else if (m_host.MainWindow.DocumentManager.Documents.Count > 0)
+			else if (iOpenedDB > 0)
 			{
 				//Only recreate mutex if at least document is loaded (lock flag is not relevant here)
 				//If no db is open, Restart is in progress already
@@ -985,9 +1006,9 @@ namespace EarlyUpdateCheck
 				PluginDebug.AddInfo("Handle global mutex", 0, lStrings.ToArray());
 				Thread t = new Thread(new ThreadStart(() =>
 				  {
-					  Thread.Sleep(1000);
+					  Thread.Sleep(PluginConfig.RestoreMutexThreshold);
 					  bool bSuccess = GlobalMutexPool.CreateMutex(KeePass.App.AppDefs.MutexName, true);
-					  PluginDebug.AddInfo("Handle global mutex", 0, "Recreate mutex sucfessful: " + bSuccess.ToString());
+					  PluginDebug.AddInfo("Handle global mutex", 0, "Recreate mutex sucessful: " + bSuccess.ToString());
 				  }));
 				t.Start();
 				return;
@@ -1060,10 +1081,10 @@ namespace EarlyUpdateCheck
 		{
 			get
 			{
-				string result = "DifferentThread: {0}, Check status: {1}";
+				string result = "DifferentThread: {0}, Check status: {1}, UI interaction blocked: {2}";
 				lock(m_lock)
 				{
-					result = string.Format(result, m_bRestartInvoke.ToString(), m_UpdateCheckStatus.ToString());
+					result = string.Format(result, m_bRestartInvoke.ToString(), m_UpdateCheckStatus.ToString(), KeePass.Program.MainForm.UIIsInteractionBlocked().ToString());
 				}
 				return result;
 			}
