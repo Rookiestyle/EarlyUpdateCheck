@@ -49,25 +49,36 @@ namespace EarlyUpdateCheck
 
 	public static class PluginConfig
 	{
+		private static KeePass.App.Configuration.AceCustomConfig Config = KeePass.Program.Config.CustomConfig;
 		public static bool Active = true;
 		public static bool CheckSync = true;
 		public static bool OneClickUpdate = true;
 		public static bool DownloadActiveLanguage = true;
 
+		public static int RestoreMutexThreshold
+		{
+			get
+			{
+				int t = (int)Config.GetLong("EarlyUpdateCheck.RestoreMutexThreshold", 2000);
+				Config.SetLong("EarlyUpdateCheck.RestoreMutexThreshold", t);
+				return t;
+			}
+		}
+
 		public static void Read()
 		{
-			PluginConfig.Active = KeePass.Program.Config.CustomConfig.GetBool("EarlyUpdateCheck.Active", PluginConfig.Active);
-			PluginConfig.CheckSync = KeePass.Program.Config.CustomConfig.GetBool("EarlyUpdateCheck.CheckSync", PluginConfig.CheckSync);
-			PluginConfig.OneClickUpdate = KeePass.Program.Config.CustomConfig.GetBool("EarlyUpdateCheck.OneClickUpdate", PluginConfig.OneClickUpdate);
-			PluginConfig.DownloadActiveLanguage = KeePass.Program.Config.CustomConfig.GetBool("EarlyUpdateCheck.DownloadActiveLanguage", PluginConfig.DownloadActiveLanguage);
+			PluginConfig.Active = Config.GetBool("EarlyUpdateCheck.Active", PluginConfig.Active);
+			PluginConfig.CheckSync = Config.GetBool("EarlyUpdateCheck.CheckSync", PluginConfig.CheckSync);
+			PluginConfig.OneClickUpdate = Config.GetBool("EarlyUpdateCheck.OneClickUpdate", PluginConfig.OneClickUpdate);
+			PluginConfig.DownloadActiveLanguage = Config.GetBool("EarlyUpdateCheck.DownloadActiveLanguage", PluginConfig.DownloadActiveLanguage);
 		}
 
 		public static void Write()
 		{
-			KeePass.Program.Config.CustomConfig.SetBool("EarlyUpdateCheck.Active", PluginConfig.Active);
-			KeePass.Program.Config.CustomConfig.SetBool("EarlyUpdateCheck.CheckSync", PluginConfig.CheckSync);
-			KeePass.Program.Config.CustomConfig.SetBool("EarlyUpdateCheck.OneClickUpdate", PluginConfig.OneClickUpdate);
-			KeePass.Program.Config.CustomConfig.SetBool("EarlyUpdateCheck.DownloadActiveLanguage", PluginConfig.DownloadActiveLanguage);
+			Config.SetBool("EarlyUpdateCheck.Active", PluginConfig.Active);
+			Config.SetBool("EarlyUpdateCheck.CheckSync", PluginConfig.CheckSync);
+			Config.SetBool("EarlyUpdateCheck.OneClickUpdate", PluginConfig.OneClickUpdate);
+			Config.SetBool("EarlyUpdateCheck.DownloadActiveLanguage", PluginConfig.DownloadActiveLanguage);
 		}
 	}
 
