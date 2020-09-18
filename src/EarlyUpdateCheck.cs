@@ -193,7 +193,7 @@ namespace EarlyUpdateCheck
 			if (uct == UpdateCheckType.NotRequired) return;
 			if (uct == UpdateCheckType.OnlyTranslations)
 			{
-				CheckPluginLanguages();
+				ThreadPool.QueueUserWorkItem(new WaitCallback(CheckPluginLanguages));
 				return;
 			}
 			m_kpf = GlobalWindowManager.TopWindow as KeyPromptForm;
@@ -240,7 +240,7 @@ namespace EarlyUpdateCheck
 				m_bRestartTriggered = false;
 				return;
 			}
-			CheckPluginLanguages();
+			ThreadPool.QueueUserWorkItem(new WaitCallback(CheckPluginLanguages));
 		}
 
 		/// <summary>
@@ -310,7 +310,7 @@ namespace EarlyUpdateCheck
 		#endregion
 
 		#region Check for new translations
-		private void CheckPluginLanguages()
+		private void CheckPluginLanguages(object o)
 		{
 			PluginDebug.AddInfo("Check for updated translations - Start");
 			Dictionary<string, long> dTranslationsInstalled = GetInstalledTranslations();
@@ -450,7 +450,7 @@ namespace EarlyUpdateCheck
 				if (kvp.Value == null) continue;
 				foreach (UpdateComponentInfo uci in kvp.Value)
 				{
-					//Plugins will be migrated from Sourceforge to Gitrhub one by one
+					//Plugins will be migrated from Sourceforge to Github one by one
 					//Format for translation version:
 					//Sourceforge: Lang!<Plugin>!!!<language identifier>
 					//Github: <Plugin>!<language identifier>
