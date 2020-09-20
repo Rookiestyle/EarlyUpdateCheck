@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translation>
+  <TranslationVersion>1</TranslationVersion>
+  <item>
+    <key>Active</key>
+    <value>Actif</value>
+  </item>
+  <item>
+    <key>CheckSync</key>
+    <value>Vérification de la mise à jour au premier plan</value>
+  </item>
+  <item>
+    <key>CheckSyncDesc</key>
+    <value>EarlyUpdateCheck commencera toujours la vérification de la mise à jour le plus tôt possible.
+
+Si cette option est activé, EarlyUpdateCheck s'assurera en outre que la vérification de la mise à jour est terminée AVANT que la fenêtre "Ouvrir la base de données" ne s'affiche.
+Vous pouvez faire en sorte que la vérification de la mise à jour se poursuive en arrière-plan si vous ne voulez pas attendre qu'elle soit terminée.</value>
+  </item>
+  <item>
+    <key>EnterBackgroundMode</key>
+    <value>Continuer en arrière-plan</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClick</key>
+    <value>Mise à jour des plugins 'en un seul clic'</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClickDesc</key>
+    <value>Installez les nouvelles versions de mes plugins en cliquant sur le plugin dans la fenêtre "Vérifier les mises à jour".
+Cela nécessite un accès en écriture au dossier des plugins de KeePass.
+KeePass doit être redémarré par la suite afin de pouvoir utiliser la nouvelle version.</value>
+  </item>
+  <item>
+    <key>PluginUpdate</key>
+    <value>Mise à jour</value>
+  </item>
+  <item>
+    <key>PluginUpdateSelected</key>
+    <value>Démarrer la mise à jour</value>
+  </item>
+  <item>
+    <key>PluginUpdateCaption</key>
+    <value>Vérification anticipée des mises à jour - Mise à jour des plugins</value>
+  </item>
+  <item>
+    <key>PluginUpdating</key>
+    <value>Mise à jour {0}, merci de patienter...</value>
+  </item>
+  <item>
+    <key>PluginUpdateSuccess</key>
+    <value>La mise à jour a réussie, la ou les nouvelles versions seront activées après un redémarrage de KeePass.
+Redémarrer maintenant ?</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailed</key>
+    <value>Le transfert des fichiers téléchargés a échoué. Ouvrir un dossier temporaire à la place ?</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailedSpecific</key>
+    <value>Plugin: {0}
+La mise à jour a échoué</value>
+  </item>
+  <item>
+    <key>PluginTranslationUpdateFailed</key>
+    <value>Plugin: {0}
+Mise à jour du fichier de langue {1} a échoué</value>
+  </item>
+  <item>
+    <key>TryUAC</key>
+    <value>La mise à jour n'a pas pu être terminée. Essayez une autre méthode ?
+Cela pourrait faire apparaître l'invite de contrôle du compte d'utilisateur.</value>
+  </item>
+  <item>
+    <key>OpenTempFolder</key>
+    <value>Ouvrir le dossier temporaire contenant les fichiers mis à jour ?</value>
+  </item>
+  <item>
+    <key>TranslationDownload_Update</key>
+    <value>Mise à jour manuelle des traductions</value>
+  </item>
+  <item>
+    <key>TranslationDownload_DownloadCurrent</key>
+    <value>Toujours télécharger les traductions pour la langue active : {0}</value>
+  </item>
+  <item>
+    <key>TranslationUpdateForm</key>
+    <value>Vérification anticipée des mises à jour - Mise à jour des traductions</value>
+  </item>
+  <item>
+    <key>SelectPluginsForTranslationUpdate</key>
+    <value>Veuillez sélectionner les plugins pour lesquels les traductions seront mises à jour</value>
+  </item>
+</Translation>
