@@ -666,13 +666,18 @@ namespace EarlyUpdateCheck
 		/// Update installed plugin translations
 		/// </summary>
 		/// <param name="bDownloadActiveLanguage">Download translation for currently used language even if not installed yet</param>
+		private delegate void UpdatePluginsDelegate(bool bUpdateTranslationsOnly);
 		public void UpdatePluginTranslations(bool bDownloadActiveLanguage, List<string> lUpdateTranslations)
 		{
 			foreach (var upd in Plugins)
 				upd.Selected = (lUpdateTranslations == null) || lUpdateTranslations.Contains(upd.Name);
 			bool bBackup = PluginConfig.DownloadActiveLanguage;
 			PluginConfig.DownloadActiveLanguage = bDownloadActiveLanguage;
-			UpdatePlugins(true);
+
+			//If called from CheckPluginLanguages, we're running in adifferent thread
+			//Use Invoke because the IStatusLogger will attach to tho KeyPromptForm within the UI thread
+			UpdatePluginsDelegate delUpdate = UpdatePlugins;
+			m_host.MainWindow.Invoke(delUpdate, new object[] { true });
 			PluginConfig.DownloadActiveLanguage = bBackup;
 			foreach (var upd in Plugins)
 			{
