@@ -387,7 +387,7 @@ namespace EarlyUpdateCheck
 			{
 				try
 				{
-					Regex r = new Regex(@"\<TranslationVersion\>(\d)\<\/TranslationVersion\>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+					Regex r = new Regex(@"\<TranslationVersion\>(\d+)\<\/TranslationVersion\>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 					List<string> lTranslationsInstalled = UrlUtil.GetFilePaths(m_PluginsTranslationsFolder, "*.language.xml", System.IO.SearchOption.TopDirectoryOnly);
 					foreach (string lang in lTranslationsInstalled)
 					{
