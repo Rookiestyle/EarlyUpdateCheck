@@ -106,22 +106,29 @@ namespace EarlyUpdateCheck
 					lShieldify.Add("Detected Windows < 7");
 					return;
 				}
-				string sPF86 = Environment.GetEnvironmentVariable("ProgramFiles(x86)");
+				string sPF86 = EnsureNonNull(Environment.GetEnvironmentVariable("ProgramFiles(x86)"));
 				string sPF86_2 = string.Empty;
-				try { sPF86_2 = Environment.GetFolderPath((Environment.SpecialFolder)42); } //Environment.SpecialFolder.ProgramFilesX86
+				try { sPF86_2 = EnsureNonNull(Environment.GetFolderPath((Environment.SpecialFolder)42)); } //Environment.SpecialFolder.ProgramFilesX86
 				catch { sPF86_2 = sPF86; }
-				string sPF = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-				string sKP = UrlUtil.GetFileDirectory(WinUtil.GetExecutable(), true, false);
+				string sPF = EnsureNonNull(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
+				string sKP = EnsureNonNull(UrlUtil.GetFileDirectory(WinUtil.GetExecutable(), true, false));
 				ShouldShieldify = sKP.StartsWith(sPF86) || sKP.StartsWith(sPF) || sKP.StartsWith(sPF86_2);
 				lShieldify.Add("KeePass folder inside ProgramFiles(x86): " + sKP.StartsWith(sPF86));
 				lShieldify.Add("KeePass folder inside Environment.SpecialFolder.ProgramFilesX86: " + sKP.StartsWith(sPF86_2));
 				lShieldify.Add("KeePass folder inside Environment.SpecialFolder.ProgramFiles: " + sKP.StartsWith(sPF));
 			}
+			catch (Exception ex) { lShieldify.Add("Exception: " + ex.Message); }
 			finally
 			{
 				lShieldify.Insert(0, "Shieldify: " + ShouldShieldify.ToString());
 				PluginDebug.AddInfo("Check Shieldify", 0, lShieldify.ToArray());
 			}
+		}
+
+		private string EnsureNonNull(string v)
+		{
+			if (v == null) return string.Empty;
+			return v;
 		}
 
 		/// <summary>
