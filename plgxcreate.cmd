@@ -21,7 +21,7 @@ xcopy src plgx /s /e /exclude:plgxexclude.txt > nul
 echo Compiling PlgX
 cd..
 cd _KeePass_Release
-KeePass.exe --plgx-create "%~dp0plgx" plgx-prereq-net:%plgxnet% -plgx-prereq-kp:%plgxkp% -plgx-prereq-os:%plgxos%
+KeePass.exe --plgx-create "%~dp0plgx" -plgx-prereq-net:%plgxnet% -plgx-prereq-kp:%plgxkp% -plgx-prereq-os:%plgxos%
 cd ..
 cd %CurrDirName%
 

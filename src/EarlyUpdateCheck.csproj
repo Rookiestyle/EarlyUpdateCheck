@@ -59,6 +59,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CheckedGroupBox.cs" />
+    <Compile Include="EventHelper.cs" />
     <Compile Include="TranslationUpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>

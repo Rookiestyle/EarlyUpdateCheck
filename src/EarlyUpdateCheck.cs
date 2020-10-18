@@ -495,8 +495,10 @@ namespace EarlyUpdateCheck
 		/// <summary>
 		/// Show update indicator if plugins can be updated
 		/// </summary>
+		private List<Delegate> m_lEventHandlerItemActivate = null;
 		private void OnUpdateCheckFormShown(object sender, EventArgs e)
 		{
+			m_lEventHandlerItemActivate = null;
 			if (!PluginConfig.Active || !PluginConfig.OneClickUpdate) return;
 			CustomListViewEx lvPlugins = (CustomListViewEx)Tools.GetControl("m_lvInfo", sender as UpdateCheckForm);
 			if (lvPlugins == null)
@@ -508,6 +510,12 @@ namespace EarlyUpdateCheck
 			if (Plugins.Count == 0) return;
 			SetPluginSelectionStatus(false);
 			bool bColumnAdded = false;
+			m_lEventHandlerItemActivate = EventHelper.GetItemActivateHandlers(lvPlugins);
+			if (m_lEventHandlerItemActivate.Count > 0)
+			{
+				EventHelper.RemoveItemActivateEventHandlers(lvPlugins, m_lEventHandlerItemActivate);
+				lvPlugins.ItemActivate += LvPlugins_ItemActivate;
+			}
 			Image NoUpdate = UIUtil.CreateGrayImage(lvPlugins.SmallImageList.Images[1]);
 			lvPlugins.SmallImageList.Images.Add("EUCCheckMarkImage", NoUpdate);
 
@@ -547,6 +555,73 @@ namespace EarlyUpdateCheck
 				lvPlugins.DrawColumnHeader += LvPlugins_DrawColumnHeader;
 				ShowUpdateButton(sender as Form, true);
 			}
+			if (m_lEventHandlerItemActivate.Count == 0)
+			{
+				if (lvPlugins.ContextMenuStrip == null)
+				{
+					lvPlugins.ContextMenuStrip = new ContextMenuStrip();
+					string sMenuText = KeePass.Resources.KPRes.PluginsDesc;
+					try { sMenuText = Tools.GetControl("m_linkPlugins", sender as UpdateCheckForm).Text; }
+					catch { }
+					lvPlugins.ContextMenuStrip.Items.Add(new ToolStripMenuItem(sMenuText, null, OnReleasePageClick));
+					lvPlugins.ContextMenuStrip.Opening += ContextMenuStrip_Opening;
+				}
+				else PluginDebug.AddWarning("m_lvEntries.ContextMenuStrip already defined, special handling for added 'go to release page' to be defined", 0);
+			}
+		}
+
+		private void LvPlugins_ItemActivate(object sender, EventArgs e)
+		{
+			try
+			{
+				var lv = sender as CustomListViewEx;
+				var lvi = lv.SelectedItems[0];
+				UpdateInfo upd = Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
+				if (upd == null)
+				{
+					foreach (Delegate d in m_lEventHandlerItemActivate)
+						d.DynamicInvoke(new object[] { sender, e });
+				}
+				else
+				{
+					string url = upd.URL + "releases";
+					try { WinUtil.OpenUrl(url, null, true); }
+					catch (Exception exUrl) { Tools.ShowError(url + "\n\n" + exUrl.Message); }
+				}
+			}
+			catch { }
+
+		}
+
+		private void OnReleasePageClick(object sender, EventArgs e)
+		{
+			try
+			{
+				var lv = ((sender as ToolStripItem).Owner as ContextMenuStrip).SourceControl as CustomListViewEx;
+				var lvi = lv.SelectedItems[0];
+				UpdateInfo upd = Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
+				if (upd == null) return;
+				string url = upd.URL + "releases";
+				try { System.Diagnostics.Process.Start(url); }
+				catch (Exception exUrl)	{ Tools.ShowError(url+"\n\n"+exUrl.Message);
+				}
+
+				WinUtil.OpenUrl(url, null, true);
+			}
+			catch { }
+		}
+
+		private void ContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			e.Cancel = true;
+			try
+			{
+				var lv = (sender as ContextMenuStrip).SourceControl as ListView;
+				var lvi = lv.SelectedItems[0];
+				UpdateInfo upd = Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
+				e.Cancel = upd == null;
+			}
+			catch { }
 		}
 
 		private void OnUpdateCheckFormPluginMouseClick(object sender, MouseEventArgs e)
