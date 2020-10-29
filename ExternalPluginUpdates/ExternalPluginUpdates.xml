@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UpdateInfoExternList>
+  <UpdateInfoExtern>
+    <PluginName>WebAutoType</PluginName>
+    <PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
+    <PluginUpdateURL>https://sourceforge.net/projects/webautotype/files/latest/download</PluginUpdateURL>
+    <UpdateMode>ZipExtractPlgx</UpdateMode>
+  </UpdateInfoExtern>
+  <UpdateInfoExtern>
+    <PluginName>KPEnhancedEntryView</PluginName>
+    <PluginURL>https://sourceforge.net/projects/kpenhentryview/</PluginURL>
+    <PluginUpdateURL>https://sourceforge.net/projects/kpenhentryview/files/latest/download</PluginUpdateURL>
+    <UpdateMode>ZipExtractPlgx</UpdateMode>
+  </UpdateInfoExtern>
+  <UpdateInfoExtern>
+    <PluginName>SourceForgeUpdateChecker</PluginName>
+    <PluginURL>https://sourceforge.net/projects/kpsfupdatechecker/</PluginURL>
+    <PluginUpdateURL>https://sourceforge.net/projects/kpsfupdatechecker/files/latest/download</PluginUpdateURL>
+    <UpdateMode>ZipExtractPlgx</UpdateMode>
+  </UpdateInfoExtern>
+</UpdateInfoExternList>

@@ -16,6 +16,9 @@ EarlyUpdateCheck offers an optional one click update mode for all of my plugins 
 This will invoke Windows UAC if required to copy the downloaded files into KeePass' plugin folder. 
 Details can be found in the configuration settings.
 
+In addition, EarlyUpdateCheck can now update other author's plugins as well.
+Please have a look at the [wiki](https://github.com/Rookiestyle/EarlyUpdateCheck/wiki/Update-other-plugins) for details.
+
 # Table of Contents
 - [Configuration](#configuration)
 - [One-click plugin update](#one-click-plugin-update)

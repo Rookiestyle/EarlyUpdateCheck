@@ -46,7 +46,7 @@ namespace EarlyUpdateCheck
 
 		private List<UpdateInfo> m_lPluginUpdateInfo = new List<UpdateInfo>();
 		public List<UpdateInfo> Plugins { get { return m_lPluginUpdateInfo.Count > 0 ? m_lPluginUpdateInfo : GetInstalledPlugins(); } }
-		private string m_PluginsFolder = string.Empty;
+		public static string m_PluginsFolder = string.Empty;
 		private string m_PluginsTranslationsFolder = string.Empty;
 
 		public static bool ShouldShieldify = false;
@@ -584,7 +584,7 @@ namespace EarlyUpdateCheck
 				}
 				else
 				{
-					string url = upd.URL + "releases";
+					string url = upd.GetPluginUrl();
 					try { WinUtil.OpenUrl(url, null, true); }
 					catch (Exception exUrl) { Tools.ShowError(url + "\n\n" + exUrl.Message); }
 				}
@@ -601,9 +601,9 @@ namespace EarlyUpdateCheck
 				var lvi = lv.SelectedItems[0];
 				UpdateInfo upd = Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
 				if (upd == null) return;
-				string url = upd.URL + "releases";
+				string url = upd.GetPluginUrl();
 				try { System.Diagnostics.Process.Start(url); }
-				catch (Exception exUrl)	{ Tools.ShowError(url+"\n\n"+exUrl.Message);
+				catch (Exception exUrl)	{ Tools.ShowError(url + "\n\n" + exUrl.Message);
 				}
 
 				WinUtil.OpenUrl(url, null, true);
@@ -726,22 +726,42 @@ namespace EarlyUpdateCheck
 				{
 					Plugin result = (Plugin)Tools.GetField("m_pluginInterface", PluginIterator.Current);
 					if (result == null) continue;
-					AssemblyCompanyAttribute[] comp = (AssemblyCompanyAttribute[])result.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-					AssemblyTitleAttribute[] title = (AssemblyTitleAttribute[])result.GetType().Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-					if ((comp.Length != 1) || (title.Length != 1)) continue;
-					if (string.Compare("rookiestyle", comp[0].Company, StringComparison.InvariantCultureIgnoreCase) != 0) continue;
-					Type tools = result.GetType().Assembly.GetType("PluginTools.Tools");
-					if (tools == null) continue;
-					FieldInfo fURL = tools.GetField("PluginURL");
-					if (fURL == null) continue;
-					string URL = (string)fURL.GetValue(result);
-					if (string.IsNullOrEmpty(URL)) continue;
-					m_lPluginUpdateInfo.Add(new UpdateInfo(result.GetType().Namespace, title[0].Title, URL, result.UpdateUrl, result.GetType().Assembly.GetName().Version));
+					UpdateInfo upd;
+					if (GetPluginUpdateInfo(result, out upd)) m_lPluginUpdateInfo.Add(upd);
 				}
 			}
 			catch (Exception ex) { PluginDebug.AddError(ex.Message); }
 			PluginDebug.AddInfo("Installed updateable plugins", m_lPluginUpdateInfo.ConvertAll(new Converter<UpdateInfo, string>(UpdateInfo.GetName)).ToArray());
 			return m_lPluginUpdateInfo;
+		}
+
+		private bool GetPluginUpdateInfo(Plugin result, out UpdateInfo upd)
+		{
+			upd = null;
+			AssemblyCompanyAttribute[] comp = (AssemblyCompanyAttribute[])result.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+			AssemblyTitleAttribute[] title = (AssemblyTitleAttribute[])result.GetType().Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+			if ((comp.Length != 1) || (title.Length != 1)) return false;
+
+			//One of my plugins
+			if (string.Compare("rookiestyle", comp[0].Company, StringComparison.InvariantCultureIgnoreCase) == 0)
+			{
+				Type tools = result.GetType().Assembly.GetType("PluginTools.Tools");
+				if (tools == null) return false;
+				FieldInfo fURL = tools.GetField("PluginURL");
+				if (fURL == null) return false;
+				string URL = (string)fURL.GetValue(result);
+				if (string.IsNullOrEmpty(URL)) return false;
+				upd = new UpdateInfo(result.GetType().Namespace, title[0].Title, URL, result.UpdateUrl, result.GetType().Assembly.GetName().Version);
+			}
+			else
+			{
+				//if (!UpdateInfoParser.Get(title[0].Title, out uie)) return false;
+				upd = new UpdateInfo(result.GetType().Namespace, title[0].Title,
+						result.UpdateUrl,
+						result.GetType().Assembly.GetName().Version,
+						false); //, uie.UpdateMode);
+			}
+			return true;
 		}
 
 		/// <summary>
@@ -886,17 +906,13 @@ namespace EarlyUpdateCheck
 			}
 		}
 
-		private delegate string GetUpdateUrl(string baseurl, UpdateInfo upd, string language);
-		private string GetUpdateUrlSF(string baseurl, UpdateInfo upd, string language)
+		private string GetUpdateUrl(string baseurl, UpdateInfo upd, string language)
 		{
-			//Only convert Sourceforge url to Github url
-			//All new releases for plugins will be released on Github
-			baseurl = baseurl.Replace("https://sourceforge.net/projects/", "https://github.com/rookiestyle/");
-			return GetUpdateUrlGH(baseurl, upd, language);
-		}
-
-		private string GetUpdateUrlGH(string baseurl, UpdateInfo upd, string language)
-		{
+			if (!upd.OwnPlugin)
+			{
+				if (upd.UpdateInfoExtern == null) return upd.URL;
+				return upd.UpdateInfoExtern.PluginUpdateURL;
+			}
 			if (string.IsNullOrEmpty(language))
 				return baseurl + "releases/download/v" + upd.VersionAvailable.ToString() + "/" + upd.Name + ".plgx";
 			return baseurl.Replace("github.com", "raw.githubusercontent.com") + "master/Translations/" + language;
@@ -914,12 +930,7 @@ namespace EarlyUpdateCheck
 		{
 			string url = UrlUtil.EnsureTerminatingSeparator(upd.URL, true);
 
-			GetUpdateUrl guu = null;
-			if (url.ToLowerInvariant().Contains("sourceforge"))
-				guu = GetUpdateUrlSF;
-			else if (url.ToLowerInvariant().Contains("github"))
-				guu = GetUpdateUrlGH;
-			else
+			if (!upd.OwnPlugin && upd.UpdateMode == UpdateOtherPluginMode.Unknown)
 			{
 				PluginDebug.AddError("Plugin url not supported", 0, upd.URL);
 				return false;
@@ -942,7 +953,7 @@ namespace EarlyUpdateCheck
 			{
 				m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title, upd.Name + ".plgx"), LogStatusType.Info);
 				if (!m_slUpdatePlugins.ContinueWork()) return ok;
-				if (!DownloadFile(guu(url, upd, null), sPluginFolder + upd.Name + ".plgx"))
+				if (!DownloadFile(GetUpdateUrl(url, upd, null), sPluginFolder + upd.Name + ".plgx", upd))
 				{
 					Tools.ShowError(string.Format(PluginTranslate.PluginUpdateFailedSpecific, upd.Title), PluginTranslate.PluginUpdateCaption);
 				}
@@ -952,24 +963,28 @@ namespace EarlyUpdateCheck
 			if (!m_slUpdatePlugins.ContinueWork()) return ok;
 
 			//Download translations
-			foreach (string lang in lTranslations)
+			if (upd.OwnPlugin)
 			{
-				string langUrl = lang.Substring(m_PluginsTranslationsFolder.Length);
-				m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title, langUrl), LogStatusType.Info);
-				if (!m_slUpdatePlugins.ContinueWork()) return ok;
-				if (!DownloadFile(guu(url, upd, langUrl), sTranslationFolder + langUrl))
-					Tools.ShowError(string.Format(PluginTranslate.PluginTranslationUpdateFailed, upd.Title, langUrl), PluginTranslate.PluginUpdateCaption);
+				foreach (string lang in lTranslations)
+				{
+					string langUrl = lang.Substring(m_PluginsTranslationsFolder.Length);
+					m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title, langUrl), LogStatusType.Info);
+					if (!m_slUpdatePlugins.ContinueWork()) return ok;
+					if (!DownloadFile(GetUpdateUrl(url, upd, langUrl), sTranslationFolder + langUrl))
+						Tools.ShowError(string.Format(PluginTranslate.PluginTranslationUpdateFailed, upd.Title, langUrl), PluginTranslate.PluginUpdateCaption);
+				}
+
+				//If required, download translation for currently used language
+				string CurrentTranslation = m_PluginsTranslationsFolder + upd.Name + "." + m_LanguageIso + ".language.xml";
+				if (PluginConfig.DownloadActiveLanguage && !lTranslations.Contains(CurrentTranslation))
+				{
+					string langUrl = CurrentTranslation.Substring(m_PluginsTranslationsFolder.Length);
+					m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title, langUrl), LogStatusType.Info);
+					if (!m_slUpdatePlugins.ContinueWork()) return ok;
+					DownloadFile(GetUpdateUrl(url, upd, langUrl), sTranslationFolder + langUrl);
+				}
 			}
 
-			//If required, download translation for currently used language
-			string CurrentTranslation = m_PluginsTranslationsFolder + upd.Name + "." + m_LanguageIso + ".language.xml";
-			if (PluginConfig.DownloadActiveLanguage && !lTranslations.Contains(CurrentTranslation))
-			{
-				string langUrl = CurrentTranslation.Substring(m_PluginsTranslationsFolder.Length);
-				m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title, langUrl), LogStatusType.Info);
-				if (!m_slUpdatePlugins.ContinueWork()) return ok;
-				DownloadFile(guu(url, upd, langUrl), sTranslationFolder + langUrl);
-			}
 			return ok;
 		}
 
@@ -981,8 +996,14 @@ namespace EarlyUpdateCheck
 		/// <returns></returns>
 		private bool DownloadFile(string source, string target)
 		{
+			return DownloadFile(source, target, null);
+		}
+
+		private bool DownloadFile(string source, string target, UpdateInfo upd)
+		{
 			const int MAXATTEMPTS = 3;
 			int iAttempts = 0;
+			if (upd == null && !source.ToLowerInvariant().EndsWith(".plgx")) return true;
 			while (iAttempts++ < MAXATTEMPTS)
 			{
 				try
@@ -997,6 +1018,8 @@ namespace EarlyUpdateCheck
 					ms.Close();
 					string sTargetDir = UrlUtil.GetShortestAbsolutePath(UrlUtil.GetFileDirectory(target, false, true));
 					if (!System.IO.Directory.Exists(sTargetDir)) System.IO.Directory.CreateDirectory(sTargetDir);
+					if (upd != null && !upd.OwnPlugin) pb = ProcessPluginDownload(source, pb, upd);
+					if (pb == null || pb.Length == 0) throw new ArgumentException("No special handling defined for " + upd.Title);
 					System.IO.File.WriteAllBytes(target, pb);
 					PluginDebug.AddInfo("Download success", 0, "Source: " + source, "Target: " + target, "Download attempt: " + iAttempts.ToString());
 					return true;
@@ -1013,6 +1036,35 @@ namespace EarlyUpdateCheck
 				}
 			}
 			return false;
+		}
+
+		private byte[] ProcessPluginDownload(string source, byte[] pb, UpdateInfo upd)
+		{
+			UpdateInfoExtern uie = upd.UpdateInfoExtern;
+			if (uie == null) return null;
+			if (uie.UpdateMode == UpdateOtherPluginMode.ZipExtractPlgx)
+			{
+				using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+				{
+					ms.Write(pb, 0, pb.Length);
+					ms.Position = 0;
+					pb = null;
+					using (Ionic.Zip.ZipFile z = Ionic.Zip.ZipFile.Read(ms))
+					{
+						var f = z.SelectEntries("*.plgx");
+						foreach (var p in f)
+						{
+							using (System.IO.MemoryStream msTarget = new System.IO.MemoryStream())
+							{
+								p.Extract(msTarget);
+								return msTarget.ToArray();
+							}
+						}
+					}
+				}
+				return null;
+			}
+			else return null;
 		}
 
 		private void Restart()

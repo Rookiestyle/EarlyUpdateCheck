@@ -4,10 +4,13 @@
     <!-- KeePass PLGX Compiler only can build csharp projects up to csharp version 5 -->
     <LangVersion>5</LangVersion>
   </PropertyGroup>
-  <PropertyGroup>
-    <PlgxKeePassVersion>2.38</PlgxKeePassVersion>
-    <PlgXOS>
-    </PlgXOS>
+<PropertyGroup>
+    <PlgxConfiguration>
+      <Prerequisites>
+        <KeePassVersion>2.38</KeePassVersion>
+        <DotNetVersion>$(TargetFrameworkVersion.Replace('v', ''))</DotNetVersion>
+      </Prerequisites>
+    </PlgxConfiguration>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>{78C152F3-EAF8-4FFC-9BE3-F5DC0CD66E5D}</ProjectGuid>
@@ -66,6 +69,7 @@
     <Compile Include="TranslationUpdateForm.Designer.cs">
       <DependentUpon>TranslationUpdateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UpdateInfoParser.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="EarlyUpdateCheck.cs" />
     <Compile Include="Options.cs">
@@ -89,14 +93,39 @@
     <ProjectReference Include="..\..\_KeePass_Source\KeePass\KeePass.csproj">
       <Project>{10938016-dee2-4a25-9a5a-8fd3444379ca}</Project>
       <Name>KeePass</Name>
+	  <!--
+  We do use the nuget package protobuf-net
+  Unfortunately, the dll files created during compile time won't be added to the plgx file
+  
+  We need to use plgxtool to add them
+  plgxtools does this using the PlgxReference tag which needs to be inside a ProjectReference
+  Using the reference to KeePass is a workaround and saves us from doing ExcludeFromPlgx for KeePass
+  -->
+      <PlgxReference>bin\Release\Ionic.Zip.Reduced.dll</PlgxReference>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DotNetZip.Reduced">
+      <Version>1.9.1.8</Version>
+	  <ExcludeFromPlgx />
+    </PackageReference>
+    <PackageReference Include="PlgxTool">
+      <Version>1.0.0</Version>
+	  <ExcludeFromPlgx />
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" Condition=" '$(Configuration)' == 'Debug' ">
     <Exec Command="..\translationcopy.cmd $(Configuration)" />
+    <Exec Command="..\externalplugininfocopy.cmd $(Configuration)" />
   </Target>
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'ReleasePlgx' ">
+  <!-- Create plgx file -->
+    <CallTarget Targets="BuildPlgx" />
+    <!-- copy translations -->
     <Exec Command="..\translationcopy.cmd $(Configuration)" />
-    <Exec Command="..\plgxcreate.cmd $(TargetFrameworkVersion.Replace('v', '')) $(PlgxKeePassVersion) $(PlgXOS)" />
+    <!-- Copy plgx file -->
+    <Exec Command="..\plgxcreate.cmd" />
+    <Exec Command="..\externalplugininfocopy.cmd $(Configuration)" />
   </Target>
 </Project>
