@@ -735,13 +735,17 @@ namespace EarlyUpdateCheck
 			return m_lPluginUpdateInfo;
 		}
 
+		private static Dictionary<string, Version> m_Plugins = new Dictionary<string, Version>();
 		private bool GetPluginUpdateInfo(Plugin result, out UpdateInfo upd)
 		{
+			if (m_Plugins.Count == 0) m_Plugins = Tools.GetLoadedPluginsName();
 			upd = null;
 			AssemblyCompanyAttribute[] comp = (AssemblyCompanyAttribute[])result.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
 			AssemblyTitleAttribute[] title = (AssemblyTitleAttribute[])result.GetType().Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
 			if ((comp.Length != 1) || (title.Length != 1)) return false;
 
+			Version v;
+			if (!Tools.GetLoadedPluginsName().TryGetValue(result.ToString(), out v)) v = result.GetType().Assembly.GetName().Version;
 			//One of my plugins
 			if (string.Compare("rookiestyle", comp[0].Company, StringComparison.InvariantCultureIgnoreCase) == 0)
 			{
@@ -751,15 +755,11 @@ namespace EarlyUpdateCheck
 				if (fURL == null) return false;
 				string URL = (string)fURL.GetValue(result);
 				if (string.IsNullOrEmpty(URL)) return false;
-				upd = new UpdateInfo(result.GetType().Namespace, title[0].Title, URL, result.UpdateUrl, result.GetType().Assembly.GetName().Version);
+				upd = new UpdateInfo(result.GetType().Namespace, title[0].Title, URL, result.UpdateUrl, v);
 			}
 			else
 			{
-				//if (!UpdateInfoParser.Get(title[0].Title, out uie)) return false;
-				upd = new UpdateInfo(result.GetType().Namespace, title[0].Title,
-						result.UpdateUrl,
-						result.GetType().Assembly.GetName().Version,
-						false); //, uie.UpdateMode);
+				upd = new UpdateInfo(result.GetType().Namespace, title[0].Title, result.UpdateUrl, v, false);
 			}
 			return true;
 		}
@@ -1003,7 +1003,7 @@ namespace EarlyUpdateCheck
 		{
 			const int MAXATTEMPTS = 3;
 			int iAttempts = 0;
-			if (upd == null && !source.ToLowerInvariant().EndsWith(".plgx")) return true;
+			//if (upd == null && !source.ToLowerInvariant().EndsWith(".plgx")) return true;
 			while (iAttempts++ < MAXATTEMPTS)
 			{
 				try
@@ -1018,7 +1018,11 @@ namespace EarlyUpdateCheck
 					ms.Close();
 					string sTargetDir = UrlUtil.GetShortestAbsolutePath(UrlUtil.GetFileDirectory(target, false, true));
 					if (!System.IO.Directory.Exists(sTargetDir)) System.IO.Directory.CreateDirectory(sTargetDir);
-					if (upd != null && !upd.OwnPlugin) pb = ProcessPluginDownload(source, pb, upd);
+					if (upd != null && !upd.OwnPlugin)
+					{
+						pb = ProcessPluginDownload(source, pb, upd);
+						if (upd.IsDll) target = target.Replace(".plgx", ".dll");
+					}
 					if (pb == null || pb.Length == 0) throw new ArgumentException("No special handling defined for " + upd.Title);
 					System.IO.File.WriteAllBytes(target, pb);
 					PluginDebug.AddInfo("Download success", 0, "Source: " + source, "Target: " + target, "Download attempt: " + iAttempts.ToString());
@@ -1042,6 +1046,10 @@ namespace EarlyUpdateCheck
 		{
 			UpdateInfoExtern uie = upd.UpdateInfoExtern;
 			if (uie == null) return null;
+			if (uie.UpdateMode == UpdateOtherPluginMode.PlgxDirect)
+			{
+				return pb;
+			}
 			if (uie.UpdateMode == UpdateOtherPluginMode.ZipExtractPlgx)
 			{
 				using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
