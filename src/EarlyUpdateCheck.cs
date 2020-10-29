@@ -526,6 +526,7 @@ namespace EarlyUpdateCheck
 				foreach (UpdateInfo upd in Plugins)
 				{
 					if (item.SubItems[0].Text != upd.Title) continue;
+					if (!upd.OwnPlugin && upd.UpdateMode == UpdateOtherPluginMode.Unknown) continue;
 					if (!bColumnAdded)
 					{
 						lvPlugins.Columns.Add(PluginTranslate.PluginUpdate);
@@ -761,7 +762,7 @@ namespace EarlyUpdateCheck
 			{
 				upd = new UpdateInfo(result.GetType().Namespace, title[0].Title, result.UpdateUrl, v, false);
 			}
-			return true;
+			return upd != null && upd.UpdatePossible;
 		}
 
 		/// <summary>

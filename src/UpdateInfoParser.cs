@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
+using PluginTools;
 
 namespace EarlyUpdateCheck
 {
@@ -34,6 +35,13 @@ namespace EarlyUpdateCheck
 				if (OwnPlugin) return false;
 				//return true based on UpdateMode - Currently dll is not implemented
 				return false;
+			}
+		}
+		public bool UpdatePossible
+		{
+			get
+			{
+				return OwnPlugin || UpdateMode != UpdateOtherPluginMode.Unknown;
 			}
 		}
 
@@ -108,15 +116,36 @@ namespace EarlyUpdateCheck
 		{
 			m_Info.Clear();
 			string sFilename = EarlyUpdateCheckExt.m_PluginsFolder + "ExternalPluginUpdates.xml";
-			if (!File.Exists(sFilename)) return;
-
+			List<string> lMsg = new List<string>();
+			lMsg.Add("Expected filename for update information: " + sFilename);
 			try
 			{
-				string s = File.ReadAllText(sFilename);
-				XmlSerializer xs = new XmlSerializer(m_Info.GetType());
-				m_Info = (UpdateInfoExternList)xs.Deserialize(new StringReader(s));
+				if (!File.Exists(sFilename))
+				{
+					lMsg.Add("File doe snot exist");
+					return;
+				}
+
+				try
+				{
+					string s = File.ReadAllText(sFilename);
+					XmlSerializer xs = new XmlSerializer(m_Info.GetType());
+					m_Info = (UpdateInfoExternList)xs.Deserialize(new StringReader(s));
+				}
+				catch (Exception ex)
+				{
+					lMsg.Add("Error parsing file: " + ex.Message);
+					return;
+				}
+				lMsg.Add("Update information file parsed successfully, parsed data can be found in the following log entries");
+				lMsg.Add("Parsed entries: " + m_Info.Count.ToString());
+				foreach (var uie in m_Info) lMsg.Add("3rd party plugin: " + uie.ToString());
 			}
-			catch { }
+			finally
+			{
+				PluginDebug.DebugMode = true;
+				PluginDebug.AddInfo("Loading update information for 3rd party plugins", 0, lMsg.ToArray());
+			}
 		}
 
 		internal static bool Get(string PluginName, out UpdateInfoExtern upd)
@@ -212,6 +241,11 @@ namespace EarlyUpdateCheck
 		internal string PluginURL;
 		internal string PluginUpdateURL;
 		internal UpdateOtherPluginMode UpdateMode;
+
+		public override string ToString()
+		{
+			return PluginName + " - " + UpdateMode.ToString();
+		}
 	}
 }
  
