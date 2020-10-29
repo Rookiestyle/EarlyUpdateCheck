@@ -37,13 +37,7 @@ namespace EarlyUpdateCheck
 				return false;
 			}
 		}
-		public bool UpdatePossible
-		{
-			get
-			{
-				return OwnPlugin || UpdateMode != UpdateOtherPluginMode.Unknown;
-			}
-		}
+		public bool UpdatePossible{	get	{	return OwnPlugin || UpdateMode != UpdateOtherPluginMode.Unknown; } }
 
 		public string NameLowerInvariant { get { return Name.ToLowerInvariant(); } }
 		public Version VersionInstalled;
@@ -143,7 +137,6 @@ namespace EarlyUpdateCheck
 			}
 			finally
 			{
-				PluginDebug.DebugMode = true;
 				PluginDebug.AddInfo("Loading update information for 3rd party plugins", 0, lMsg.ToArray());
 			}
 		}

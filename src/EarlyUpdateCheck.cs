@@ -591,7 +591,6 @@ namespace EarlyUpdateCheck
 				}
 			}
 			catch { }
-
 		}
 
 		private void OnReleasePageClick(object sender, EventArgs e)
@@ -702,7 +701,7 @@ namespace EarlyUpdateCheck
 			e.DrawDefault = false;
 			e.DrawBackground();
 			int i = upd.Selected ? 1 : lvPlugins.SmallImageList.Images.IndexOfKey("EUCCheckMarkImage");
-			UIUtil.CreateGrayImage((sender as ListView).SmallImageList.Images[1]);
+
 			var imageRect = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Height, e.Bounds.Height);
 			e.Graphics.DrawImage((sender as ListView).SmallImageList.Images[i], imageRect);
 		}
