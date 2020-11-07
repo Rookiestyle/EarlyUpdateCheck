@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+  <!--
+  Prerequisites:
+  - Currently used plgx files MUST be stored directly in KeePas' plugin folder
+  - It's not possible to determine the location of the file
+  - If it's located elsewhere, it won't be overwritten and two versions of the same plugin are available
+  -->
+
 <UpdateInfoExternList>
   <UpdateInfoExtern>
     <PluginName>WebAutoType</PluginName>
@@ -17,5 +24,16 @@
     <PluginURL>https://sourceforge.net/projects/kpsfupdatechecker/</PluginURL>
     <PluginUpdateURL>https://sourceforge.net/projects/kpsfupdatechecker/files/latest/download</PluginUpdateURL>
     <UpdateMode>ZipExtractPlgx</UpdateMode>
+  </UpdateInfoExtern>
+  <UpdateInfoExtern>
+  <!--
+  Specific prerequisites:
+  - Currently used plgx file MUST be named KeePassSyncForDrive.plgx (deleting old files with different names is not possible)
+  -->
+	<PluginName>KeePass Sync For Google Drive</PluginName>
+	<PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
+	<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/keepasssyncfordrive-{major}.{minor}.{build}-beta.plgx</PluginUpdateURL>
+	<UpdateMode>PlgxDirect</UpdateMode>
+	<AllowVersionStripping>true</AllowVersionStripping>
   </UpdateInfoExtern>
 </UpdateInfoExternList>

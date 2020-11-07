@@ -17,7 +17,7 @@ namespace EarlyUpdateCheck
 			InitializeComponent();
 		}
 
-		public void InitEx(List<string> lPlugins)
+		internal void InitEx(List<OwnPluginUpdate> lPlugins)
 		{
 			Text = PluginTranslate.TranslationUpdateForm;
 			lSelectPlugins.Text = PluginTranslate.SelectPluginsForTranslationUpdate;
@@ -26,9 +26,14 @@ namespace EarlyUpdateCheck
 			bCancel.Text = KPRes.Cancel;
 
 			clbPlugins.Items.Clear();
-			lPlugins.Sort();
-			foreach (string plugin in lPlugins)
-				clbPlugins.Items.Add(plugin, true);
+			lPlugins.Sort(SortOwnPluginUpdate);
+			foreach (OwnPluginUpdate plugin in lPlugins)
+				clbPlugins.Items.Add(plugin.Name, PluginUpdateHandler.VersionsEqual(plugin.VersionInstalled, plugin.VersionAvailable) ? CheckState.Checked : CheckState.Indeterminate);
+		}
+
+		private int SortOwnPluginUpdate(OwnPluginUpdate a, OwnPluginUpdate b)
+		{
+			return -1 * string.Compare(a.Name, b.Name);
 		}
 
 		public List<string> SelectedPlugins
@@ -36,15 +41,28 @@ namespace EarlyUpdateCheck
 			get
 			{
 				List<string> lPlugins = new List<string>();
-				foreach (string p in clbPlugins.CheckedItems)
-					lPlugins.Add(p);
+				foreach (int i in clbPlugins.CheckedIndices)
+				{
+					if (clbPlugins.GetItemCheckState(i) == CheckState.Checked) lPlugins.Add(clbPlugins.Items[i] as string);
+				}
 				return lPlugins;
 			}
 		}
 
 		private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
-			bOK.Enabled = (e.NewValue == CheckState.Checked) || (clbPlugins.CheckedItems.Count > 1);
+			if (e.CurrentValue == CheckState.Indeterminate)
+			{
+				e.NewValue = CheckState.Indeterminate;
+			}
+			bool bChecked = e.NewValue == CheckState.Checked;
+			foreach (int i in clbPlugins.CheckedIndices)
+			{
+				if (i == e.Index) continue;
+				else bChecked |= clbPlugins.GetItemCheckState(i) == CheckState.Checked;
+				if (bChecked) break;
+			}
+			bOK.Enabled = bChecked; // (e.NewValue == CheckState.Checked) || (clbPlugins.CheckedItems.Count > 1);
 		}
 
 		private void TranslationUpdateForm_Load(object sender, EventArgs e)

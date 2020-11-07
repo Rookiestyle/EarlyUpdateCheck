@@ -44,13 +44,6 @@ namespace EarlyUpdateCheck
 
 		private KeyPromptForm m_kpf = null;
 
-		private List<UpdateInfo> m_lPluginUpdateInfo = new List<UpdateInfo>();
-		public List<UpdateInfo> Plugins { get { return m_lPluginUpdateInfo.Count > 0 ? m_lPluginUpdateInfo : GetInstalledPlugins(); } }
-		public static string m_PluginsFolder = string.Empty;
-		private string m_PluginsTranslationsFolder = string.Empty;
-
-		public static bool ShouldShieldify = false;
-
 		public override bool Initialize(IPluginHost host)
 		{
 			m_host = host;
@@ -78,66 +71,19 @@ namespace EarlyUpdateCheck
 			Tools.OptionsFormShown += OptionsFormShown;
 			Tools.OptionsFormClosed += OptionsFormClosed;
 
-			m_PluginsFolder = UrlUtil.GetFileDirectory(WinUtil.GetExecutable(), true, true);
-			m_PluginsFolder = UrlUtil.EnsureTerminatingSeparator(m_PluginsFolder + KeePass.App.AppDefs.PluginsDir, false);
-			m_PluginsTranslationsFolder = UrlUtil.EnsureTerminatingSeparator(m_PluginsFolder + "Translations", false);
-			PluginDebug.AddInfo("Plugins folder detected", 0, m_PluginsFolder);
-			PluginDebug.AddInfo("Translations folder detected", 0, m_PluginsTranslationsFolder);
 			m_host.MainWindow.FormLoadPost += MainWindow_FormLoadPost;
 
-			CheckShieldify();
+			PluginUpdateHandler.Init();
 
 			return true;
 		}
 
-		private void CheckShieldify()
-		{
-			List<string> lShieldify = new List<string>();
-			try
-			{
-				ShouldShieldify = false;
-				if (KeePassLib.Native.NativeLib.IsUnix())
-				{
-					lShieldify.Add("Detected Unix");
-					return;
-				}
-				if (!WinUtil.IsAtLeastWindows7)
-				{
-					lShieldify.Add("Detected Windows < 7");
-					return;
-				}
-				string sPF86 = EnsureNonNull(Environment.GetEnvironmentVariable("ProgramFiles(x86)"));
-				string sPF86_2 = string.Empty;
-				try { sPF86_2 = EnsureNonNull(Environment.GetFolderPath((Environment.SpecialFolder)42)); } //Environment.SpecialFolder.ProgramFilesX86
-				catch { sPF86_2 = sPF86; }
-				string sPF = EnsureNonNull(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
-				string sKP = EnsureNonNull(UrlUtil.GetFileDirectory(WinUtil.GetExecutable(), true, false));
-				ShouldShieldify = sKP.StartsWith(sPF86) || sKP.StartsWith(sPF) || sKP.StartsWith(sPF86_2);
-				lShieldify.Add("KeePass folder inside ProgramFiles(x86): " + sKP.StartsWith(sPF86));
-				lShieldify.Add("KeePass folder inside Environment.SpecialFolder.ProgramFilesX86: " + sKP.StartsWith(sPF86_2));
-				lShieldify.Add("KeePass folder inside Environment.SpecialFolder.ProgramFiles: " + sKP.StartsWith(sPF));
-			}
-			catch (Exception ex) { lShieldify.Add("Exception: " + ex.Message); }
-			finally
-			{
-				lShieldify.Insert(0, "Shieldify: " + ShouldShieldify.ToString());
-				PluginDebug.AddInfo("Check Shieldify", 0, lShieldify.ToArray());
-			}
-		}
-
-		private string EnsureNonNull(string v)
-		{
-			if (v == null) return string.Empty;
-			return v;
-		}
-
-		/// <summary>
-		/// Reset indicator for invoking the restart after installing plugin updates
-		/// </summary>
 		private void MainWindow_FormLoadPost(object sender, EventArgs e)
 		{
 			m_bRestartInvoke = false;
 			m_host.MainWindow.FormLoadPost -= MainWindow_FormLoadPost;
+			Thread t = new Thread(() => { PluginUpdateHandler.LoadPlugins(false); });
+			t.Start();
 			PluginDebug.AddInfo("All plugins loaded", 0, DebugPrint);
 		}
 
@@ -319,39 +265,22 @@ namespace EarlyUpdateCheck
 		#region Check for new translations
 		private void CheckPluginLanguages(object o)
 		{
+			PluginUpdateHandler.LoadPlugins(false);
 			PluginDebug.AddInfo("Check for updated translations - Start");
-			Dictionary<string, long> dTranslationsInstalled = GetInstalledTranslations();
-
-			Dictionary<string, long> dTranslationsAvailable = new Dictionary<string, long>();
-			try
-			{
-				dTranslationsAvailable = GetAvailableTranslations();
-			}
-			catch (Exception ex)
-			{
-				PluginDebug.AddError("Could not load available translations", 0, ex.Message);
-				return;
-			}
-
-			bool bNew = false;
 			string CurrentLanguage = "." + m_LanguageIso.ToLowerInvariant() + ".language.xml";
 			string translations = string.Empty;
-			List<string> lPlugins = new List<string>();
-			foreach (KeyValuePair<string, long> kvp in dTranslationsAvailable)
+			List<OwnPluginUpdate> lPlugins = new List<OwnPluginUpdate>();
+			foreach (PluginUpdate pu in PluginUpdateHandler.Plugins)
 			{
-				//Check plugin version
-				UpdateInfo ui = Plugins.Find(x => x.NameLowerInvariant == kvp.Key.Substring(0, kvp.Key.IndexOf(".")));
-				if (ui == null) continue;
-
-				if (!VersionsEqual(ui.VersionAvailable, ui.VersionInstalled)) continue;
-
-				//Current translation is installed AND a newer version is available
-				bNew = dTranslationsInstalled.ContainsKey(kvp.Key) && (dTranslationsInstalled[kvp.Key] < kvp.Value);
-
-				//Current translation is not installed but available and DownloadActiveLanguage is true
-				bNew |= !dTranslationsInstalled.ContainsKey(kvp.Key) && PluginConfig.DownloadActiveLanguage && kvp.Key.EndsWith(CurrentLanguage);
-
-				if (bNew && !lPlugins.Contains(ui.Name)) lPlugins.Add(ui.Name);
+				if (!PluginUpdateHandler.VersionsEqual(pu.VersionInstalled, pu.VersionAvailable)) continue;
+				foreach (var t in pu.Translations)
+				{
+					if (t.Value.NewTranslationAvailable || (PluginConfig.DownloadActiveLanguage && t.Value.TranslationForCurrentLanguageAvailable))
+					{
+						lPlugins.Add(pu as OwnPluginUpdate);
+						break;
+					}
+				}
 			}
 			if (lPlugins.Count == 0) return;
 			using (TranslationUpdateForm t = new TranslationUpdateForm())
@@ -359,135 +288,9 @@ namespace EarlyUpdateCheck
 				t.InitEx(lPlugins);
 				if (t.ShowDialog() == DialogResult.OK)
 				{
-					lPlugins = t.SelectedPlugins;
-					UpdatePluginTranslations(PluginConfig.DownloadActiveLanguage, lPlugins);
+					UpdatePluginTranslations(PluginConfig.DownloadActiveLanguage, t.SelectedPlugins);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Compare two version
-		/// Ignore MinorRevision if it's 0
-		/// 
-		/// 1.2.3.0 and 1.2.3 are considered equal
-		/// </summary>
-		/// <param name="vA"></param>
-		/// <param name="vB"></param>
-		/// <returns></returns>
-		private bool VersionsEqual(Version vA, Version vB)
-		{
-			if (vA == null) return false;
-			if (vB == null) return false;
-			if (vA.Major != vB.Major) return false;
-			if (vA.Minor != vB.Minor) return false;
-			if ((vA.Build <= 0) && (vB.Build <= 0)) return true;
-			if (vA.Build != vB.Build) return false;
-			if ((vA.Revision <= 0) && (vB.Revision <= 0)) return true;
-			if (vA.Revision != vB.Revision) return false;
-			return true;
-		}
-
-		private Dictionary<string, long> GetInstalledTranslations()
-		{
-			Dictionary<string, long> dTranslationsInstalled = new Dictionary<string, long>();
-			if (System.IO.Directory.Exists(m_PluginsTranslationsFolder))
-			{
-				try
-				{
-					Regex r = new Regex(@"\<TranslationVersion\>(\d+)\<\/TranslationVersion\>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-					List<string> lTranslationsInstalled = UrlUtil.GetFilePaths(m_PluginsTranslationsFolder, "*.language.xml", System.IO.SearchOption.TopDirectoryOnly);
-					foreach (string lang in lTranslationsInstalled)
-					{
-						dTranslationsInstalled[UrlUtil.GetFileName(lang).ToLowerInvariant()] = 0;
-						string translation = System.IO.File.Exists(lang) ? System.IO.File.ReadAllText(lang) : string.Empty;
-						Match m = r.Match(translation);
-						if (m.Groups.Count != 2) continue;
-						long lVerInstalled = 0;
-						if (!long.TryParse(m.Groups[1].Value, out lVerInstalled)) continue;
-						dTranslationsInstalled[UrlUtil.GetFileName(lang).ToLowerInvariant()] = lVerInstalled;
-					}
-				}
-				catch (Exception) { }
-			}
-			if (PluginDebug.DebugMode)
-			{
-				List<string> lT = new List<string>();
-				foreach (KeyValuePair<string, long> kvp in dTranslationsInstalled)
-					lT.Add(kvp.Key + " - " + kvp.Value.ToString());
-				PluginDebug.AddInfo("Installed languages", 0, lT.ToArray());
-			}
-			return dTranslationsInstalled;
-		}
-
-		private Dictionary<string, long> GetAvailableTranslations()
-		{
-			Dictionary<string, List<UpdateComponentInfo>> dUpdateInfo = new Dictionary<string, List<UpdateComponentInfo>>();
-			Dictionary<string, long> dResult = new Dictionary<string, long>();
-			Type t = typeof(KeePass.Program).Assembly.GetType("KeePass.Util.UpdateCheckEx");
-			if (t == null)
-			{
-				PluginDebug.AddError("Could not locate class 'UpdateCheckEx'", 0);
-				return dResult;
-			}
-			MethodInfo mi = t.GetMethod("DownloadInfoFiles", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Static);
-			if (mi == null)
-			{
-				PluginDebug.AddError("Could not locate method 'DownloadInfoFiles'", 0);
-				return dResult;
-			}
-
-			List<string> lUpdateUrls = new List<string>();
-			foreach (UpdateInfo uiPlugin in Plugins)
-			{
-				string sUrl = uiPlugin.VersionInfoURL.ToLowerInvariant();
-				if (!lUpdateUrls.Contains(sUrl)) lUpdateUrls.Add(sUrl);
-			}
-			if (lUpdateUrls.Count == 0)
-			{
-				PluginDebug.AddError("Could not read plugin update url", 0);
-				return dResult;
-			}
-
-			dUpdateInfo = mi.Invoke(null, new object[] { lUpdateUrls, null }) as Dictionary<string, List<UpdateComponentInfo>>;
-
-			List<string> lTranslationsNew = new List<string>();
-			string[] cSplit = new string[] { "!", "!!!" };
-			foreach (KeyValuePair<string, List<UpdateComponentInfo>> kvp in dUpdateInfo)
-			{
-				if (kvp.Value == null) continue;
-				foreach (UpdateComponentInfo uci in kvp.Value)
-				{
-					//Plugins will be migrated from Sourceforge to Github one by one
-					//Format for translation version:
-					//Sourceforge: Lang!<Plugin>!!!<language identifier>
-					//Github: <Plugin>!<language identifier>
-					string[] sParts = null;
-					if (uci.Name.StartsWith("Lang!"))
-						sParts = uci.Name.Substring(5).Split(cSplit, StringSplitOptions.RemoveEmptyEntries);
-					else
-						sParts = uci.Name.Split(cSplit, StringSplitOptions.RemoveEmptyEntries);
-					if (sParts.Length == 1)
-					{
-						UpdateInfo p = Plugins.Find(x => x.Title == sParts[0]);
-						if (p == null) continue;
-						p.VersionAvailable = new Version(StrUtil.VersionToString(uci.VerAvailable, 2));
-					}
-					if (sParts.Length != 2) continue;
-					UpdateInfo ui = Plugins.Find(x => x.Title == sParts[0]);
-					if (ui == null) continue;
-					long lVer = 0;
-					if (!long.TryParse(StrUtil.VersionToString(uci.VerAvailable), out lVer)) continue;
-					dResult[(ui.NameLowerInvariant + "." + sParts[1] + ".language.xml").ToLowerInvariant()] = lVer;
-				}
-			}
-			if (PluginDebug.DebugMode)
-			{
-				List<string> lT = new List<string>();
-				foreach (KeyValuePair<string, long> kvp in dResult)
-					lT.Add(kvp.Key + " - " + kvp.Value.ToString());
-				PluginDebug.AddInfo("Available languages", 0, lT.ToArray());
-			}
-			return dResult;
 		}
 		#endregion
 
@@ -507,7 +310,7 @@ namespace EarlyUpdateCheck
 				return;
 			}
 			else PluginDebug.AddSuccess("m_lvInfo found", 0);
-			if (Plugins.Count == 0) return;
+			if (PluginUpdateHandler.Plugins.Count == 0) return;
 			SetPluginSelectionStatus(false);
 			bool bColumnAdded = false;
 			m_lEventHandlerItemActivate = EventHelper.GetItemActivateHandlers(lvPlugins);
@@ -523,10 +326,10 @@ namespace EarlyUpdateCheck
 			{
 				PluginDebug.AddInfo("Check plugin update status", 0, item.SubItems[0].Text, item.SubItems[1].Text);
 				if (!item.SubItems[1].Text.Contains(KeePass.Resources.KPRes.NewVersionAvailable)) continue;
-				foreach (UpdateInfo upd in Plugins)
+				foreach (PluginUpdate upd in PluginUpdateHandler.Plugins)
 				{
 					if (item.SubItems[0].Text != upd.Title) continue;
-					if (!upd.OwnPlugin && upd.UpdateMode == UpdateOtherPluginMode.Unknown) continue;
+					if (upd.UpdateMode == UpdateOtherPluginMode.Unknown) continue;
 					if (!bColumnAdded)
 					{
 						lvPlugins.Columns.Add(PluginTranslate.PluginUpdate);
@@ -577,7 +380,7 @@ namespace EarlyUpdateCheck
 			{
 				var lv = sender as CustomListViewEx;
 				var lvi = lv.SelectedItems[0];
-				UpdateInfo upd = Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
+				PluginUpdate upd = PluginUpdateHandler.Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
 				if (upd == null)
 				{
 					foreach (Delegate d in m_lEventHandlerItemActivate)
@@ -585,7 +388,7 @@ namespace EarlyUpdateCheck
 				}
 				else
 				{
-					string url = upd.GetPluginUrl();
+					string url = upd.URL;
 					try { WinUtil.OpenUrl(url, null, true); }
 					catch (Exception exUrl) { Tools.ShowError(url + "\n\n" + exUrl.Message); }
 				}
@@ -599,9 +402,9 @@ namespace EarlyUpdateCheck
 			{
 				var lv = ((sender as ToolStripItem).Owner as ContextMenuStrip).SourceControl as CustomListViewEx;
 				var lvi = lv.SelectedItems[0];
-				UpdateInfo upd = Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
+				PluginUpdate upd = PluginUpdateHandler.Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
 				if (upd == null) return;
-				string url = upd.GetPluginUrl();
+				string url = upd.URL;
 				try { System.Diagnostics.Process.Start(url); }
 				catch (Exception exUrl)	{ Tools.ShowError(url + "\n\n" + exUrl.Message);
 				}
@@ -618,7 +421,7 @@ namespace EarlyUpdateCheck
 			{
 				var lv = (sender as ContextMenuStrip).SourceControl as ListView;
 				var lvi = lv.SelectedItems[0];
-				UpdateInfo upd = Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
+				PluginUpdate upd = PluginUpdateHandler.Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
 				e.Cancel = upd == null;
 			}
 			catch { }
@@ -627,10 +430,10 @@ namespace EarlyUpdateCheck
 		private void OnUpdateCheckFormPluginMouseClick(object sender, MouseEventArgs e)
 		{
 			ListViewHitTestInfo info = (sender as ListView).HitTest(e.X, e.Y);
-			UpdateInfo upd = info.Item.SubItems[info.Item.SubItems.Count - 1].Tag as UpdateInfo;
+			PluginUpdate upd = info.Item.SubItems[info.Item.SubItems.Count - 1].Tag as PluginUpdate;
 			if (upd == null) return;
 			upd.Selected = !upd.Selected;
-			if (!ShowUpdateButton((sender as Control).Parent as Form, Plugins.Find(x => x.Selected == true) != null))
+			if (!ShowUpdateButton((sender as Control).Parent as Form, PluginUpdateHandler.Plugins.Find(x => x.Selected == true) != null))
 			{
 				upd.Selected = !upd.Selected;
 				bUpdatePlugins_Click(sender, e);
@@ -665,7 +468,7 @@ namespace EarlyUpdateCheck
 					bUpdate.Name = "EUCUpdateButton";
 					bUpdate.Click += bUpdatePlugins_Click;
 					bClose.Parent.Controls.Add(bUpdate);
-					if (ShouldShieldify)
+					if (PluginUpdateHandler.Shieldify)
 					{
 						bUpdate.Width += DpiUtil.ScaleIntX(16);
 						UIUtil.SetShield(bUpdate, true);
@@ -676,7 +479,7 @@ namespace EarlyUpdateCheck
 			bUpdate = Tools.GetControl("EUCUpdateButton", form) as Button;
 			if (bUpdate == null)
 			{
-				foreach (UpdateInfo upd in Plugins)
+				foreach (PluginUpdate upd in PluginUpdateHandler.Plugins)
 					upd.Selected = false;
 				CustomListViewEx lvPlugins = (CustomListViewEx)Tools.GetControl("m_lvInfo", form);
 				lvPlugins.OwnerDraw = false;
@@ -696,7 +499,7 @@ namespace EarlyUpdateCheck
 			ListView lvPlugins = sender as ListView;
 			e.DrawDefault = true;
 			if (e.ColumnIndex != lvPlugins.Items[0].SubItems.Count) return;
-			UpdateInfo upd = m_lPluginUpdateInfo.Find(x => x.Title == e.Item.SubItems[0].Text);
+			PluginUpdate upd = PluginUpdateHandler.Plugins.Find(x => x.Title == e.Item.SubItems[0].Text);
 			if (upd == null) return;
 			e.DrawDefault = false;
 			e.DrawBackground();
@@ -709,79 +512,23 @@ namespace EarlyUpdateCheck
 
 		#region Update plugins
 		/// <summary>
-		/// Get list of installed plugins
-		/// </summary>
-		/// <returns></returns>
-		public List<UpdateInfo> GetInstalledPlugins()
-		{
-			m_lPluginUpdateInfo = new List<UpdateInfo>();
-			BindingFlags bf = BindingFlags.Instance | BindingFlags.NonPublic;
-			try
-			{
-				var PluginManager = Tools.GetField("m_pluginManager", KeePass.Program.MainForm);
-				var PluginList = Tools.GetField("m_vPlugins", PluginManager);
-				MethodInfo IteratorMethod = PluginList.GetType().GetMethod("System.Collections.Generic.IEnumerable<T>.GetEnumerator", bf);
-				IEnumerator<object> PluginIterator = (IEnumerator<object>)(IteratorMethod.Invoke(PluginList, null));
-				while (PluginIterator.MoveNext())
-				{
-					Plugin result = (Plugin)Tools.GetField("m_pluginInterface", PluginIterator.Current);
-					if (result == null) continue;
-					UpdateInfo upd;
-					if (GetPluginUpdateInfo(result, out upd)) m_lPluginUpdateInfo.Add(upd);
-				}
-			}
-			catch (Exception ex) { PluginDebug.AddError(ex.Message); }
-			PluginDebug.AddInfo("Installed updateable plugins", m_lPluginUpdateInfo.ConvertAll(new Converter<UpdateInfo, string>(UpdateInfo.GetName)).ToArray());
-			return m_lPluginUpdateInfo;
-		}
-
-		private static Dictionary<string, Version> m_Plugins = new Dictionary<string, Version>();
-		private bool GetPluginUpdateInfo(Plugin result, out UpdateInfo upd)
-		{
-			if (m_Plugins.Count == 0) m_Plugins = Tools.GetLoadedPluginsName();
-			upd = null;
-			AssemblyCompanyAttribute[] comp = (AssemblyCompanyAttribute[])result.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-			AssemblyTitleAttribute[] title = (AssemblyTitleAttribute[])result.GetType().Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-			if ((comp.Length != 1) || (title.Length != 1)) return false;
-
-			Version v;
-			if (!Tools.GetLoadedPluginsName().TryGetValue(result.ToString(), out v)) v = result.GetType().Assembly.GetName().Version;
-			//One of my plugins
-			if (string.Compare("rookiestyle", comp[0].Company, StringComparison.InvariantCultureIgnoreCase) == 0)
-			{
-				Type tools = result.GetType().Assembly.GetType("PluginTools.Tools");
-				if (tools == null) return false;
-				FieldInfo fURL = tools.GetField("PluginURL");
-				if (fURL == null) return false;
-				string URL = (string)fURL.GetValue(result);
-				if (string.IsNullOrEmpty(URL)) return false;
-				upd = new UpdateInfo(result.GetType().Namespace, title[0].Title, URL, result.UpdateUrl, v);
-			}
-			else
-			{
-				upd = new UpdateInfo(result.GetType().Namespace, title[0].Title, result.UpdateUrl, v, false);
-			}
-			return upd != null && upd.UpdatePossible;
-		}
-
-		/// <summary>
 		/// Update installed plugin translations
 		/// </summary>
 		/// <param name="bDownloadActiveLanguage">Download translation for currently used language even if not installed yet</param>
 		private delegate void UpdatePluginsDelegate(bool bUpdateTranslationsOnly);
 		public void UpdatePluginTranslations(bool bDownloadActiveLanguage, List<string> lUpdateTranslations)
 		{
-			foreach (var upd in Plugins)
+			foreach (var upd in PluginUpdateHandler.Plugins)
 				upd.Selected = (lUpdateTranslations == null) || lUpdateTranslations.Contains(upd.Name);
 			bool bBackup = PluginConfig.DownloadActiveLanguage;
 			PluginConfig.DownloadActiveLanguage = bDownloadActiveLanguage;
 
-			//If called from CheckPluginLanguages, we're running in adifferent thread
-			//Use Invoke because the IStatusLogger will attach to tho KeyPromptForm within the UI thread
+			//If called from CheckPluginLanguages, we're running in a different thread
+			//Use Invoke because the IStatusLogger will attach to the KeyPromptForm within the UI thread
 			UpdatePluginsDelegate delUpdate = UpdatePlugins;
 			m_host.MainWindow.Invoke(delUpdate, new object[] { true });
 			PluginConfig.DownloadActiveLanguage = bBackup;
-			foreach (var upd in Plugins)
+			foreach (var upd in PluginUpdateHandler.Plugins)
 			{
 				if (!upd.Selected) continue;
 				Plugin p = (Plugin)Tools.GetPluginInstance(upd.Name);
@@ -813,42 +560,20 @@ namespace EarlyUpdateCheck
 			Form fUpdateLog = null;
 			m_slUpdatePlugins = StatusUtil.CreateStatusDialog(GlobalWindowManager.TopWindow, out fUpdateLog, PluginTranslate.PluginUpdateCaption, string.Empty, true, true);
 
-			bool bUseTemp = false;
 			bool success = false;
-			string sTempPluginsFolder = m_PluginsFolder;
-			string sTempPluginsTranslationsFolder = m_PluginsTranslationsFolder;
+			string sTempPluginsFolder = PluginUpdateHandler.GetTempFolder();
 
 			ThreadStart ts = new ThreadStart(() =>
 			{
 				m_slUpdatePlugins.StartLogging(PluginTranslate.PluginUpdateCaption, false);
-				//try writing to plugin folder
-				string sTempFile = m_PluginsFolder + "EarlyUpdateCheckTest.txt";
-				try
-				{
-					System.IO.File.WriteAllText(sTempFile, "Test file to check for write access");
-				}
-				catch (Exception) { bUseTemp = true; }
-				if (!bUseTemp) System.IO.File.Delete(sTempFile);
 
-				//define working folders 
-				if (bUseTemp)
-				{
-					sTempPluginsFolder = UrlUtil.GetTempPath();
-					sTempPluginsFolder = UrlUtil.EnsureTerminatingSeparator(sTempPluginsFolder, false);
-					sTempPluginsFolder += System.IO.Path.GetRandomFileName();
-					sTempPluginsFolder = UrlUtil.EnsureTerminatingSeparator(sTempPluginsFolder, false);
-					System.IO.Directory.CreateDirectory(sTempPluginsFolder);
-					sTempPluginsTranslationsFolder = sTempPluginsFolder + "Translations";
-					sTempPluginsTranslationsFolder = UrlUtil.EnsureTerminatingSeparator(sTempPluginsTranslationsFolder, false);
-					System.IO.Directory.CreateDirectory(sTempPluginsTranslationsFolder);
-				}
-				PluginDebug.AddInfo("Use temp folder", bUseTemp.ToString(), sTempPluginsFolder, DebugPrint);
+				PluginDebug.AddInfo("Use temp folder", PluginUpdateHandler.Shieldify.ToString(), sTempPluginsFolder, DebugPrint);
 
 				//Download files
-				foreach (UpdateInfo upd in Plugins)
+				foreach (PluginUpdate upd in PluginUpdateHandler.Plugins)
 				{
 					if (!upd.Selected) continue;
-					success |= UpdatePlugin(upd, sTempPluginsFolder, sTempPluginsTranslationsFolder, bUpdateTranslationsOnly);
+					success |= UpdatePlugin(upd, sTempPluginsFolder, bUpdateTranslationsOnly);
 				}
 			});
 			Thread t = new Thread(ts);
@@ -867,28 +592,10 @@ namespace EarlyUpdateCheck
 				m_slUpdatePlugins = null;
 			}
 			if (fUpdateLog != null) fUpdateLog.Dispose();
-			
+
 			//Move files from temp folder to plugin folder
-			if (bUseTemp) 
-			{
-				success = false;
-				if (WinUtil.IsAtLeastWindowsVista &&
-					(NativeMethods.ShieldifyNativeDialog(DialogResult.Yes, () => Tools.AskYesNo(PluginTranslate.TryUAC, PluginTranslate.PluginUpdateCaption)) == DialogResult.Yes))
-				{
-					success = FileCopier.CopyFiles(sTempPluginsFolder, m_PluginsFolder);
-					if (!success)
-					{
-						if (Tools.AskYesNo(PluginTranslate.PluginUpdateFailed, PluginTranslate.PluginUpdateCaption) == DialogResult.Yes)
-						{
-							System.Diagnostics.Process.Start(sTempPluginsFolder);
-						}
-					}
-				}
-				else if (Tools.AskYesNo(PluginTranslate.OpenTempFolder, PluginTranslate.PluginUpdateCaption) == DialogResult.Yes)
-				{
-					System.Diagnostics.Process.Start(sTempPluginsFolder);
-				}
-			}
+			success &= PluginUpdateHandler.MoveAll(sTempPluginsFolder);
+			if (success) PluginUpdateHandler.Cleanup(sTempPluginsFolder);
 
 			//Restart KeePass to use new plugin versions
 			PluginDebug.AddInfo("Update finished", "Succes: " + success.ToString(), DebugPrint);
@@ -906,18 +613,6 @@ namespace EarlyUpdateCheck
 			}
 		}
 
-		private string GetUpdateUrl(string baseurl, UpdateInfo upd, string language)
-		{
-			if (!upd.OwnPlugin)
-			{
-				if (upd.UpdateInfoExtern == null) return upd.URL;
-				return upd.UpdateInfoExtern.PluginUpdateURL;
-			}
-			if (string.IsNullOrEmpty(language))
-				return baseurl + "releases/download/v" + upd.VersionAvailable.ToString() + "/" + upd.Name + ".plgx";
-			return baseurl.Replace("github.com", "raw.githubusercontent.com") + "master/Translations/" + language;
-		}
-
 		/// <summary>
 		/// Update a single plugin
 		/// </summary>
@@ -926,153 +621,20 @@ namespace EarlyUpdateCheck
 		/// <param name="sTranslationFolder">Target folder for plugin translations</param>
 		/// <param name="bTranslationsOnly">Only download newest translations</param>
 		/// <returns></returns>
-		public bool UpdatePlugin(UpdateInfo upd, string sPluginFolder, string sTranslationFolder, bool bTranslationsOnly)
+		internal bool UpdatePlugin(PluginUpdate upd, string sPluginFolder, bool bTranslationsOnly)
 		{
-			string url = UrlUtil.EnsureTerminatingSeparator(upd.URL, true);
-
-			if (!upd.OwnPlugin && upd.UpdateMode == UpdateOtherPluginMode.Unknown)
+			bool bOK = true;
+			if (m_slUpdatePlugins != null)
+				m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title), LogStatusType.Info);
+			if (!bTranslationsOnly) bOK = upd.Download(sPluginFolder);
+			if (upd is OwnPluginUpdate)
 			{
-				PluginDebug.AddError("Plugin url not supported", 0, upd.URL);
-				return false;
+				bool bTranslationsOK = (upd as OwnPluginUpdate).DownloadTranslations(sPluginFolder, PluginConfig.DownloadActiveLanguage);
+				if (bTranslationsOnly) bOK = bTranslationsOK;
 			}
-
-			//Get installed translations
-			List<string> lTranslations = new List<string>();
-			if (System.IO.Directory.Exists(m_PluginsTranslationsFolder))
-			{
-				try
-				{
-					lTranslations = UrlUtil.GetFilePaths(m_PluginsTranslationsFolder, upd.Name + "*.language.xml", System.IO.SearchOption.TopDirectoryOnly);
-				}
-				catch (Exception) { }
-			}
-			bool ok = false;
-
-			//Download plugin
-			if (!bTranslationsOnly)
-			{
-				m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title, upd.Name + ".plgx"), LogStatusType.Info);
-				if (!m_slUpdatePlugins.ContinueWork()) return ok;
-				if (!DownloadFile(GetUpdateUrl(url, upd, null), sPluginFolder + upd.Name + ".plgx", upd))
-				{
-					Tools.ShowError(string.Format(PluginTranslate.PluginUpdateFailedSpecific, upd.Title), PluginTranslate.PluginUpdateCaption);
-				}
-				else
-					ok = true;
-			}
-			if (!m_slUpdatePlugins.ContinueWork()) return ok;
-
-			//Download translations
-			if (upd.OwnPlugin)
-			{
-				foreach (string lang in lTranslations)
-				{
-					string langUrl = lang.Substring(m_PluginsTranslationsFolder.Length);
-					m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title, langUrl), LogStatusType.Info);
-					if (!m_slUpdatePlugins.ContinueWork()) return ok;
-					if (!DownloadFile(GetUpdateUrl(url, upd, langUrl), sTranslationFolder + langUrl))
-						Tools.ShowError(string.Format(PluginTranslate.PluginTranslationUpdateFailed, upd.Title, langUrl), PluginTranslate.PluginUpdateCaption);
-				}
-
-				//If required, download translation for currently used language
-				string CurrentTranslation = m_PluginsTranslationsFolder + upd.Name + "." + m_LanguageIso + ".language.xml";
-				if (PluginConfig.DownloadActiveLanguage && !lTranslations.Contains(CurrentTranslation))
-				{
-					string langUrl = CurrentTranslation.Substring(m_PluginsTranslationsFolder.Length);
-					m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title, langUrl), LogStatusType.Info);
-					if (!m_slUpdatePlugins.ContinueWork()) return ok;
-					DownloadFile(GetUpdateUrl(url, upd, langUrl), sTranslationFolder + langUrl);
-				}
-			}
-
-			return ok;
-		}
-
-		/// <summary>
-		/// Download single file
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="target"></param>
-		/// <returns></returns>
-		private bool DownloadFile(string source, string target)
-		{
-			return DownloadFile(source, target, null);
-		}
-
-		private bool DownloadFile(string source, string target, UpdateInfo upd)
-		{
-			const int MAXATTEMPTS = 3;
-			int iAttempts = 0;
-			//if (upd == null && !source.ToLowerInvariant().EndsWith(".plgx")) return true;
-			while (iAttempts++ < MAXATTEMPTS)
-			{
-				try
-				{
-					KeePassLib.Serialization.IOConnectionInfo ioc = KeePassLib.Serialization.IOConnectionInfo.FromPath(source);
-					System.IO.Stream s = KeePassLib.Serialization.IOConnection.OpenRead(ioc);
-					if (s == null) throw new InvalidOperationException();
-					System.IO.MemoryStream ms = new System.IO.MemoryStream();
-					MemUtil.CopyStream(s, ms);
-					s.Close();
-					byte[] pb = ms.ToArray();
-					ms.Close();
-					string sTargetDir = UrlUtil.GetShortestAbsolutePath(UrlUtil.GetFileDirectory(target, false, true));
-					if (!System.IO.Directory.Exists(sTargetDir)) System.IO.Directory.CreateDirectory(sTargetDir);
-					if (upd != null && !upd.OwnPlugin)
-					{
-						pb = ProcessPluginDownload(source, pb, upd);
-						if (upd.IsDll) target = target.Replace(".plgx", ".dll");
-					}
-					if (pb == null || pb.Length == 0) throw new ArgumentException("No special handling defined for " + upd.Title);
-					System.IO.File.WriteAllBytes(target, pb);
-					PluginDebug.AddInfo("Download success", 0, "Source: " + source, "Target: " + target, "Download attempt: " + iAttempts.ToString());
-					return true;
-				}
-				catch (Exception ex)
-				{
-					PluginDebug.AddInfo("Download failed", 0, "Source: " + source, "Target: " + target, "Download attempt: " + iAttempts.ToString(), ex.Message);
-
-					System.Net.WebException exWeb = ex as System.Net.WebException;
-					if (exWeb == null) continue;
-					System.Net.HttpWebResponse wrResponse = exWeb.Response as System.Net.HttpWebResponse;
-					if ((wrResponse == null) || (wrResponse.StatusCode != System.Net.HttpStatusCode.NotFound)) continue;
-					iAttempts = MAXATTEMPTS;
-				}
-			}
-			return false;
-		}
-
-		private byte[] ProcessPluginDownload(string source, byte[] pb, UpdateInfo upd)
-		{
-			UpdateInfoExtern uie = upd.UpdateInfoExtern;
-			if (uie == null) return null;
-			if (uie.UpdateMode == UpdateOtherPluginMode.PlgxDirect)
-			{
-				return pb;
-			}
-			if (uie.UpdateMode == UpdateOtherPluginMode.ZipExtractPlgx)
-			{
-				using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
-				{
-					ms.Write(pb, 0, pb.Length);
-					ms.Position = 0;
-					pb = null;
-					using (Ionic.Zip.ZipFile z = Ionic.Zip.ZipFile.Read(ms))
-					{
-						var f = z.SelectEntries("*.plgx");
-						foreach (var p in f)
-						{
-							using (System.IO.MemoryStream msTarget = new System.IO.MemoryStream())
-							{
-								p.Extract(msTarget);
-								return msTarget.ToArray();
-							}
-						}
-					}
-				}
-				return null;
-			}
-			else return null;
+			if (bOK) bOK = upd.ProcessDownload(sPluginFolder);
+			upd.Cleanup();
+			return bOK;
 		}
 
 		private void Restart()
@@ -1166,7 +728,7 @@ namespace EarlyUpdateCheck
 
 		private void SetPluginSelectionStatus(bool select)
 		{
-			foreach (var p in Plugins) p.Selected = select;
+			foreach (var p in PluginUpdateHandler.Plugins) p.Selected = select;
 		}
 		#endregion
 

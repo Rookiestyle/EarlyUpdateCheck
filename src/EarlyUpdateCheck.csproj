@@ -4,7 +4,7 @@
     <!-- KeePass PLGX Compiler only can build csharp projects up to csharp version 5 -->
     <LangVersion>5</LangVersion>
   </PropertyGroup>
-<PropertyGroup>
+  <PropertyGroup>
     <PlgxConfiguration>
       <Prerequisites>
         <KeePassVersion>2.38</KeePassVersion>
@@ -63,13 +63,13 @@
   <ItemGroup>
     <Compile Include="CheckedGroupBox.cs" />
     <Compile Include="EventHelper.cs" />
+    <Compile Include="PluginUpdateInfo.cs" />
     <Compile Include="TranslationUpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TranslationUpdateForm.Designer.cs">
       <DependentUpon>TranslationUpdateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UpdateInfoParser.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="EarlyUpdateCheck.cs" />
     <Compile Include="Options.cs">
@@ -93,7 +93,7 @@
     <ProjectReference Include="..\..\_KeePass_Source\KeePass\KeePass.csproj">
       <Project>{10938016-dee2-4a25-9a5a-8fd3444379ca}</Project>
       <Name>KeePass</Name>
-	  <!--
+      <!--
   We do use the nuget package protobuf-net
   Unfortunately, the dll files created during compile time won't be added to the plgx file
   
@@ -107,11 +107,11 @@
   <ItemGroup>
     <PackageReference Include="DotNetZip.Reduced">
       <Version>1.9.1.8</Version>
-	  <ExcludeFromPlgx />
+      <ExcludeFromPlgx />
     </PackageReference>
     <PackageReference Include="PlgxTool">
       <Version>1.0.0</Version>
-	  <ExcludeFromPlgx />
+      <ExcludeFromPlgx />
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -120,7 +120,7 @@
     <Exec Command="..\externalplugininfocopy.cmd $(Configuration)" />
   </Target>
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'ReleasePlgx' ">
-  <!-- Create plgx file -->
+    <!-- Create plgx file -->
     <CallTarget Targets="BuildPlgx" />
     <!-- copy translations -->
     <Exec Command="..\translationcopy.cmd $(Configuration)" />
