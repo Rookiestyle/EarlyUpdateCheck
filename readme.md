@@ -6,18 +6,20 @@
 
 Keepass performs its update check only after all initialization is done and - if configured - the most recently used database has been opened.
 
-This KeePass plugin checks for updates of KeePass and installed plugins BEFORE a database will be opened.
-The update check will be performed only if all of the following criteria are met
+EarlyUpdateCheck checks for updates of KeePass and installed plugins BEFORE a database will be opened.
+Additionally, it offers a handy one click update mode for all of my plugins integrated in KeePass' update check. 
+This will invoke Windows UAC if required to copy the downloaded files into KeePass' plugin folder. 
+Details can be found in the configuration settings.
+
+EarlyUpdateCheck can update other author's plugins as well.
+Please have a look at the [wiki](https://github.com/Rookiestyle/EarlyUpdateCheck/wiki/Update-other-plugins) for details.
+
+
+The update check triggered by EarlyUpdateCheck will be performed only if all of the following criteria are met
 * "Check for update at KeePass startup" is active
 * "Remember and automatically open last used database on start" is active
 * "Start minimized and locked" is *not* active
 
-EarlyUpdateCheck offers an optional one click update mode for all of my plugins integrated in KeePass' update check. 
-This will invoke Windows UAC if required to copy the downloaded files into KeePass' plugin folder. 
-Details can be found in the configuration settings.
-
-In addition, EarlyUpdateCheck can now update other author's plugins as well.
-Please have a look at the [wiki](https://github.com/Rookiestyle/EarlyUpdateCheck/wiki/Update-other-plugins) for details.
 
 # Table of Contents
 - [Configuration](#configuration)

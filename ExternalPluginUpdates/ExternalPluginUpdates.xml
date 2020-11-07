@@ -5,7 +5,6 @@
   - It's not possible to determine the location of the file
   - If it's located elsewhere, it won't be overwritten and two versions of the same plugin are available
   -->
-
 <UpdateInfoExternList>
   <UpdateInfoExtern>
     <PluginName>WebAutoType</PluginName>
