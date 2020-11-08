@@ -16,12 +16,18 @@ namespace EarlyUpdateCheck
 	internal static class PluginUpdateHandler
 	{
 		internal static List<PluginUpdate> Plugins = new List<PluginUpdate>();
-		private static Dictionary<string, Version> m_Plugins = new Dictionary<string, Version>();
-
+		internal static bool CheckTranslations
+		{
+			get
+			{
+				return !string.IsNullOrEmpty(m_sLastUpdateCheck) && KeePass.Program.Config.Application.Start.CheckForUpdate
+					&& !KeePass.Program.Config.Application.Start.MinimizedAndLocked
+					&& m_sLastUpdateCheck != KeePass.Program.Config.Application.LastUpdateCheck;
+			}
+		}
 		internal static string LanguageIso = string.Empty;
 
-		private static bool? m_bShieldify;
-		public static bool Shieldify
+		internal static bool Shieldify
 		{
 			get
 			{
@@ -72,16 +78,10 @@ namespace EarlyUpdateCheck
 			}
 		}
 
-		private static string EnsureNonNull(string v)
-		{
-			if (v == null) return string.Empty;
-			return v;
-		}
+		internal static string PluginsFolder { get; private set; }
+		internal static string PluginsTranslationsFolder { get; private set; }
 
-		public static string PluginsFolder { get; private set; }
-		public static string PluginsTranslationsFolder { get; private set; }
-
-		public static string GetTempFolder()
+		internal static string GetTempFolder()
 		{
 			string sTempPluginsFolder = string.Empty;
 			try
@@ -102,10 +102,12 @@ namespace EarlyUpdateCheck
 			PluginsFolder = UrlUtil.GetFileDirectory(WinUtil.GetExecutable(), true, true);
 			PluginsFolder = UrlUtil.EnsureTerminatingSeparator(PluginsFolder + KeePass.App.AppDefs.PluginsDir, false);
 			PluginsTranslationsFolder = UrlUtil.EnsureTerminatingSeparator(PluginsFolder + "Translations", false);
+			m_sLastUpdateCheck = KeePass.Program.Config.Application.LastUpdateCheck;
 			List<string> lMsg = new List<string>();
 			lMsg.Add("Plugins folder: " + PluginsFolder);
 			lMsg.Add("Plugins translation folder: " + PluginsTranslationsFolder);
 			lMsg.Add("Shieldify: " + Shieldify.ToString());
+			lMsg.Add("Last update check: " + m_sLastUpdateCheck);
 			PluginDebug.AddInfo("PluginUpdateHandler initialized", 0, lMsg.ToArray());
 		}
 
@@ -156,7 +158,7 @@ namespace EarlyUpdateCheck
 			return true;
 		}
 
-		public static bool MoveAll(string sTempFolder)
+		internal static bool MoveAll(string sTempFolder)
 		{
 			string sTargetFolder = PluginUpdateHandler.PluginsFolder;
 			bool bSuccess = false;
@@ -209,6 +211,16 @@ namespace EarlyUpdateCheck
 		internal static void Cleanup(string sTempPluginsFolder)
 		{
 			try { Directory.Delete(sTempPluginsFolder, true); } catch { }
+		}
+
+
+		private static Dictionary<string, Version> m_Plugins = new Dictionary<string, Version>();
+		private static string m_sLastUpdateCheck = string.Empty;
+		private static bool? m_bShieldify;
+		private static string EnsureNonNull(string v)
+		{
+			if (v == null) return string.Empty;
+			return v;
 		}
 	}
 

@@ -46,6 +46,7 @@ namespace EarlyUpdateCheck
 		public override bool Initialize(IPluginHost host)
 		{
 			m_host = host;
+
 			PluginTranslate.TranslationChanged += delegate (object sender, TranslationChangedEventArgs e) 
 			{
 				if (!string.IsNullOrEmpty(KeePass.Program.Translation.Properties.Iso6391Code))
@@ -81,7 +82,19 @@ namespace EarlyUpdateCheck
 		{
 			m_bRestartInvoke = false;
 			m_host.MainWindow.FormLoadPost -= MainWindow_FormLoadPost;
-			ThreadPool.QueueUserWorkItem(new WaitCallback(CheckPluginLanguages));
+
+			if (PluginUpdateHandler.CheckTranslations)
+			{
+				//Load plugins and check check for new translations if not already done
+				ThreadPool.QueueUserWorkItem(new WaitCallback(CheckPluginLanguages));
+			}
+			else
+			{
+				//Only load plugins
+				//Do NOT check for new translations
+				Thread t = new Thread(() => PluginUpdateHandler.LoadPlugins(false));
+				t.Start();
+			}
 			PluginDebug.AddInfo("All plugins loaded", 0, DebugPrint);
 		}
 
