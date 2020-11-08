@@ -305,11 +305,13 @@ namespace EarlyUpdateCheck
 		{
 			const int MAXATTEMPTS = 3;
 			int iAttempts = 0;
+			string sSource = GetShortestAbsolutePath(sFile);
 			while (iAttempts++ < MAXATTEMPTS)
 			{
 				try
 				{
-					KeePassLib.Serialization.IOConnectionInfo ioc = KeePassLib.Serialization.IOConnectionInfo.FromPath(sFile);
+					string sTarget = GetShortestAbsolutePath(sTargetFolder + UrlUtil.GetFileName(sSource));
+					KeePassLib.Serialization.IOConnectionInfo ioc = KeePassLib.Serialization.IOConnectionInfo.FromPath(sSource);
 					Stream s = KeePassLib.Serialization.IOConnection.OpenRead(ioc);
 					if (s == null) throw new InvalidOperationException();
 					MemoryStream ms = new MemoryStream();
@@ -317,14 +319,13 @@ namespace EarlyUpdateCheck
 					s.Close();
 					byte[] pb = ms.ToArray();
 					ms.Close();
-					string sTarget = sTargetFolder + UrlUtil.GetFileName(sFile);
 					File.WriteAllBytes(sTarget, pb);
-					PluginDebug.AddInfo("Download success", 0, "Source: " + sFile, "Target: " + sTargetFolder, "Download attempt: " + iAttempts.ToString());
+					PluginDebug.AddInfo("Download success", 0, "Source: " + sSource, "Target: " + sTargetFolder, "Download attempt: " + iAttempts.ToString());
 					return true;
 				}
 				catch (Exception ex)
 				{
-					PluginDebug.AddInfo("Download failed", 0, "Source: " + sFile, "Target: " + sTargetFolder, "Download attempt: " + iAttempts.ToString(), ex.Message);
+					PluginDebug.AddInfo("Download failed", 0, "Source: " + sSource, "Target: " + sTargetFolder, "Download attempt: " + iAttempts.ToString(), ex.Message);
 
 					System.Net.WebException exWeb = ex as System.Net.WebException;
 					if (exWeb == null) continue;
@@ -334,6 +335,20 @@ namespace EarlyUpdateCheck
 				}
 			}
 			return false;
+		}
+
+		private string GetShortestAbsolutePath(string sFile)
+		{
+			string sAbsolute = sFile;
+			if (UrlUtil.IsUncPath(sFile)) sAbsolute = UrlUtil.GetShortestAbsolutePath(sFile);
+			else
+			{
+				sAbsolute = UrlUtil.GetShortestAbsolutePath((sAbsolute.Contains("\\") ? "\\\\" : "//") + sFile);
+				sAbsolute = sAbsolute.Substring(2, sAbsolute.Length - 2);
+			}
+			if (sFile != sAbsolute)
+				PluginDebug.AddInfo("Shorten filename", 0, "Old: " + sFile, "New: " + sAbsolute);
+			return sAbsolute;
 		}
 
 		internal virtual bool ProcessDownload(string sTargetFolder)
