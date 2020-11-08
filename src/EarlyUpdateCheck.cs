@@ -39,7 +39,6 @@ namespace EarlyUpdateCheck
 		private bool m_bRestartInvoke = false;
 		private bool m_bRestartTriggered = false;
 		private IStatusLogger m_slUpdatePlugins = null;
-		private string m_LanguageIso = null;
 		private bool m_bUpdateCheckDone = false;
 
 		private KeyPromptForm m_kpf = null;
@@ -50,9 +49,9 @@ namespace EarlyUpdateCheck
 			PluginTranslate.TranslationChanged += delegate (object sender, TranslationChangedEventArgs e) 
 			{
 				if (!string.IsNullOrEmpty(KeePass.Program.Translation.Properties.Iso6391Code))
-					m_LanguageIso = KeePass.Program.Translation.Properties.Iso6391Code;
+					PluginUpdateHandler.LanguageIso = KeePass.Program.Translation.Properties.Iso6391Code;
 				else
-					m_LanguageIso = e.NewLanguageIso6391;
+					PluginUpdateHandler.LanguageIso = e.NewLanguageIso6391;
 			};
 			PluginTranslate.Init(this, KeePass.Program.Translation.Properties.Iso6391Code);
 			Tools.DefaultCaption = PluginTranslate.PluginName;
@@ -82,8 +81,7 @@ namespace EarlyUpdateCheck
 		{
 			m_bRestartInvoke = false;
 			m_host.MainWindow.FormLoadPost -= MainWindow_FormLoadPost;
-			Thread t = new Thread(() => { PluginUpdateHandler.LoadPlugins(false); });
-			t.Start();
+			ThreadPool.QueueUserWorkItem(new WaitCallback(CheckPluginLanguages));
 			PluginDebug.AddInfo("All plugins loaded", 0, DebugPrint);
 		}
 
@@ -263,11 +261,14 @@ namespace EarlyUpdateCheck
 		#endregion
 
 		#region Check for new translations
+		private bool m_bPluginLanguagesChecked = false;
 		private void CheckPluginLanguages(object o)
 		{
 			PluginUpdateHandler.LoadPlugins(false);
+			if (!PluginConfig.Active) return;
+			if (m_bPluginLanguagesChecked) return;
+			m_bPluginLanguagesChecked = true;
 			PluginDebug.AddInfo("Check for updated translations - Start");
-			string CurrentLanguage = "." + m_LanguageIso.ToLowerInvariant() + ".language.xml";
 			string translations = string.Empty;
 			List<OwnPluginUpdate> lPlugins = new List<OwnPluginUpdate>();
 			foreach (PluginUpdate pu in PluginUpdateHandler.Plugins)
@@ -275,7 +276,7 @@ namespace EarlyUpdateCheck
 				if (!PluginUpdateHandler.VersionsEqual(pu.VersionInstalled, pu.VersionAvailable)) continue;
 				foreach (var t in pu.Translations)
 				{
-					if (t.Value.NewTranslationAvailable || (PluginConfig.DownloadActiveLanguage && t.Value.TranslationForCurrentLanguageAvailable))
+					if (t.NewTranslationAvailable || (PluginConfig.DownloadActiveLanguage && t.TranslationForCurrentLanguageAvailable))
 					{
 						lPlugins.Add(pu as OwnPluginUpdate);
 						break;
@@ -539,7 +540,7 @@ namespace EarlyUpdateCheck
 				if (miInit == null) continue;
 				try
 				{
-					miInit.Invoke(p, new object[] { p, m_LanguageIso });
+					miInit.Invoke(p, new object[] { p, PluginUpdateHandler.LanguageIso });
 				}
 				catch (Exception ex)
 				{

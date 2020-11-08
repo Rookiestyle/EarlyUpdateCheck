@@ -18,6 +18,8 @@ namespace EarlyUpdateCheck
 		internal static List<PluginUpdate> Plugins = new List<PluginUpdate>();
 		private static Dictionary<string, Version> m_Plugins = new Dictionary<string, Version>();
 
+		internal static string LanguageIso = string.Empty;
+
 		private static bool? m_bShieldify;
 		public static bool Shieldify
 		{
@@ -217,7 +219,7 @@ namespace EarlyUpdateCheck
 		internal string Title { get; private set; }
 		internal Version VersionInstalled { get; private set; }
 		internal Version VersionAvailable { get; set; }
-		internal Dictionary<string, TranslationVersionCheck> Translations { get; private set; }
+		internal List<TranslationVersionCheck> Translations { get; private set; }
 		internal string URL { get; set; }	//URL for plugin homepage
 		internal string PluginUpdateURL { get; set; }	//direct link to download newest version
 		public string VersionURL { get; private set; } //string to version file, used for translation checks
@@ -257,7 +259,7 @@ namespace EarlyUpdateCheck
 			URL = string.Empty;
 			PluginUpdateURL = string.Empty;
 
-			Translations = new Dictionary<string, TranslationVersionCheck>();
+			Translations = new List<TranslationVersionCheck>();
 		}
 
 		internal virtual bool Download(string sTempFolder)
@@ -366,11 +368,11 @@ namespace EarlyUpdateCheck
 			bool bOK = true;
 			foreach (var t in Translations)
 			{
-				string sFile = URL.Replace("github.com", "raw.githubusercontent.com") + "../master/Translations/" + t.Key;
-				if (!t.Value.NewTranslationAvailable && !(bDownloadCurrentLangue && t.Value.TranslationForCurrentLanguageAvailable)) continue;
+				string sFile = URL.Replace("github.com", "raw.githubusercontent.com") + "../master/Translations/" + t.LangugageFile;
+				if (!t.NewTranslationAvailable && !(bDownloadCurrentLangue && t.TranslationForCurrentLanguageAvailable)) continue;
 				if (DownloadFile(sFile, sTempTranslationsFolder)) continue;
 				bOK = false;
-				Tools.ShowError(string.Format(PluginTranslate.PluginTranslationUpdateFailed, Title, t.Key), PluginTranslate.PluginUpdateCaption);
+				Tools.ShowError(string.Format(PluginTranslate.PluginTranslationUpdateFailed, Title, t.LangugageFile), PluginTranslate.PluginUpdateCaption);
 			}
 			return bOK;
 		}
@@ -385,8 +387,8 @@ namespace EarlyUpdateCheck
 			if (PluginDebug.DebugMode)
 			{
 				List<string> lT = new List<string>();
-				foreach (var kvp in Translations)
-					lT.Add(kvp.Key + " - " + kvp.Value.ToString());
+				foreach (var t in Translations)
+					lT.Add(t.ToString());
 				PluginDebug.AddInfo("Plugin languages - " + Name, 0, lT.ToArray());
 			}
 		}
@@ -404,7 +406,7 @@ namespace EarlyUpdateCheck
 					if (m.Groups.Count != 2) continue;
 					long lVerInstalled = 0;
 					if (!long.TryParse(m.Groups[1].Value, out lVerInstalled)) continue;
-					Translations[UrlUtil.GetFileName(lang)] = new TranslationVersionCheck() { Installed = lVerInstalled };
+					Translations.Add(new TranslationVersionCheck() { LangugageFile = UrlUtil.GetFileName(lang), Installed = lVerInstalled });
 				}
 			}
 			catch (Exception) { }
@@ -454,9 +456,14 @@ namespace EarlyUpdateCheck
 					if (sParts.Length != 2) continue;
 					long lVer = 0;
 					if (!long.TryParse(StrUtil.VersionToString(uci.VerAvailable), out lVer)) continue;
-					string sLang = Name +"." + sParts[1].ToLowerInvariant() + ".language.xml";
-					if (!Translations.ContainsKey(sLang)) Translations[sLang] = new TranslationVersionCheck();
-					Translations[sLang].Available = lVer;
+					string sLang = Name + "." + sParts[1].ToLowerInvariant() + ".language.xml";
+					TranslationVersionCheck tvc = Translations.Find(x => x.LangugageFile == sLang);
+					if (tvc == null)
+					{
+						tvc = new TranslationVersionCheck() { LangugageFile = sLang };
+						Translations.Add(tvc);
+					}
+					tvc.Available = lVer;
 				}
 			}
 		}
@@ -559,13 +566,21 @@ namespace EarlyUpdateCheck
 
 	internal class TranslationVersionCheck
 	{
+		internal string LangugageFile = string.Empty;
 		internal long Installed = -1;
 		internal long Available = -1;
 
 		internal bool NewTranslationAvailable {  get { return Available > Installed && Installed > -1; } }
-		internal bool TranslationForCurrentLanguageAvailable { get { return Available > Installed && Installed == -1; } }
+		internal bool TranslationForCurrentLanguageAvailable
+		{
+			get
+			{
+				if (!LangugageFile.EndsWith(PluginUpdateHandler.LanguageIso + ".language.xml")) return false;
+				return Available > Installed && Installed == -1;
+			}
+		}
 
-		public override string ToString() { return Installed.ToString() + "/" + Available.ToString(); }
+		public override string ToString() { return LangugageFile + ": " + Installed.ToString() + "/" + Available.ToString(); }
 	}
 
 	public enum UpdateOtherPluginMode
