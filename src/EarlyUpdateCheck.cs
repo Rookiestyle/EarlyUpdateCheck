@@ -212,6 +212,10 @@ namespace EarlyUpdateCheck
 		/// </summary>
 		private void CheckForUpdates(object o)
 		{
+			//Load list of update-able plugins here
+			//Network can be slow and we're running in a seperate thread alread<, so we won't make KeePass unresponsive
+			//That's better than calling it in OnUpdateCheckFormShown
+			PluginUpdateHandler.LoadPlugins(false); 
 			string sBackup = KeePass.Program.Config.Application.LastUpdateCheck;
 			try
 			{
