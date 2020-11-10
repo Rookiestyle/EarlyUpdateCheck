@@ -546,7 +546,7 @@ namespace EarlyUpdateCheck
 					return true;
 				case UpdateOtherPluginMode.ZipExtractPlgx:
 				case UpdateOtherPluginMode.ZipExtractDll:
-					string sSourceFile = sTempFolder + UrlUtil.GetFileName(PluginUpdateURL);
+					string sSourceFile = sTempFolder + UrlUtil.GetFileName(MergeInVersion());
 					byte[] pb = File.ReadAllBytes(sSourceFile);
 					File.Delete(sSourceFile);
 					string sPattern = UpdateMode == UpdateOtherPluginMode.ZipExtractDll ? "*.dll" : "*.plgx";
