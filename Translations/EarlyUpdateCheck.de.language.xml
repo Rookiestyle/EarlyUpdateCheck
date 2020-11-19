@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Translation>
-  <TranslationVersion>3</TranslationVersion>
+  <TranslationVersion>4</TranslationVersion>
   <item>
     <key>Active</key>
     <value>Aktiv</value>
@@ -20,41 +20,51 @@ Wenn diese Option aktiv ist, dann wird zusätzlich das Fenster 'Datenbank öffne
     <value>Im Hintergrund weitersuchen</value>
   </item>
   <item>
-	<key>PluginUpdateOneClick</key>
+    <key>PluginUpdateOneClick</key>
     <value>Ein-Klick Plugin-Update</value>
   </item>
   <item>
     <key>PluginUpdateOneClickDesc</key>
     <value>Neue Versionen meiner Plugins können durch Klick auf das Plugin im Fenster 'Update-Überprüfung' installiert werden.
 Schreibzugriff auf den Plugin-Ordner von KeePass ist erforderlich.
-Um die neuen Versionen zu nutzen, muss KeePass neu gestartet werden.</value>
+Um die neuen Versionen zu nutzen, muss KeePass neu gestartet werden.
+
+Pflege Datei ExternalPluginUpdates.xml um Plugins anderer Autoren automatisch zu aktualisieren. Im Wiki findest du mehr Informationen</value>
   </item>
   <item>
-  <key>PluginUpdateSelected</key>
-  <value>Update starten</value>
+    <key>PluginUpdate</key>
+    <value>Update</value>
   </item>
   <item>
-	<key>PluginUpdating</key>
-	<value>Update von {0} läuft, bitte warten...</value>
+    <key>PluginUpdateSelected</key>
+    <value>Update starten</value>
   </item>
-    <item>
-	<key>PluginUpdateSuccess</key>
-	<value>Das Update war erfolgreich. Neue Pluginversionen sind nach einem Neustart von KeePass aktiv.
+  <item>
+    <key>PluginUpdateCaption</key>
+    <value>Early Update Check - Plugin Updater</value>
+  </item>
+  <item>
+    <key>PluginUpdating</key>
+    <value>Update von {0} läuft, bitte warten...</value>
+  </item>
+  <item>
+    <key>PluginUpdateSuccess</key>
+    <value>Das Update war erfolgreich. Neue Pluginversionen sind nach einem Neustart von KeePass aktiv.
 Jetzt neu starten?</value>
-  </item>  
+  </item>
   <item>
-	<key>PluginUpdateFailed</key>
-		<value>Die heruntergeladenen Dateien konnten nicht in den Plugin-Ordner verschoben werden.
+    <key>PluginUpdateFailed</key>
+    <value>Die heruntergeladenen Dateien konnten nicht in den Plugin-Ordner verschoben werden.
 Temporären Ordner mit heruntergeladenen Dateien anzeigen?</value>
   </item>
   <item>
-	<key>PluginUpdateFailedSpecific</key>
-	<value>Plugin: {0}
+    <key>PluginUpdateFailedSpecific</key>
+    <value>Plugin: {0}
 Das Update ist fehlgeschlagen.</value>
   </item>
   <item>
-	<key>PluginTranslationUpdateFailed</key>
-	<value>Plugin: {0}
+    <key>PluginTranslationUpdateFailed</key>
+    <value>Plugin: {0}
 Das Update der Sprachdatei {1} ist fehlgeschlagen.</value>
   </item>
   <item>

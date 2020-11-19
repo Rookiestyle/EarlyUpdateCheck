@@ -99,6 +99,32 @@ namespace EarlyUpdateCheck
 			FOF_NORECURSEREPARSE = 0x8000,
 		}
 
+		public static bool DeleteFiles(params string[] files)
+		{
+			bool success = false;
+
+			string from = string.Empty;
+			foreach (string file in files)
+				from += file + "\0";
+			from += "\0";
+
+			SHFILEOPSTRUCT lpFileOp = new SHFILEOPSTRUCT();
+			lpFileOp.hwnd = IntPtr.Zero;
+			lpFileOp.wFunc = FILE_OP_TYPE.FO_DELETE;
+			lpFileOp.pFrom = from;
+			lpFileOp.pTo = "\0\0";
+			lpFileOp.fFlags = FILE_OP_FLAGS.FOF_NOCONFIRMATION | FILE_OP_FLAGS.FOF_ALLOWUNDO;
+			lpFileOp.fAnyOperationsAborted = false;
+			lpFileOp.hNameMappings = IntPtr.Zero;
+			lpFileOp.lpszProgressTitle = string.Empty;
+
+			int result = SHFileOperation(ref lpFileOp);
+			if (result == 0)
+				success = !lpFileOp.fAnyOperationsAborted;
+			PluginDebug.AddInfo("Delete in UAC mode: " + success.ToString());
+			return success;
+		}
+
 		public static bool CopyFiles(string from, string to)
 		{
 			bool success = false;
@@ -173,6 +199,7 @@ namespace EarlyUpdateCheck
 				}
 				catch { }
 			});
+			thread.IsBackground = true;
 			thread.Start();
 			var result = dialogShowCode();
 			thread.Abort();

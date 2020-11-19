@@ -37,7 +37,6 @@ namespace EarlyUpdateCheck
 		private IStatusLogger m_slUpdateCheck = null;
 		private Form m_CheckProgress = null;
 		private bool m_bRestartInvoke = false;
-		private bool m_bRestartTriggered = false;
 		private IStatusLogger m_slUpdatePlugins = null;
 		private bool m_bUpdateCheckDone = false;
 
@@ -78,24 +77,63 @@ namespace EarlyUpdateCheck
 			return true;
 		}
 
+		List<Delegate> m_lFormLoadPostHandlers = new List<Delegate>();
+		private void RemoveAndBackupFormLoadPostHandlers()
+		{
+			m_lFormLoadPostHandlers = EventHelper.GetFormLoadPostHandlers();
+			m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() =>
+			{
+				if (KeePass.Program.MainForm == null || KeePass.Program.MainForm.Disposing || KeePass.Program.MainForm.IsDisposed) return;
+				EventHelper.RemoveFormLoadPostEventHandlers(m_lFormLoadPostHandlers);
+			}));
+			m_host.MainWindow.FormLoadPost += RestoreFormLoadPostHandlers;
+		}
+
+		private void RestoreFormLoadPostHandlers(object sender, EventArgs e)
+		{
+			Thread t = new Thread(() =>
+			{
+				Thread.Sleep(PluginConfig.RestoreMutexThreshold);
+				if (KeePass.Program.MainForm == null || KeePass.Program.MainForm.Disposing || KeePass.Program.MainForm.IsDisposed)
+				{
+					PluginDebug.AddInfo("Restore MainForm.FormLoadPost handlers not done");
+					return;
+				}
+				EventHelper.RestoreFormLoadPostEventHandlers(m_lFormLoadPostHandlers);
+				PluginDebug.AddInfo("Restore MainForm.FormLoadPost handlers done");
+				foreach (var del in m_lFormLoadPostHandlers)
+				{
+					if (KeePass.Program.MainForm != null && !KeePass.Program.MainForm.Disposing && !KeePass.Program.MainForm.IsDisposed)
+						del.DynamicInvoke(new object[] { sender, e });
+				}
+				PluginDebug.AddInfo("MainForm.FormLoadPost handlers executed");
+			});
+			t.IsBackground = true;
+			t.Start();
+		}
+
 		private void MainWindow_FormLoadPost(object sender, EventArgs e)
 		{
-			m_bRestartInvoke = false;
+			//Can be null if restart after upgrade is in progress
+			//In this case, EarlyUpdateCheckExt.Terminate() might have been called already
+			//RemoveAndBackupFormLoadPostHandlers and RestoreFormLoadPostHandlers should work around that, but you never know...
+			if (m_host == null || m_host.MainWindow == null) return;
+			if (m_host.MainWindow.IsDisposed || m_host.MainWindow.Disposing) return;
+
 			m_host.MainWindow.FormLoadPost -= MainWindow_FormLoadPost;
 
-			if (PluginUpdateHandler.CheckTranslations)
+			//Load plugins and check check for new translations if not already done
+			if (PluginUpdateHandler.CheckTranslations && !m_bRestartInvoke)
 			{
-				//Load plugins and check check for new translations if not already done
 				ThreadPool.QueueUserWorkItem(new WaitCallback(CheckPluginLanguages));
 			}
-			else
+			else if (!m_bRestartInvoke)
 			{
-				//Only load plugins
-				//Do NOT check for new translations
-				Thread t = new Thread(() => PluginUpdateHandler.LoadPlugins(false));
-				t.Start();
+				//Only load plugins, do NOT check for new translations
+				ThreadPool.QueueUserWorkItem(new WaitCallback((object o) => { PluginUpdateHandler.LoadPlugins(false); }));
 			}
 			PluginDebug.AddInfo("All plugins loaded", 0, DebugPrint);
+			m_bRestartInvoke = false;
 		}
 
 		private void WindowAdded(object sender, GwmWindowEventArgs e)
@@ -104,13 +142,17 @@ namespace EarlyUpdateCheck
 			PluginDebug.AddInfo("Form added", 0, e.Form.Name, e.Form.GetType().FullName, DebugPrint);
 			if (e.Form is UpdateCheckForm)
 			{
-				if (m_CheckProgress != null)
+				if (m_CheckProgress != null || !m_CheckProgress.IsDisposed || !m_CheckProgress.Disposing)
 				{
-					m_CheckProgress.Hide();
+					if (!KeePassLib.Native.NativeLib.IsUnix()) m_CheckProgress.Hide(); //Makes KeePass freeze sometimes... How I love randomness in development...
 					lock (m_lock) { m_UpdateCheckStatus = UpdateCheckStatus.Checked; }
 				}
 				if (PluginConfig.OneClickUpdate)
+				{
+					PluginDebug.AddInfo("OneClickUpdate 1", 0, DebugPrint);
 					e.Form.Shown += OnUpdateCheckFormShown;
+					PluginDebug.AddInfo("OneClickUpdate 2", 0, DebugPrint);
+				}
 				return;
 			}
 			if (e.Form is KeyPromptForm) KeyPromptFormAdded();
@@ -174,18 +216,128 @@ namespace EarlyUpdateCheck
 			//This method runs in a separate thread 
 			//==> Update window might be shown AFTER "Open Database" window is shown
 			if (PluginConfig.CheckSync)
+				UpdateCheckBackground();
+			if ((m_UpdateCheckStatus == UpdateCheckStatus.NotChecked) || (m_UpdateCheckStatus == UpdateCheckStatus.Error)) UpdateCheckEx.Run(false, null);
+		}
+
+		private void UpdateCheckBackground()
+		{
+			List<string> lMsg = new List<string>();
+			string sBackup = KeePass.Program.Config.Application.LastUpdateCheck;
+			KeePass.Program.Config.Application.LastUpdateCheck = TimeUtil.SerializeUtc(DateTime.UtcNow);
+
+			bool bOK = true;
+			MethodInfo miGetInstalledComponents = typeof(UpdateCheckEx).GetMethod("GetInstalledComponents", BindingFlags.Static | BindingFlags.NonPublic);
+			if (miGetInstalledComponents == null)
 			{
-				PluginDebug.AddInfo("UpdateCheck start", 0, DebugPrint);
+				bOK = false;
+				lMsg.Add("Could not locate UpdateCheckEx.GetInstalledComponents");
+			}
+
+			MethodInfo miGetUrls = typeof(UpdateCheckEx).GetMethod("GetUrls", BindingFlags.Static | BindingFlags.NonPublic);
+			if (miGetUrls == null)
+			{
+				bOK = false;
+				lMsg.Add("Could not locate UpdateCheckEx.GetUrls");
+			}
+
+			MethodInfo miDownloadInfoFiles = typeof(UpdateCheckEx).GetMethod("DownloadInfoFiles", BindingFlags.Static | BindingFlags.NonPublic);
+			if (miDownloadInfoFiles == null)
+			{
+				bOK = false;
+				lMsg.Add("Could not locate UpdateCheckEx.DownloadInfoFiles");
+			}
+
+			MethodInfo miMergeInfo = typeof(UpdateCheckEx).GetMethod("MergeInfo", BindingFlags.Static | BindingFlags.NonPublic);
+			if (miMergeInfo == null)
+			{
+				bOK = false;
+				lMsg.Add("Could not locate UpdateCheckEx.MergeInfo");
+			}
+
+			try
+			{
 				m_bRestartInvoke = true;
-				try
+				KeePassLib.Delegates.GAction actUpdateCheck = new KeePassLib.Delegates.GAction(() =>
 				{
-					m_slUpdateCheck = CreateUpdateCheckLogger();
-				}
-				catch (Exception ex)
+					//taken from UpdateCheckExt.RunPriv
+					//MainForm.InvokeRequired is not true on Mono :(
+					try
+					{
+						lock (m_lock) { m_UpdateCheckStatus = UpdateCheckStatus.Checking; }
+						List<UpdateComponentInfo> lInst = (List<UpdateComponentInfo>)miGetInstalledComponents.Invoke(null, null);
+						List<string> lUrls = (List<string>)miGetUrls.Invoke(null, new object[] { lInst });
+						Dictionary<string, List<UpdateComponentInfo>> dictAvail =
+							(Dictionary<string, List<UpdateComponentInfo>>)miDownloadInfoFiles.Invoke(null, new object[] { lUrls, null /* m_slUpdateCheck */});
+						if (dictAvail == null) return; // User cancelled
+
+						miMergeInfo.Invoke(null, new object[] { lInst, dictAvail });
+
+						bool bUpdAvail = false;
+						foreach (UpdateComponentInfo uc in lInst)
+						{
+							if (uc.Status == UpdateComponentStatus.NewVerAvailable)
+							{
+								bUpdAvail = true;
+								break;
+							}
+						}
+
+						if (m_slUpdateCheck != null)
+						{
+							m_host.MainWindow.BeginInvoke(new KeePassLib.Delegates.GAction(() => { m_slUpdateCheck.EndLogging(); }));
+							m_slUpdateCheck = null;
+						}
+
+						KeePassLib.Delegates.GAction actShowUpdateForm_UIThread = new KeePassLib.Delegates.GAction(() =>
+						{
+							try
+							{
+								// Do not show the update dialog while auto-typing;
+								// https://sourceforge.net/p/keepass/bugs/1265/
+								if (SendInputEx.IsSending) return;
+
+								UpdateCheckForm dlg = new UpdateCheckForm();
+								dlg.InitEx(lInst, false);
+								var dr = UIUtil.ShowDialogAndDestroy(dlg);
+							}
+							catch (Exception ex)
+							{
+								bOK = false;
+								lMsg.Add(ex.Message);
+							}
+						});
+
+						if (bUpdAvail) m_host.MainWindow.BeginInvoke(actShowUpdateForm_UIThread);
+					}
+					catch (Exception ex)
+					{
+						bOK = false;
+						lMsg.Add(ex.Message);
+					}
+					finally
+					{
+						try { if (m_slUpdateCheck != null) m_slUpdateCheck.EndLogging(); }
+						catch (Exception) { }
+						if (bOK)
+							lock (m_lock) { m_UpdateCheckStatus = UpdateCheckStatus.Checked; }
+						else
+							lock (m_lock) { m_UpdateCheckStatus = UpdateCheckStatus.Error; }
+					}
+				});
+				if (bOK)
 				{
-					PluginDebug.AddError("UpdateCheck error", 0, "Initialising StatusLogger failed", ex.Message, DebugPrint);
+					try
+					{
+						m_slUpdateCheck = CreateUpdateCheckLogger();
+						lMsg.Add("Initialising StatusLogger create: " + DebugPrint);
+					}
+					catch (Exception ex)
+					{
+						lMsg.Add("Initialising StatusLogger failed:\n" + ex.Message + "\n" + DebugPrint);
+					}
+					ThreadPool.QueueUserWorkItem(new WaitCallback((object o) => { actUpdateCheck(); }));
 				}
-				ThreadPool.QueueUserWorkItem(new WaitCallback(CheckForUpdates));
 				while (true)
 				{
 					if ((m_slUpdateCheck != null) && !m_slUpdateCheck.ContinueWork()) break;
@@ -196,44 +348,18 @@ namespace EarlyUpdateCheck
 					}
 				}
 				if (m_slUpdateCheck != null) m_slUpdateCheck.EndLogging();
-				PluginDebug.AddInfo("UpdateCheck finished ", 0, DebugPrint);
+				if (bOK) return;
 			}
-			if ((m_UpdateCheckStatus == UpdateCheckStatus.NotChecked) || (m_UpdateCheckStatus == UpdateCheckStatus.Error)) UpdateCheckEx.Run(false, null);
-			if (m_bRestartTriggered)
+			catch (Exception ex)
 			{
-				m_bRestartTriggered = false;
-				return;
+				bOK = false;
+				lMsg.Add(ex.Message);
 			}
-			ThreadPool.QueueUserWorkItem(new WaitCallback(CheckPluginLanguages));
-		}
-
-		/// <summary>
-		/// Check for available updates
-		/// </summary>
-		private void CheckForUpdates(object o)
-		{
-			//Load list of update-able plugins here
-			//Network can be slow and we're running in a seperate thread alread<, so we won't make KeePass unresponsive
-			//That's better than calling it in OnUpdateCheckFormShown
-			PluginUpdateHandler.LoadPlugins(false); 
-			string sBackup = KeePass.Program.Config.Application.LastUpdateCheck;
-			try
+			finally
 			{
-				lock (m_lock) { m_UpdateCheckStatus = UpdateCheckStatus.Checking; }
-				KeePass.Program.Config.Application.LastUpdateCheck = TimeUtil.SerializeUtc(DateTime.UtcNow);
-				MethodInfo mi = typeof(UpdateCheckEx).GetMethod("RunPriv", BindingFlags.Static | BindingFlags.NonPublic);
-				Type t = typeof(UpdateCheckEx).GetNestedType("UpdateCheckParams", BindingFlags.NonPublic);
-				ConstructorInfo c = t.GetConstructor(new Type[] { typeof(bool), typeof(Form) });
-				object p = c.Invoke(new object[] { false, null });
-				PluginDebug.AddInfo("UpdateCheck start RunPriv ", DebugPrint);
-				mi.Invoke(null, new object[] { p });
-				PluginDebug.AddInfo("UpdateCheck finish RunPriv ", DebugPrint);
-				lock (m_lock) { m_UpdateCheckStatus = UpdateCheckStatus.Checked; }
-			}
-			catch (Exception)
-			{
-				KeePass.Program.Config.Application.LastUpdateCheck = sBackup;
-				lock (m_lock) { m_UpdateCheckStatus = UpdateCheckStatus.Error; }
+				lMsg.Insert(0, "Successful: " + bOK.ToString());
+				if (bOK) PluginDebug.AddSuccess("Run updatecheck in background", 0, lMsg.ToArray());
+				else PluginDebug.AddError("Run updatecheck in background", 0, lMsg.ToArray());
 			}
 		}
 
@@ -285,7 +411,6 @@ namespace EarlyUpdateCheck
 			if (!PluginConfig.Active) return;
 			if (m_bPluginLanguagesChecked) return;
 			m_bPluginLanguagesChecked = true;
-			PluginDebug.AddInfo("Check for updated translations - Start");
 			string translations = string.Empty;
 			List<OwnPluginUpdate> lPlugins = new List<OwnPluginUpdate>();
 			foreach (PluginUpdate pu in PluginUpdateHandler.Plugins)
@@ -301,14 +426,20 @@ namespace EarlyUpdateCheck
 				}
 			}
 			if (lPlugins.Count == 0) return;
-			using (TranslationUpdateForm t = new TranslationUpdateForm())
+			var arrPlugins = lPlugins.ConvertAll(x => x.ToString()).ToArray();
+			PluginDebug.AddInfo("Available translation updates", 0, arrPlugins);
+			KeePassLib.Delegates.GAction DisplayTranslationForm = () =>
 			{
-				t.InitEx(lPlugins);
-				if (t.ShowDialog() == DialogResult.OK)
+				using (TranslationUpdateForm t = new TranslationUpdateForm())
 				{
-					UpdatePluginTranslations(PluginConfig.DownloadActiveLanguage, t.SelectedPlugins);
+					t.InitEx(lPlugins);
+					if (t.ShowDialog() == DialogResult.OK)
+					{
+						UpdatePluginTranslations(PluginConfig.DownloadActiveLanguage, t.SelectedPlugins);
+					}
 				}
-			}
+			};
+			m_host.MainWindow.BeginInvoke(DisplayTranslationForm);
 		}
 		#endregion
 
@@ -317,10 +448,14 @@ namespace EarlyUpdateCheck
 		/// Show update indicator if plugins can be updated
 		/// </summary>
 		private List<Delegate> m_lEventHandlerItemActivate = null;
+		private Image m_ImgApply = null;
+		private Image m_ImgUnselected = null;
 		private void OnUpdateCheckFormShown(object sender, EventArgs e)
 		{
 			m_lEventHandlerItemActivate = null;
+			PluginDebug.AddSuccess("OUCFS 1", 0);
 			if (!PluginConfig.Active || !PluginConfig.OneClickUpdate) return;
+			PluginDebug.AddSuccess("OUCFS 2", 0);
 			CustomListViewEx lvPlugins = (CustomListViewEx)Tools.GetControl("m_lvInfo", sender as UpdateCheckForm);
 			if (lvPlugins == null)
 			{
@@ -328,6 +463,7 @@ namespace EarlyUpdateCheck
 				return;
 			}
 			else PluginDebug.AddSuccess("m_lvInfo found", 0);
+			PluginUpdateHandler.LoadPlugins(false);
 			if (PluginUpdateHandler.Plugins.Count == 0) return;
 			SetPluginSelectionStatus(false);
 			bool bColumnAdded = false;
@@ -337,9 +473,10 @@ namespace EarlyUpdateCheck
 				EventHelper.RemoveItemActivateEventHandlers(lvPlugins, m_lEventHandlerItemActivate);
 				lvPlugins.ItemActivate += LvPlugins_ItemActivate;
 			}
-			Image NoUpdate = UIUtil.CreateGrayImage(lvPlugins.SmallImageList.Images[1]);
-			lvPlugins.SmallImageList.Images.Add("EUCCheckMarkImage", NoUpdate);
-
+			//https://github.com/mono/mono/issues/17747
+			//Do NOT use ListView.SmallImageList
+			if (m_ImgApply == null)	m_ImgApply = (Image)KeePass.Program.Resources.GetObject("B16x16_Apply");
+			if (m_ImgUnselected == null) m_ImgUnselected = m_ImgApply == null ? null : UIUtil.CreateGrayImage(m_ImgApply);
 			foreach (ListViewItem item in lvPlugins.Items)
 			{
 				PluginDebug.AddInfo("Check plugin update status", 0, item.SubItems[0].Text, item.SubItems[1].Text);
@@ -368,7 +505,7 @@ namespace EarlyUpdateCheck
 					break;
 				}
 			}
-			if (bColumnAdded)
+			if (bColumnAdded) 
 			{
 				UIUtil.ResizeColumns(lvPlugins, new int[] { 3, 3, 2, 2, 1 }, true);
 				lvPlugins.MouseClick += OnUpdateCheckFormPluginMouseClick;
@@ -516,15 +653,13 @@ namespace EarlyUpdateCheck
 		{
 			ListView lvPlugins = sender as ListView;
 			e.DrawDefault = true;
+
 			if (e.ColumnIndex != lvPlugins.Items[0].SubItems.Count) return;
 			PluginUpdate upd = PluginUpdateHandler.Plugins.Find(x => x.Title == e.Item.SubItems[0].Text);
 			if (upd == null) return;
 			e.DrawDefault = false;
-			e.DrawBackground();
-			int i = upd.Selected ? 1 : lvPlugins.SmallImageList.Images.IndexOfKey("EUCCheckMarkImage");
-
-			var imageRect = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Height, e.Bounds.Height);
-			e.Graphics.DrawImage((sender as ListView).SmallImageList.Images[i], imageRect);
+			var imageRect = new RectangleF(e.Bounds.X, e.Bounds.Y, e.Bounds.Height, e.Bounds.Height);
+			e.Graphics.DrawImage(upd.Selected ? m_ImgApply : m_ImgUnselected, e.Bounds.X, e.Bounds.Y);
 		}
 		#endregion
 
@@ -533,7 +668,6 @@ namespace EarlyUpdateCheck
 		/// Update installed plugin translations
 		/// </summary>
 		/// <param name="bDownloadActiveLanguage">Download translation for currently used language even if not installed yet</param>
-		private delegate void UpdatePluginsDelegate(bool bUpdateTranslationsOnly);
 		public void UpdatePluginTranslations(bool bDownloadActiveLanguage, List<string> lUpdateTranslations)
 		{
 			foreach (var upd in PluginUpdateHandler.Plugins)
@@ -543,8 +677,7 @@ namespace EarlyUpdateCheck
 
 			//If called from CheckPluginLanguages, we're running in a different thread
 			//Use Invoke because the IStatusLogger will attach to the KeyPromptForm within the UI thread
-			UpdatePluginsDelegate delUpdate = UpdatePlugins;
-			m_host.MainWindow.Invoke(delUpdate, new object[] { true });
+			m_host.MainWindow.BeginInvoke(new KeePassLib.Delegates.GAction(() => { UpdatePlugins(true); }), true);
 			PluginConfig.DownloadActiveLanguage = bBackup;
 			foreach (var upd in PluginUpdateHandler.Plugins)
 			{
@@ -577,7 +710,7 @@ namespace EarlyUpdateCheck
 			PluginDebug.AddInfo("UpdatePlugins start ", DebugPrint);
 			Form fUpdateLog = null;
 			m_slUpdatePlugins = StatusUtil.CreateStatusDialog(GlobalWindowManager.TopWindow, out fUpdateLog, PluginTranslate.PluginUpdateCaption, string.Empty, true, true);
-
+			
 			bool success = false;
 			string sTempPluginsFolder = PluginUpdateHandler.GetTempFolder();
 
@@ -595,6 +728,7 @@ namespace EarlyUpdateCheck
 				}
 			});
 			Thread t = new Thread(ts);
+			t.IsBackground = true;
 			t.Start();
 			while (true && t.IsAlive)
 			{
@@ -604,6 +738,7 @@ namespace EarlyUpdateCheck
 					break;
 				}
 			}
+			if (t != null && t.IsAlive) t.Abort();
 			if (m_slUpdatePlugins != null)
 			{
 				m_slUpdatePlugins.EndLogging();
@@ -614,7 +749,7 @@ namespace EarlyUpdateCheck
 			//Move files from temp folder to plugin folder
 			success &= PluginUpdateHandler.MoveAll(sTempPluginsFolder);
 			if (success) PluginUpdateHandler.Cleanup(sTempPluginsFolder);
-
+			success = true;
 			//Restart KeePass to use new plugin versions
 			PluginDebug.AddInfo("Update finished", "Succes: " + success.ToString(), DebugPrint);
 			if (success && !bUpdateTranslationsOnly)
@@ -622,9 +757,7 @@ namespace EarlyUpdateCheck
 				if (Tools.AskYesNo(PluginTranslate.PluginUpdateSuccess, PluginTranslate.PluginUpdateCaption) == DialogResult.Yes)
 				{
 					if (m_bRestartInvoke)
-					{
-						m_host.MainWindow.Invoke(new KeePassLib.Delegates.VoidDelegate(Restart));
-					}
+						m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() => { Restart(); }));
 					else
 						Restart();
 				}
@@ -662,28 +795,38 @@ namespace EarlyUpdateCheck
 			{
 				PluginDebug.AddInfo("Closing KeyPromptForm", 0, DebugPrint);
 				m_kpf.DialogResult = DialogResult.Cancel;
-				m_kpf.Close();
-				m_kpf.Dispose();
+				if (m_kpf != null) m_kpf.Close();
+				if (m_kpf != null) m_kpf.Dispose();
 				Application.DoEvents();
-				GlobalWindowManager.RemoveWindow(m_kpf);
+				if (m_kpf != null) GlobalWindowManager.RemoveWindow(m_kpf);
 			}
 			if (m_slUpdateCheck != null)
 			{
 				PluginDebug.AddInfo("Closing update check progress form", 0, DebugPrint);
 				m_slUpdateCheck.EndLogging();
 			}
+
+			if (MonoWorkarounds.IsRequired(620618))
+			{
+				MethodInfo miSetEnabled = typeof(MonoWorkarounds).GetMethod("SetEnabled", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+				if (miSetEnabled == null) PluginDebug.AddError("Could not locate MonoWorkarounds.SetEnabled", 0);
+				else miSetEnabled.Invoke(null, new object[] { "620618", false });
+				if (MonoWorkarounds.IsRequired(620618)) PluginDebug.AddError("Could not disable MonoWorkaround 620618");
+				else PluginDebug.AddSuccess("Disabled MonoWorkaround 620618");
+			}
+			else PluginDebug.AddSuccess("Disabling MonoWorkaround 620618 not required");
+
 			FieldInfo fi = m_host.MainWindow.GetType().GetField("m_bRestart", BindingFlags.NonPublic | BindingFlags.Instance);
 			if (fi != null)
 			{
 				PluginDebug.AddInfo("Restart started, m_bRestart found", DebugPrint);
+				RemoveAndBackupFormLoadPostHandlers();
 				HandleMutex(true);
 				fi.SetValue(m_host.MainWindow, true);
-				m_bRestartTriggered = true;
 				m_host.MainWindow.ProcessAppMessage((IntPtr)KeePass.Program.AppMessage.Exit, IntPtr.Zero);
 				HandleMutex(false);
 			}
-			else
-				PluginDebug.AddError("Restart started, m_bRestart not found" + DebugPrint);
+			else PluginDebug.AddError("Restart started, m_bRestart not found" + DebugPrint);
 		}
 
 		/// <summary>
@@ -737,6 +880,7 @@ namespace EarlyUpdateCheck
 					  bool bSuccess = GlobalMutexPool.CreateMutex(KeePass.App.AppDefs.MutexName, true);
 					  PluginDebug.AddInfo("Handle global mutex", 0, "Recreate mutex sucessful: " + bSuccess.ToString());
 				  }));
+				t.IsBackground = true;
 				t.Start();
 				return;
 			}

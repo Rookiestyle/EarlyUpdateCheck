@@ -41,9 +41,11 @@ If this option is active, EarlyUpdateCheck will additionally ensure the update c
 You may have the upgrade check continue in background if you don't want to wait for its completion.";
 		public static readonly string EnterBackgroundMode = @"Continue in background";
 		public static readonly string PluginUpdateOneClick = @"One-Click plugin update";
-		public static readonly string PluginUpdateOneClickDesc = @"Install new versions of my plugins by clicking the plugin in the 'Update Check' window.
+		public static readonly string PluginUpdateOneClickDesc = @"Install new versions of plugins by clicking the plugin in the 'Update Check' window.
 This requires write access to KeePass' plugin folder.
-KeePass needs to be restarted afterwards in order to use the new version.";
+KeePass needs to be restarted afterwards in order to use the new version.
+
+Maintain file ExternalPluginUpdates.xml to include other authors' plugins, see the wiki for more details";
 		public static readonly string PluginUpdate = @"Update";
 		public static readonly string PluginUpdateSelected = @"Start update";
 		public static readonly string PluginUpdateCaption = @"Early Update Check - Plugin Updater";

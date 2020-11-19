@@ -41,7 +41,7 @@ namespace EarlyUpdateCheck
 			}
 			if (lPlugins.Count == 0)
 			{
-				PluginTools.PluginDebug.AddInfo("No plugins where translations can be updated");
+				PluginTools.PluginDebug.AddInfo("No plugins where translations can be updated", 0);
 				return;
 			}
 			using (TranslationUpdateForm t = new TranslationUpdateForm())

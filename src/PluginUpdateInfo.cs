@@ -32,49 +32,8 @@ namespace EarlyUpdateCheck
 			get
 			{
 				if (m_bShieldify.HasValue) return m_bShieldify.Value;
-				List<string> lShieldify = new List<string>();
-				try
-				{
-					m_bShieldify = false;
-					if (KeePassLib.Native.NativeLib.IsUnix())
-					{
-						lShieldify.Add("Detected Unix");
-						return m_bShieldify.Value;
-					}
-					if (!WinUtil.IsAtLeastWindows7)
-					{
-						lShieldify.Add("Detected Windows < 7");
-						return m_bShieldify.Value;
-					}
-					string sPF86 = EnsureNonNull(Environment.GetEnvironmentVariable("ProgramFiles(x86)"));
-					string sPF86_2 = string.Empty;
-					try { sPF86_2 = EnsureNonNull(Environment.GetFolderPath((Environment.SpecialFolder)42)); } //Environment.SpecialFolder.ProgramFilesX86
-					catch { sPF86_2 = sPF86; }
-					string sPF = EnsureNonNull(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
-					string sKP = EnsureNonNull(UrlUtil.GetFileDirectory(WinUtil.GetExecutable(), true, false));
-					m_bShieldify = sKP.StartsWith(sPF86) || sKP.StartsWith(sPF) || sKP.StartsWith(sPF86_2);
-					lShieldify.Add("KeePass folder inside ProgramFiles(x86): " + sKP.StartsWith(sPF86));
-					lShieldify.Add("KeePass folder inside Environment.SpecialFolder.ProgramFilesX86: " + sKP.StartsWith(sPF86_2));
-					lShieldify.Add("KeePass folder inside Environment.SpecialFolder.ProgramFiles: " + sKP.StartsWith(sPF));
-					return m_bShieldify.Value;
-				}
-				catch (Exception ex) { lShieldify.Add("Exception: " + ex.Message); return m_bShieldify.Value; }
-				finally
-				{
-					lShieldify.Insert(0, "Shieldify: " + m_bShieldify.ToString());
-					PluginDebug.AddInfo("Check Shieldify", 0, lShieldify.ToArray());
-				}
-				/*
-				string sTempFile = PluginsFolder + "EarlyUpdateCheckTest.txt";
-				try
-				{
-					File.WriteAllText(sTempFile, "Test file to check for write access");
-					File.Delete(sTempFile);
-					m_bShieldify = false;
-				}
-				catch (Exception) { m_bShieldify = true; }
+				CheckShieldify();
 				return m_bShieldify.Value;
-				*/
 			}
 		}
 
@@ -111,38 +70,43 @@ namespace EarlyUpdateCheck
 			PluginDebug.AddInfo("PluginUpdateHandler initialized", 0, lMsg.ToArray());
 		}
 
+
 		internal static void LoadPlugins(bool bReload)
 		{
-			if (!bReload && Plugins.Count > 0) return;
-			Plugins.Clear();
-			if (m_Plugins.Count == 0) m_Plugins = Tools.GetLoadedPluginsName();
-			List<string> lPluginnames = new List<string>();
-			foreach (string sPlugin in m_Plugins.Keys)
+			lock (Plugins) //Might be called in multiple threads, ensure a plugin is listed only once
 			{
-				try
+				if (!bReload && Plugins.Count > 0) return;
+				Plugins.Clear();
+				if (m_Plugins.Count == 0) m_Plugins = Tools.GetLoadedPluginsName();
+				if (Plugins.Count > 0) return; //Might have been filled from different thread meanwhile
+				List<string> lPluginnames = new List<string>();
+				foreach (string sPlugin in m_Plugins.Keys)
 				{
-					string s = sPlugin.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)[0];
-					Plugin p = (Plugin)Tools.GetPluginInstance(s);
-					if (p == null) continue;
-
-					AssemblyCompanyAttribute[] comp = (AssemblyCompanyAttribute[])p.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-					bool bOwnPlugin = string.Compare("rookiestyle", comp[0].Company, StringComparison.InvariantCultureIgnoreCase) == 0;
-
-					PluginUpdate pu = null;
-					if (bOwnPlugin) pu = new OwnPluginUpdate(p.GetType().Namespace);
-					else
+					try
 					{
-						try { pu = new OtherPluginUpdate(p.GetType().Namespace); } catch { }
+						string s = sPlugin.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)[0];
+						Plugin p = (Plugin)Tools.GetPluginInstance(s);
+						if (p == null) continue;
+
+						AssemblyCompanyAttribute[] comp = (AssemblyCompanyAttribute[])p.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+						bool bOwnPlugin = string.Compare("rookiestyle", comp[0].Company, StringComparison.InvariantCultureIgnoreCase) == 0;
+
+						PluginUpdate pu = null;
+						if (bOwnPlugin) pu = new OwnPluginUpdate(p.GetType().Namespace);
+						else
+						{
+							try { pu = new OtherPluginUpdate(p.GetType().Namespace); } catch { }
+						}
+						if (pu != null && Plugins.Find(x => x.Name == pu.Name) == null)
+						{
+							Plugins.Add(pu);
+							if (pu.UpdatePossible) lPluginnames.Add(pu.Name);
+						}
 					}
-					if (pu != null)
-					{
-						Plugins.Add(pu);
-						if (pu.UpdatePossible) lPluginnames.Add(pu.Name);
-					}
+					catch (Exception ex) { PluginDebug.AddError(ex.Message, 0); }
 				}
-				catch (Exception ex) { PluginDebug.AddError(ex.Message); }
+				PluginDebug.AddInfo("Installed updateable plugins", 0, lPluginnames.ToArray());
 			}
-			PluginDebug.AddInfo("Installed updateable plugins", lPluginnames.ToArray());
 		}
 
 		internal static bool VersionsEqual(Version vA, Version vB)
@@ -167,6 +131,8 @@ namespace EarlyUpdateCheck
 				if (WinUtil.IsAtLeastWindowsVista &&
 					(NativeMethods.ShieldifyNativeDialog(System.Windows.Forms.DialogResult.Yes, () => Tools.AskYesNo(PluginTranslate.TryUAC, PluginTranslate.PluginUpdateCaption)) == System.Windows.Forms.DialogResult.Yes))
 				{
+					if (m_lFilesDelete.Count > 0 && FileCopier.DeleteFiles(m_lFilesDelete.ToArray())) m_lFilesDelete.Clear();
+
 					bSuccess = FileCopier.CopyFiles(sTempFolder, sTargetFolder);
 					if (!bSuccess)
 					{
@@ -186,6 +152,20 @@ namespace EarlyUpdateCheck
 				bSuccess = true;
 				List<string> lFiles = UrlUtil.GetFilePaths(sTempFolder, "*", SearchOption.AllDirectories);
 				List<string> lMsg = new List<string>();
+
+				foreach (string sFile in m_lFilesDelete)
+				{
+					try
+					{
+						File.Delete(sFile);
+					}
+					catch (Exception ex)
+					{
+						lMsg.Add(ex.Message);
+					}
+				}
+				m_lFilesDelete.Clear();
+
 				foreach (string sFile in lFiles)
 				{
 					string sTargetFile = sFile.Replace(sTempFolder, sTargetFolder);
@@ -213,6 +193,12 @@ namespace EarlyUpdateCheck
 			try { Directory.Delete(sTempPluginsFolder, true); } catch { }
 		}
 
+		private static List<string> m_lFilesDelete = new List<string>();
+
+		internal static void DeleteSpecialFile(string sFile)
+		{
+			if (!m_lFilesDelete.Contains(sFile)) m_lFilesDelete.Add(sFile);
+		}
 
 		private static Dictionary<string, Version> m_Plugins = new Dictionary<string, Version>();
 		private static string m_sLastUpdateCheck = string.Empty;
@@ -222,11 +208,52 @@ namespace EarlyUpdateCheck
 			if (v == null) return string.Empty;
 			return v;
 		}
+
+		private static void CheckShieldify()
+		{
+			List<string> lShieldify = new List<string>();
+			try
+			{
+				m_bShieldify = false;
+				if (KeePassLib.Native.NativeLib.IsUnix())
+				{
+					lShieldify.Add("Detected Unix");
+					return;
+				}
+				if (!WinUtil.IsAtLeastWindows7)
+				{
+					lShieldify.Add("Detected Windows < 7");
+					return;
+				}
+				string sPF86 = EnsureNonNull(Environment.GetEnvironmentVariable("ProgramFiles(x86)"));
+				string sPF86_2 = string.Empty;
+				try { sPF86_2 = EnsureNonNull(Environment.GetFolderPath((Environment.SpecialFolder)42)); } //Environment.SpecialFolder.ProgramFilesX86
+				catch { sPF86_2 = sPF86; }
+				string sPF = EnsureNonNull(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
+				string sKP = EnsureNonNull(UrlUtil.GetFileDirectory(WinUtil.GetExecutable(), true, false));
+				m_bShieldify = sKP.StartsWith(sPF86) || sKP.StartsWith(sPF) || sKP.StartsWith(sPF86_2);
+				lShieldify.Add("KeePass folder inside ProgramFiles(x86): " + sKP.StartsWith(sPF86));
+				lShieldify.Add("KeePass folder inside Environment.SpecialFolder.ProgramFilesX86: " + sKP.StartsWith(sPF86_2));
+				lShieldify.Add("KeePass folder inside Environment.SpecialFolder.ProgramFiles: " + sKP.StartsWith(sPF));
+				return;
+			}
+			catch (Exception ex) { lShieldify.Add("Exception: " + ex.Message); return; }
+			finally
+			{
+				lShieldify.Insert(0, "Shieldify: " + m_bShieldify.ToString());
+				PluginDebug.AddInfo("Check Shieldify", 0, lShieldify.ToArray());
+			}
+		}
 	}
 
 	internal abstract class PluginUpdate
 	{
-		private static Dictionary<string, Version> m_Plugins = new Dictionary<string, Version>();
+		internal struct PluginUpdateInfo
+		{
+			internal Version PluginVersion;
+			internal string PluginFile;
+		}
+		private static Dictionary<string, PluginUpdateInfo> m_Plugins = new Dictionary<string, PluginUpdateInfo>();
 		internal string Name { get; private set; }
 		internal string Title { get; private set; }
 		internal Version VersionInstalled { get; private set; }
@@ -237,6 +264,7 @@ namespace EarlyUpdateCheck
 		public string VersionURL { get; private set; } //string to version file, used for translation checks
 		internal UpdateOtherPluginMode UpdateMode { get; set; }
 		internal bool AllowVersionStripping { get; set; }
+		internal string PluginFile { get; private set; }
 		internal bool Selected;
 		public override string ToString()
 		{
@@ -245,9 +273,11 @@ namespace EarlyUpdateCheck
 
 		internal bool UpdatePossible { get { return !string.IsNullOrEmpty(PluginUpdateURL) && UpdateMode != UpdateOtherPluginMode.Unknown; } }
 
+		protected List<string> m_lDownloaded = new List<string>();
+
 		internal PluginUpdate(string PluginName)
 		{
-			if (m_Plugins.Count == 0) m_Plugins = Tools.GetLoadedPluginsName();
+			if (m_Plugins.Count == 0) m_Plugins = GetLoadedPluginsName();
 			PluginName = PluginName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)[0];
 			Plugin p = (Plugin)Tools.GetPluginInstance(PluginName);
 			if (p == null) throw new ArgumentException("Invalid plugin: " + PluginName);
@@ -260,10 +290,15 @@ namespace EarlyUpdateCheck
 			Title = title[0].Title;
 			VersionURL = p.UpdateUrl;
 
-			Version v;
-			if (!m_Plugins.TryGetValue(p.ToString(), out v)) v = p.GetType().Assembly.GetName().Version;
-			VersionInstalled = v;
+			PluginUpdateInfo pui;
+			if (!m_Plugins.TryGetValue(p.ToString(), out pui))
+			{
+				pui.PluginVersion = p.GetType().Assembly.GetName().Version;
+				pui.PluginFile = string.Empty;
+			}
+			VersionInstalled = pui.PluginVersion;
 			VersionAvailable = new Version(0, 0);
+			PluginFile = pui.PluginFile;
 
 			AllowVersionStripping = false;
 			UpdateMode = UpdateOtherPluginMode.Unknown;
@@ -274,39 +309,83 @@ namespace EarlyUpdateCheck
 			Translations = new List<TranslationVersionCheck>();
 		}
 
+		private static Dictionary<string, PluginUpdateInfo> GetLoadedPluginsName()
+		{
+			Dictionary<string, PluginUpdateInfo> dPlugins = new Dictionary<string, PluginUpdateInfo>();
+			BindingFlags bf = BindingFlags.Instance | BindingFlags.NonPublic;
+			try
+			{
+				var PluginManager = Tools.GetField("m_pluginManager", KeePass.Program.MainForm);
+				var PluginList = Tools.GetField("m_vPlugins", PluginManager);
+				MethodInfo IteratorMethod = PluginList.GetType().GetMethod("System.Collections.Generic.IEnumerable<T>.GetEnumerator", bf);
+				IEnumerator<object> PluginIterator = (IEnumerator<object>)(IteratorMethod.Invoke(PluginList, null));
+				while (PluginIterator.MoveNext())
+				{
+					object result = Tools.GetField("m_strDisplayFilePath", PluginIterator.Current);
+					if (result == null) result = Tools.GetField("m_strFilePath", PluginIterator.Current);
+					string sFile = string.Empty;
+					if (result != null) sFile = (string)result;
+
+					result = Tools.GetField("m_pluginInterface", PluginIterator.Current);
+					var x = result.GetType().Assembly;
+					object[] v = x.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
+					Version ver = null;
+					if ((v != null) && (v.Length > 0))
+						ver = new Version(((AssemblyFileVersionAttribute)v[0]).Version);
+					else
+						ver = result.GetType().Assembly.GetName().Version;
+					if (ver.Build < 0) ver = new Version(ver.Major, ver.Minor, 0, 0);
+					if (ver.Revision < 0) ver = new Version(ver.Major, ver.Minor, ver.Build, 0);
+					dPlugins[result.GetType().FullName] = new PluginUpdateInfo() { PluginVersion = ver, PluginFile = sFile };
+				}
+			}
+			catch (Exception) { }
+			return dPlugins;
+		}
+
 		internal virtual bool Download(string sTempFolder)
 		{
 			if (string.IsNullOrEmpty(sTempFolder)) return false;
-			string sFile = MergeInVersion();
+			string sFile = MergeInVersion(true);
+			sTempFolder = MergeInPluginFolder(sTempFolder);
 			return DownloadFile(sFile, sTempFolder);
 		}
 
-		protected virtual string MergeInVersion()
+		protected string MergeInPluginFolder(string sTempFolder)
+		{
+			if (string.IsNullOrEmpty(PluginFile)) return sTempFolder;
+			string s = UrlUtil.GetFileDirectory(PluginFile, true, true);
+			s = s.Substring(PluginUpdateHandler.PluginsFolder.Length);
+			return UrlUtil.EnsureTerminatingSeparator(sTempFolder, sTempFolder.Contains("//")) + s;
+		}
+
+		protected virtual string MergeInVersion(bool bUseAvailableVersion)
 		{
 			string sResult = PluginUpdateURL;
+			Version v = bUseAvailableVersion ? VersionAvailable : VersionInstalled;
 			//VersionAvailable = new Version(0, 4, 0, 1);
 			//sResult = "a{MAJOR}-{.MINOR}-{.BUILD}-{.revision}b";
-			bool bStripping = AllowVersionStripping && VersionAvailable.Revision < 1;
+			bool bStripping = AllowVersionStripping && v.Revision < 1;
 			Regex r = new Regex(@"\{([^}]*)REVISION\}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			if (bStripping) sResult = r.Replace(sResult, string.Empty);
-			else sResult = r.Replace(sResult, "$1\n" + VersionAvailable.Revision.ToString());
+			else sResult = r.Replace(sResult, "$1\n" + v.Revision.ToString());
 			
 
-			bStripping &= VersionAvailable.Build < 1;
+			bStripping &= v.Build < 1;
 			r = new Regex(@"\{([^}]*)BUILD\}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			if (bStripping) sResult = r.Replace(sResult, string.Empty);
-			else sResult = r.Replace(sResult, "$1\n" + VersionAvailable.Build.ToString());
+			else sResult = r.Replace(sResult, "$1\n" + v.Build.ToString());
 
-			bStripping &= VersionAvailable.Minor < 1;
+			bStripping &= v.Minor < 1;
 			r = new Regex(@"\{([^}]*)MINOR\}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			if (bStripping) sResult = r.Replace(sResult, string.Empty);
-			else sResult = r.Replace(sResult, "$1\n" + VersionAvailable.Minor.ToString());
+			else sResult = r.Replace(sResult, "$1\n" + v.Minor.ToString());
 			
 
-			bStripping &= VersionAvailable.Major < 1;
+			bStripping &= v.Major < 1;
 			r = new Regex(@"\{([^}]*)MAJOR\}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			if (bStripping) sResult = r.Replace(sResult, string.Empty);
-			else sResult = r.Replace(sResult, "$1\n" + VersionAvailable.Major.ToString());
+			else sResult = r.Replace(sResult, "$1\n" + v.Major.ToString());
 
 			sResult = sResult.Replace("\n", string.Empty);
 			
@@ -331,7 +410,10 @@ namespace EarlyUpdateCheck
 					s.Close();
 					byte[] pb = ms.ToArray();
 					ms.Close();
+					//Create target folder, Directory.CreateDirectory internally checks for existance of the folder
+					Directory.CreateDirectory(sTargetFolder);
 					File.WriteAllBytes(sTarget, pb);
+					m_lDownloaded.Add(sTarget);
 					PluginDebug.AddInfo("Download success", 0, "Source: " + sSource, "Target: " + sTargetFolder, "Download attempt: " + iAttempts.ToString());
 					return true;
 				}
@@ -371,6 +453,7 @@ namespace EarlyUpdateCheck
 
 		internal virtual void Cleanup()
 		{
+			m_lDownloaded.Clear();
 			//Added for plugin specific file cleanups (future)
 		}
 	}
@@ -534,10 +617,17 @@ namespace EarlyUpdateCheck
 			AllowVersionStripping = uie.AllowVersionStripping;
 		}
 
-		internal override bool Download(string sTempFolder)
+		internal override bool ProcessDownload(string sTargetFolder)
 		{
-			if (!base.Download(sTempFolder)) return false;
+			if (!PreProcessDownload(sTargetFolder)) return false;
+			bool bOK = base.ProcessDownload(sTargetFolder);
+			bOK = PostProcessDownload(sTargetFolder, bOK);
 
+			return bOK;
+		}
+
+		private bool PreProcessDownload(string sTargetFolder)
+		{
 			switch (UpdateMode)
 			{
 				case UpdateOtherPluginMode.PlgxDirect:
@@ -546,7 +636,7 @@ namespace EarlyUpdateCheck
 					return true;
 				case UpdateOtherPluginMode.ZipExtractPlgx:
 				case UpdateOtherPluginMode.ZipExtractDll:
-					string sSourceFile = sTempFolder + UrlUtil.GetFileName(MergeInVersion());
+					string sSourceFile = m_lDownloaded[0];
 					byte[] pb = File.ReadAllBytes(sSourceFile);
 					File.Delete(sSourceFile);
 					string sPattern = UpdateMode == UpdateOtherPluginMode.ZipExtractDll ? "*.dll" : "*.plgx";
@@ -562,8 +652,9 @@ namespace EarlyUpdateCheck
 							{
 								f[0].Extract(msTarget);
 								pb = msTarget.ToArray();
-								string sTargetFile = sTempFolder + f[0].FileName;
+								string sTargetFile = UrlUtil.GetFileDirectory(m_lDownloaded[0], true, true) + f[0].FileName;
 								File.WriteAllBytes(sTargetFile, pb);
+								m_lDownloaded[0] = sTargetFile;
 								PluginDebug.AddInfo("Other plugin update", 0, "Extracted file: " + f[0].FileName);
 							}
 						}
@@ -573,21 +664,26 @@ namespace EarlyUpdateCheck
 			}
 		}
 
-		internal override bool ProcessDownload(string sTargetFolder)
+		private bool PostProcessDownload(string sTargetFolder, bool bProcessOK)
 		{
-			if (Name.ToLowerInvariant() == "KeePassSyncForDrive".ToLowerInvariant())
-			{
-				string sSource = sTargetFolder + UrlUtil.GetFileName(MergeInVersion());
-				string sTarget = sTargetFolder + "KeePassSyncForDrive.plgx";
+			if (!bProcessOK) return false;
+			//Some plugins contain the plugin version in the filename
+			//Identify this case and trigger deletion of old version
+			string sNewFile = UrlUtil.GetFileName(MergeInVersion(true));
+			string sOldFile = UrlUtil.GetFileName(MergeInVersion(false));
 
-				//Don't copy sSource -> sTarget and delete sSource afterwards - could be the same...
-				PluginDebug.AddInfo("Process plugin download", 0,
-					"Plugin: " + Name, "Action: Rename", "From: " + UrlUtil.GetFileName(sSource), "To: " + UrlUtil.GetFileName(sTarget));
-				byte[] b = File.ReadAllBytes(sSource);
-				File.Delete(sSource);
-				File.WriteAllBytes(sTarget, b);
-			}
-			return base.ProcessDownload(sTargetFolder);
+			if (string.Compare(sNewFile, sOldFile, true) == 0) return true;
+
+			string sNewFileFull = MergeInPluginFolder(PluginUpdateHandler.PluginsFolder) + sNewFile;
+			string sOldFileFull = MergeInPluginFolder(PluginUpdateHandler.PluginsFolder) + sOldFile;
+
+			//File.Exists is case sensitive if the OS is case sensitive
+			//As ExternalPluginUpdates.xml may contain filenames that don't match because of this, don't rely on File.Exists here
+			bool bExists = false;
+			if (!KeePassLib.Native.NativeLib.IsUnix()) bExists = File.Exists(sOldFileFull);
+			else bExists = UrlUtil.GetFilePaths(MergeInPluginFolder(PluginUpdateHandler.PluginsFolder), "*", SearchOption.TopDirectoryOnly).Find(x => string.Compare(UrlUtil.GetFileName(x), sOldFileFull, true) == 0) != null;
+			if (bExists && (string.Compare(sOldFileFull, PluginFile, true) == 0)) PluginUpdateHandler.DeleteSpecialFile(PluginFile);
+			return true;
 		}
 	}
 
@@ -645,7 +741,8 @@ namespace EarlyUpdateCheck
 				}
 				catch (Exception ex)
 				{
-					lMsg.Add("Error parsing file: " + ex.Message);
+					lMsg.Add("Error parsing ExternalPluginUpdates.xml: " + ex.Message);
+					Tools.ShowError("Error parsing ExternalPluginUpdates.xml: " + ex.Message);
 					return;
 				}
 				lMsg.Add("Update information file parsed successfully, parsed data can be found in the following log entries");
@@ -713,7 +810,10 @@ namespace EarlyUpdateCheck
 						}
 						catch { uie.UpdateMode = UpdateOtherPluginMode.Unknown; }
 					}
-					else if (sElement == "AllowVersionStripping") uie.AllowVersionStripping = reader.ReadContentAsBoolean();
+					else if (sElement == "AllowVersionStripping")
+					{
+						uie.AllowVersionStripping = StrUtil.StringToBool(reader.ReadContentAsString());
+					}
 					reader.ReadEndElement();
 					sElement = reader.Name;
 				}
@@ -750,7 +850,7 @@ namespace EarlyUpdateCheck
 				writer.WriteEndElement();
 
 				writer.WriteStartElement("AllowVersionStripping");
-				writer.WriteString(uie.AllowVersionStripping.ToString());
+				writer.WriteString(StrUtil.BoolToString(uie.AllowVersionStripping));
 				writer.WriteEndElement();
 
 				writer.WriteEndElement();
