@@ -134,7 +134,7 @@ namespace EarlyUpdateCheck
 			PluginDebug.AddInfo("Form added", 0, e.Form.Name, e.Form.GetType().FullName, DebugPrint);
 			if (e.Form is UpdateCheckForm)
 			{
-				if (m_CheckProgress != null || !m_CheckProgress.IsDisposed || !m_CheckProgress.Disposing)
+				if (m_CheckProgress != null && !m_CheckProgress.IsDisposed && !m_CheckProgress.Disposing)
 				{
 					if (!KeePassLib.Native.NativeLib.IsUnix()) m_CheckProgress.Hide(); //Makes KeePass freeze sometimes... How I love randomness in development...
 					lock (m_lock) { m_UpdateCheckStatus = UpdateCheckStatus.Checked; }
