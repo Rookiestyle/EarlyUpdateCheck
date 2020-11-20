@@ -78,7 +78,6 @@ namespace PluginTools
 			return lResult;
 		}
 
-
 		internal static List<Delegate> GetFormLoadPostHandlers()
 		{
 			List<Delegate> lResult = new List<Delegate>();

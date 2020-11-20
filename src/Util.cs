@@ -6,22 +6,30 @@ using System.Windows.Forms;
 
 namespace EarlyUpdateCheck
 {
-	public enum UpdateCheckType
+	internal enum UpdateCheckType
 	{
 		NotRequired = 0,
 		Required = 1,
 		OnlyTranslations = 2,
 	}
 
-	public static class PluginConfig
+	internal enum UpdateCheckStatus
+	{
+		NotChecked,
+		Checking,
+		Checked,
+		Error
+	};
+
+	internal static class PluginConfig
 	{
 		private static KeePass.App.Configuration.AceCustomConfig Config = KeePass.Program.Config.CustomConfig;
-		public static bool Active = true;
-		public static bool CheckSync = true;
-		public static bool OneClickUpdate = true;
-		public static bool DownloadActiveLanguage = true;
+		internal static bool Active = true;
+		internal static bool CheckSync = true;
+		internal static bool OneClickUpdate = true;
+		internal static bool DownloadActiveLanguage = true;
 
-		public static int RestoreMutexThreshold
+		internal static int RestoreMutexThreshold
 		{
 			get
 			{
@@ -31,7 +39,7 @@ namespace EarlyUpdateCheck
 			}
 		}
 
-		public static void Read()
+		internal static void Read()
 		{
 			PluginConfig.Active = Config.GetBool("EarlyUpdateCheck.Active", PluginConfig.Active);
 			PluginConfig.CheckSync = Config.GetBool("EarlyUpdateCheck.CheckSync", PluginConfig.CheckSync);
@@ -39,7 +47,7 @@ namespace EarlyUpdateCheck
 			PluginConfig.DownloadActiveLanguage = Config.GetBool("EarlyUpdateCheck.DownloadActiveLanguage", PluginConfig.DownloadActiveLanguage);
 		}
 
-		public static void Write()
+		internal static void Write()
 		{
 			Config.SetBool("EarlyUpdateCheck.Active", PluginConfig.Active);
 			Config.SetBool("EarlyUpdateCheck.CheckSync", PluginConfig.CheckSync);
@@ -48,7 +56,7 @@ namespace EarlyUpdateCheck
 		}
 	}
 
-	public static class FileCopier
+	internal static class FileCopier
 	{
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		private static extern int SHFileOperation([In] ref SHFILEOPSTRUCT lpFileOp);
@@ -56,18 +64,18 @@ namespace EarlyUpdateCheck
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		private struct SHFILEOPSTRUCT
 		{
-			public IntPtr hwnd;
-			public FILE_OP_TYPE wFunc;
+			internal IntPtr hwnd;
+			internal FILE_OP_TYPE wFunc;
 			[MarshalAs(UnmanagedType.LPWStr)]
-			public string pFrom;
+			internal string pFrom;
 			[MarshalAs(UnmanagedType.LPWStr)]
-			public string pTo;
-			public FILE_OP_FLAGS fFlags;
+			internal string pTo;
+			internal FILE_OP_FLAGS fFlags;
 			[MarshalAs(UnmanagedType.Bool)]
-			public bool fAnyOperationsAborted;
-			public IntPtr hNameMappings;
+			internal bool fAnyOperationsAborted;
+			internal IntPtr hNameMappings;
 			[MarshalAs(UnmanagedType.LPWStr)]
-			public string lpszProgressTitle;
+			internal string lpszProgressTitle;
 		}
 
 		private enum FILE_OP_TYPE : uint
@@ -99,7 +107,7 @@ namespace EarlyUpdateCheck
 			FOF_NORECURSEREPARSE = 0x8000,
 		}
 
-		public static bool DeleteFiles(params string[] files)
+		internal static bool DeleteFiles(params string[] files)
 		{
 			bool success = false;
 
@@ -125,7 +133,7 @@ namespace EarlyUpdateCheck
 			return success;
 		}
 
-		public static bool CopyFiles(string from, string to)
+		internal static bool CopyFiles(string from, string to)
 		{
 			bool success = false;
 
@@ -150,29 +158,29 @@ namespace EarlyUpdateCheck
 		}
 	}
 
-	public static class NativeMethods
+	internal static class NativeMethods
 	{
 		[DllImport("kernel32")]
-		public static extern uint GetCurrentThreadId();
+		internal static extern uint GetCurrentThreadId();
 
-		public delegate bool EnumWindowsProcedure(IntPtr windowHandle, IntPtr param);
+		internal delegate bool EnumWindowsProcedure(IntPtr windowHandle, IntPtr param);
 		[DllImport("user32")]
-		public static extern bool EnumChildWindows(IntPtr windowHandle, EnumWindowsProcedure enumProc, IntPtr param);
+		internal static extern bool EnumChildWindows(IntPtr windowHandle, EnumWindowsProcedure enumProc, IntPtr param);
 
 		[DllImport("user32")]
-		public static extern bool EnumThreadWindows(uint threadId, EnumWindowsProcedure enumProc, IntPtr param);
+		internal static extern bool EnumThreadWindows(uint threadId, EnumWindowsProcedure enumProc, IntPtr param);
 
 		[DllImport("user32", EntryPoint = "GetClassNameW", SetLastError = true, CharSet = CharSet.Unicode)]
-		public static extern int GetClassName(IntPtr windowHandle, System.Text.StringBuilder buffer, int bufferSize);
+		internal static extern int GetClassName(IntPtr windowHandle, System.Text.StringBuilder buffer, int bufferSize);
 
 		[DllImport("user32", EntryPoint = "GetDlgCtrlID")]
-		public static extern int GetDialogControlId(IntPtr windowHandle);
+		internal static extern int GetDialogControlId(IntPtr windowHandle);
 
 		[DllImport("user32")]
-		public static extern uint SendMessage(IntPtr param, uint message, uint wParam, uint lParam);
+		internal static extern uint SendMessage(IntPtr param, uint message, uint wParam, uint lParam);
 
 		//Credits go to Falahati: https://github.com/falahati/UACHelper - file WinForm.cs
-		public static DialogResult ShieldifyNativeDialog(DialogResult button, KeePassLib.Delegates.GFunc<DialogResult> dialogShowCode)
+		internal static DialogResult ShieldifyNativeDialog(DialogResult button, KeePassLib.Delegates.GFunc<DialogResult> dialogShowCode)
 		{
 			var callingThreadId = NativeMethods.GetCurrentThreadId();
 			var thread = new Thread(() =>
@@ -206,7 +214,7 @@ namespace EarlyUpdateCheck
 			return result;
 		}
 
-		public static bool ShieldifyNativeDialog(DialogResult button, IntPtr windowHandle)
+		internal static bool ShieldifyNativeDialog(DialogResult button, IntPtr windowHandle)
 		{
 			int numberOfItems = 0;
 			bool notFound = NativeMethods.EnumChildWindows(windowHandle, (wnd, param) =>

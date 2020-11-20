@@ -1,5 +1,6 @@
 ﻿using KeePass.Plugins;
 using KeePass.Util;
+using KeePassLib.Delegates;
 using KeePassLib.Utility;
 using PluginTools;
 using PluginTranslation;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -70,7 +72,6 @@ namespace EarlyUpdateCheck
 			PluginDebug.AddInfo("PluginUpdateHandler initialized", 0, lMsg.ToArray());
 		}
 
-
 		internal static void LoadPlugins(bool bReload)
 		{
 			lock (Plugins) //Might be called in multiple threads, ensure a plugin is listed only once
@@ -105,7 +106,7 @@ namespace EarlyUpdateCheck
 					}
 					catch (Exception ex) { PluginDebug.AddError(ex.Message, 0); }
 				}
-				PluginDebug.AddInfo("Installed updateable plugins", 0, lPluginnames.ToArray());
+				PluginDebug.AddInfo("Installed updatable plugins", 0, lPluginnames.ToArray());
 			}
 		}
 
@@ -125,66 +126,67 @@ namespace EarlyUpdateCheck
 		internal static bool MoveAll(string sTempFolder)
 		{
 			string sTargetFolder = PluginUpdateHandler.PluginsFolder;
-			bool bSuccess = false;
-			if (Shieldify)
-			{
-				if (WinUtil.IsAtLeastWindowsVista &&
-					(NativeMethods.ShieldifyNativeDialog(System.Windows.Forms.DialogResult.Yes, () => Tools.AskYesNo(PluginTranslate.TryUAC, PluginTranslate.PluginUpdateCaption)) == System.Windows.Forms.DialogResult.Yes))
-				{
-					if (m_lFilesDelete.Count > 0 && FileCopier.DeleteFiles(m_lFilesDelete.ToArray())) m_lFilesDelete.Clear();
+			if (Shieldify) return MoveAllShieldified(sTempFolder, sTargetFolder, false);
+			else return MoveAllNonShieldified(sTempFolder, sTargetFolder);
+		}
 
-					bSuccess = FileCopier.CopyFiles(sTempFolder, sTargetFolder);
-					if (!bSuccess)
-					{
-						if (Tools.AskYesNo(PluginTranslate.PluginUpdateFailed, PluginTranslate.PluginUpdateCaption) == System.Windows.Forms.DialogResult.Yes)
-						{
-							System.Diagnostics.Process.Start(sTempFolder);
-						}
-					}
+		private static bool MoveAllNonShieldified(string sTempFolder, string sTargetFolder)
+		{
+			bool bSuccess = true;
+			List<string> lFiles = UrlUtil.GetFilePaths(sTempFolder, "*", SearchOption.AllDirectories);
+			List<string> lMsg = new List<string>();
+
+			foreach (string sFile in m_lFilesDelete)
+			{
+				try	{ File.Delete(sFile);	}
+				catch (Exception ex) { lMsg.Add(ex.Message); }
+			}
+
+			foreach (string sFile in lFiles)
+			{
+				string sTargetFile = sFile.Replace(sTempFolder, sTargetFolder);
+				try { File.Copy(sFile, sTargetFile, true); }
+				catch (Exception ex)
+				{
+					bSuccess = false;
+					lMsg.Add(ex.Message);
 				}
-				else if (Tools.AskYesNo(PluginTranslate.OpenTempFolder, PluginTranslate.PluginUpdateCaption) == System.Windows.Forms.DialogResult.Yes)
+			}
+			if (!bSuccess)
+			{
+				PluginDebug.AddError("Error moving files", 0, lMsg.ToArray());
+				if (WinUtil.IsAtLeastWindowsVista) return MoveAllShieldified(sTempFolder, sTargetFolder, true);
+				if (Tools.AskYesNo(PluginTranslate.PluginUpdateFailed, PluginTranslate.PluginUpdateCaption) == DialogResult.Yes)
 				{
 					System.Diagnostics.Process.Start(sTempFolder);
 				}
 			}
-			else
+
+			m_lFilesDelete.Clear(); //Clear list after MovAllShieldified was tried as well
+
+			return bSuccess;
+		}
+
+		private static bool MoveAllShieldified(string sTempFolder, string sTargetFolder, bool bOnlyTryShieldify)
+		{
+			bool bSuccess = false;
+			bool bOpenTempFolder = false;
+			GFunc<DialogResult> f = new GFunc<DialogResult>(() =>
 			{
-				bSuccess = true;
-				List<string> lFiles = UrlUtil.GetFilePaths(sTempFolder, "*", SearchOption.AllDirectories);
-				List<string> lMsg = new List<string>();
+				return Tools.AskYesNo(PluginTranslate.TryUAC, PluginTranslate.PluginUpdateCaption);
+			});
 
-				foreach (string sFile in m_lFilesDelete)
-				{
-					try
-					{
-						File.Delete(sFile);
-					}
-					catch (Exception ex)
-					{
-						lMsg.Add(ex.Message);
-					}
-				}
-				m_lFilesDelete.Clear();
+			if (WinUtil.IsAtLeastWindowsVista && (NativeMethods.ShieldifyNativeDialog(DialogResult.Yes, f) == DialogResult.Yes))
+			{
+				if (m_lFilesDelete.Count > 0 && FileCopier.DeleteFiles(m_lFilesDelete.ToArray())) m_lFilesDelete.Clear();
 
-				foreach (string sFile in lFiles)
-				{
-					string sTargetFile = sFile.Replace(sTempFolder, sTargetFolder);
-					try { File.Copy(sFile, sTargetFile, true); }
-					catch (Exception ex)
-					{
-						bSuccess = false;
-						lMsg.Add(ex.Message);
-					}
-				}
-				if (!bSuccess)
-				{
-					PluginDebug.AddError("Error moving files", 0, lMsg.ToArray());
-					if (Tools.AskYesNo(PluginTranslate.PluginUpdateFailed, PluginTranslate.PluginUpdateCaption) == System.Windows.Forms.DialogResult.Yes)
-					{
-						System.Diagnostics.Process.Start(sTempFolder);
-					}
-				}
+				bSuccess = FileCopier.CopyFiles(sTempFolder, sTargetFolder);
+				if (!bSuccess) bOpenTempFolder = Tools.AskYesNo(PluginTranslate.PluginUpdateFailed, PluginTranslate.PluginUpdateCaption) == DialogResult.Yes;
 			}
+			else if (!bOnlyTryShieldify) bOpenTempFolder = Tools.AskYesNo(PluginTranslate.OpenTempFolder, PluginTranslate.PluginUpdateCaption) == DialogResult.Yes;
+
+			if (bOpenTempFolder) System.Diagnostics.Process.Start(sTempFolder);
+
 			return bSuccess;
 		}
 
@@ -467,10 +469,10 @@ namespace EarlyUpdateCheck
 			UpdateMode = UpdateOtherPluginMode.PlgxDirect;
 
 			PluginUpdateURL = URL + "latest/download/" + Name + ".plgx";
-			UpdateTranslationInfo();
+			UpdateTranslationInfo(false);
 		}
 
-		internal bool DownloadTranslations(string sTempFolder, bool bDownloadCurrentLangue)
+		internal bool DownloadTranslations(string sTempFolder, bool bDownloadCurrentLangue, bool bCheckVersion)
 		{
 			string sTempTranslationsFolder = UrlUtil.EnsureTerminatingSeparator(sTempFolder + "Translations", false);
 			Directory.CreateDirectory(sTempTranslationsFolder);
@@ -478,8 +480,8 @@ namespace EarlyUpdateCheck
 			bool bOK = true;
 			foreach (var t in Translations)
 			{
+				if (bCheckVersion && !t.NewTranslationAvailable && !(bDownloadCurrentLangue && t.TranslationForCurrentLanguageAvailable)) continue;
 				string sFile = URL.Replace("github.com", "raw.githubusercontent.com") + "../master/Translations/" + t.LangugageFile;
-				if (!t.NewTranslationAvailable && !(bDownloadCurrentLangue && t.TranslationForCurrentLanguageAvailable)) continue;
 				if (DownloadFile(sFile, sTempTranslationsFolder)) continue;
 				bOK = false;
 				Tools.ShowError(string.Format(PluginTranslate.PluginTranslationUpdateFailed, Title, t.LangugageFile), PluginTranslate.PluginUpdateCaption);
@@ -487,12 +489,12 @@ namespace EarlyUpdateCheck
 			return bOK;
 		}
 
-		internal void UpdateTranslationInfo()
+		internal void UpdateTranslationInfo(bool bOnlyInstalled)
 		{
-			Translations.Clear();
+			if (!bOnlyInstalled) Translations.Clear();
 			
 			UpdateInstalledTranslations();
-			UpdateAvailableTranslations();
+			if (!bOnlyInstalled) UpdateAvailableTranslations();
 
 			if (PluginDebug.DebugMode)
 			{
@@ -516,7 +518,14 @@ namespace EarlyUpdateCheck
 					if (m.Groups.Count != 2) continue;
 					long lVerInstalled = 0;
 					if (!long.TryParse(m.Groups[1].Value, out lVerInstalled)) continue;
-					Translations.Add(new TranslationVersionCheck() { LangugageFile = UrlUtil.GetFileName(lang), Installed = lVerInstalled });
+					string sLang = UrlUtil.GetFileName(lang);
+					TranslationVersionCheck tvc = Translations.Find(x => x.LangugageFile == sLang);
+					if (tvc == null)
+					{
+						tvc = new TranslationVersionCheck() { LangugageFile = sLang };
+						Translations.Add(tvc);
+					}
+					tvc.Installed = lVerInstalled;
 				}
 			}
 			catch (Exception) { }

@@ -23,14 +23,6 @@ namespace EarlyUpdateCheck
 	{
 		private IPluginHost m_host = null;
 		private ToolStripMenuItem m_tsMenu = null;
-
-		private enum UpdateCheckStatus
-		{
-			NotChecked,
-			Checking,
-			Checked,
-			Error
-		};
 		private UpdateCheckStatus m_UpdateCheckStatus = UpdateCheckStatus.NotChecked;
 		private object m_lock = new object();
 
@@ -677,7 +669,7 @@ namespace EarlyUpdateCheck
 
 			//If called from CheckPluginLanguages, we're running in a different thread
 			//Use Invoke because the IStatusLogger will attach to the KeyPromptForm within the UI thread
-			m_host.MainWindow.BeginInvoke(new KeePassLib.Delegates.GAction(() => { UpdatePlugins(true); }), true);
+			m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() => { UpdatePlugins(true); }), null);
 			PluginConfig.DownloadActiveLanguage = bBackup;
 			foreach (var upd in PluginUpdateHandler.Plugins)
 			{
@@ -690,7 +682,11 @@ namespace EarlyUpdateCheck
 				if (miInit == null) continue;
 				try
 				{
-					miInit.Invoke(p, new object[] { p, PluginUpdateHandler.LanguageIso });
+					//Use Invoke because TranslationChangedEvent might be raised and can require running in UIThread
+					m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() =>
+					{
+						miInit.Invoke(p, new object[] { p, PluginUpdateHandler.LanguageIso });
+					}), null);
 				}
 				catch (Exception ex)
 				{
@@ -748,6 +744,11 @@ namespace EarlyUpdateCheck
 
 			//Move files from temp folder to plugin folder
 			success &= PluginUpdateHandler.MoveAll(sTempPluginsFolder);
+			foreach (var pu in PluginUpdateHandler.Plugins)
+			{
+				if (!pu.Selected) continue;
+				if (pu is OwnPluginUpdate) (pu as OwnPluginUpdate).UpdateTranslationInfo(true);
+			}
 			if (success) PluginUpdateHandler.Cleanup(sTempPluginsFolder);
 			success = true;
 			//Restart KeePass to use new plugin versions
@@ -780,7 +781,7 @@ namespace EarlyUpdateCheck
 			if (!bTranslationsOnly) bOK = upd.Download(sPluginFolder);
 			if (upd is OwnPluginUpdate)
 			{
-				bool bTranslationsOK = (upd as OwnPluginUpdate).DownloadTranslations(sPluginFolder, PluginConfig.DownloadActiveLanguage);
+				bool bTranslationsOK = (upd as OwnPluginUpdate).DownloadTranslations(sPluginFolder, PluginConfig.DownloadActiveLanguage, bTranslationsOnly);
 				if (bTranslationsOnly) bOK = bTranslationsOK;
 			}
 			if (bOK) bOK = upd.ProcessDownload(sPluginFolder);
