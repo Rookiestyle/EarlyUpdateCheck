@@ -26,9 +26,11 @@ You may have the upgrade check continue in background if you don't want to wait 
   </item>
   <item>
     <key>PluginUpdateOneClickDesc</key>
-    <value>Install new versions of my plugins by clicking the plugin in the 'Update Check' window.
+    <value>Install new versions of plugins by clicking the plugin in the 'Update Check' window.
 This requires write access to KeePass' plugin folder.
-KeePass needs to be restarted afterwards in order to use the new version.</value>
+KeePass needs to be restarted afterwards in order to use the new version.
+
+Maintain file ExternalPluginUpdates.xml to include other authors' plugins, see the wiki for more details</value>
   </item>
   <item>
     <key>PluginUpdate</key>

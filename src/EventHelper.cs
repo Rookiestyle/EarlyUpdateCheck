@@ -12,21 +12,21 @@ namespace PluginTools
 		private static Dictionary<Type, List<FieldInfo>> m_dicEventFieldInfos = new Dictionary<Type, List<FieldInfo>>();
 
 		private const BindingFlags AllBindings = BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
-		private const string EVENTNAME = "ItemActivate";
+		private const string EVENTNAME_ItemActivate = "ItemActivate";
+		private const string EVENTNAME_FormLoadPost = "FormLoadPost";
 		private static Type tListView = typeof(ListView);
-		private static FieldInfo fEventField = null;
-		private static FieldInfo GetEventField()
+		private static Type tMainform = typeof(KeePass.Forms.MainForm);
+
+		private static FieldInfo GetEventField(string e, Type t)
 		{
-			if (fEventField != null) return fEventField;
-			EventInfo ei = tListView.GetEvent(EVENTNAME, AllBindings);
-			FieldInfo fi = tListView.GetField(EVENTNAME);
-			if (fi == null) fi = tListView.GetField("Event" + ei.Name, AllBindings);
+			EventInfo ei = t.GetEvent(e, AllBindings);
+			FieldInfo fi = t.GetField(e, AllBindings);
+			if (fi == null) fi = t.GetField("Event" + ei.Name, AllBindings);
 			
-			if (fi == null) fi = tListView.GetField(ei.Name + "Event", AllBindings);
+			if (fi == null) fi = t.GetField(ei.Name + "Event", AllBindings);
 
-			if (fi == null) fi = tListView.GetField("on" + ei.Name, AllBindings);
+			if (fi == null) fi = t.GetField("on" + ei.Name, AllBindings);
 
-			fEventField = fi;
 			return fi;
 		}
 
@@ -39,9 +39,9 @@ namespace PluginTools
 
 		internal static void RemoveItemActivateEventHandlers(CustomListViewEx lvPlugins, List<Delegate> m_lEventHandlerItemActivate)
 		{
-			FieldInfo fi = GetEventField();
+			FieldInfo fi = GetEventField(EVENTNAME_ItemActivate, tListView);
 			if (fi == null) return;
-			EventInfo ei = tListView.GetEvent(EVENTNAME, AllBindings);
+			EventInfo ei = tListView.GetEvent(EVENTNAME_ItemActivate, AllBindings);
 			if (ei == null) ei = fi.DeclaringType.GetEvent(fi.Name, AllBindings);
 			if (ei == null) return;
 
@@ -51,7 +51,7 @@ namespace PluginTools
 		internal static List<Delegate> GetItemActivateHandlers(CustomListViewEx lvPlugins)
 		{
 			List<Delegate> lResult = new List<Delegate>();
-			FieldInfo fi = GetEventField();
+			FieldInfo fi = GetEventField(EVENTNAME_ItemActivate, tListView);
 			if (fi == null) return lResult;
 			if (fi.IsStatic) //Unix (Mono)
 			{
@@ -67,7 +67,7 @@ namespace PluginTools
 			}
 			else //Windows
 			{
-				EventInfo ei = tListView.GetEvent(EVENTNAME, AllBindings); //Windows
+				EventInfo ei = tListView.GetEvent(EVENTNAME_ItemActivate, AllBindings); //Windows
 				if (ei != null)
 				{
 					object val = fi.GetValue(lvPlugins);
@@ -76,6 +76,87 @@ namespace PluginTools
 				}
 			}
 			return lResult;
+		}
+
+		internal static List<Delegate> GetFormLoadPostHandlers()
+		{
+			List<Delegate> lResult = new List<Delegate>();
+			FieldInfo fi = GetEventField(EVENTNAME_FormLoadPost, tMainform);
+			if (fi == null) return lResult;
+			if (fi.IsStatic) //Unix (Mono)
+			{
+				EventHandlerList static_event_handlers = GetStaticEventHandlerList(KeePass.Program.MainForm);
+
+				object idx = fi.GetValue(KeePass.Program.MainForm);
+				Delegate eh = static_event_handlers[idx];
+				if (eh != null)
+				{
+					Delegate[] dels = eh.GetInvocationList();
+					if (dels != null) lResult.AddRange(dels);
+				}
+			}
+			else //Windows
+			{
+				EventInfo ei = tMainform.GetEvent(EVENTNAME_FormLoadPost, AllBindings); //Windows
+				if (ei != null)
+				{
+					object val = fi.GetValue(KeePass.Program.MainForm);
+					Delegate mdel = (val as Delegate);
+					if (mdel != null) lResult.AddRange(mdel.GetInvocationList());
+				}
+			}
+			return lResult;
+		}
+
+		internal static void RemoveFormLoadPostEventHandlers(List<Delegate> handlers)
+		{
+			FieldInfo fi = GetEventField(EVENTNAME_FormLoadPost, tMainform);
+			if (fi == null) return;
+			EventInfo ei = tMainform.GetEvent(EVENTNAME_ItemActivate, AllBindings);
+			if (ei == null) ei = fi.DeclaringType.GetEvent(fi.Name, AllBindings);
+			if (ei == null) return;
+
+			if (KeePass.Program.MainForm != null)
+			lock (KeePass.Program.MainForm)
+			{
+				foreach (Delegate del in handlers) ei.RemoveEventHandler(KeePass.Program.MainForm, del);
+			}
+		}
+
+		internal static void RestoreFormLoadPostEventHandlers(List<Delegate> handlers)
+		{
+			FieldInfo fi = GetEventField(EVENTNAME_FormLoadPost, tMainform);
+			if (fi == null) return;
+
+			if (fi.IsStatic)
+			{
+				EventInfo ei = tMainform.GetEvent(fi.Name, AllBindings);
+				if (ei == null)
+					ei = tMainform.GetEvent(EVENTNAME_FormLoadPost, AllBindings);
+				if (ei == null)
+					ei = fi.DeclaringType.GetEvent(fi.Name, AllBindings);
+				if (ei == null)
+					ei = fi.DeclaringType.GetEvent(EVENTNAME_FormLoadPost, AllBindings);
+				if (ei == null) return;
+
+				foreach (var del in handlers)
+					ei.AddEventHandler(KeePass.Program.MainForm, del);
+			}
+			else
+			{
+				EventInfo ei = tMainform.GetEvent(fi.Name, AllBindings);
+				if (ei == null)
+					ei = tMainform.GetEvent(EVENTNAME_FormLoadPost, AllBindings);
+				if (ei == null)
+					ei = fi.DeclaringType.GetEvent(fi.Name, AllBindings);
+				if (ei == null)
+					ei = fi.DeclaringType.GetEvent(EVENTNAME_FormLoadPost, AllBindings);
+				if (ei != null)
+				{
+					foreach (var del in handlers)
+						ei.AddEventHandler(KeePass.Program.MainForm, del);
+				}
+			}			
 		}
 	}
 }

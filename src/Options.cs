@@ -25,24 +25,31 @@ namespace EarlyUpdateCheck
 			else
 				cbDownloadCurrentTranslation.Text = string.Format(PluginTranslate.TranslationDownload_DownloadCurrent, KeePass.Program.Translation.Properties.NameNative);
 			bUpdateTranslations.Text = PluginTranslate.TranslationDownload_Update;
-			if (EarlyUpdateCheckExt.ShouldShieldify)
-				KeePass.UI.UIUtil.SetShield(bUpdateTranslations, true);
+			if (PluginUpdateHandler.Shieldify) KeePass.UI.UIUtil.SetShield(bUpdateTranslations, true);
 		}
 
 		private void bUpdateTranslations_Click(object sender, EventArgs e)
 		{
-			List<string> lPlugins = new List<string>();
-			foreach (UpdateInfo ui in Plugin.Plugins)
-			{	if (ui == null) continue;
-				if (!lPlugins.Contains(ui.Name)) lPlugins.Add(ui.Name);
+			List<OwnPluginUpdate> lPlugins = new List<OwnPluginUpdate>();
+			foreach (PluginUpdate pu in PluginUpdateHandler.Plugins)
+			{
+				OwnPluginUpdate opu = pu as OwnPluginUpdate;
+				if (opu == null) continue;
+				if (!PluginUpdateHandler.VersionsEqual(pu.VersionInstalled, pu.VersionAvailable)) continue;
+				if (opu.Translations.Count == 0) continue;
+				if (!lPlugins.Contains(opu)) lPlugins.Add(opu);
+			}
+			if (lPlugins.Count == 0)
+			{
+				PluginTools.PluginDebug.AddInfo("No plugins where translations can be updated", 0);
+				return;
 			}
 			using (TranslationUpdateForm t = new TranslationUpdateForm())
 			{
 				t.InitEx(lPlugins);
 				if (t.ShowDialog() == DialogResult.OK)
 				{
-					lPlugins = t.SelectedPlugins;
-					Plugin.UpdatePluginTranslations(PluginConfig.DownloadActiveLanguage, lPlugins);
+					Plugin.UpdatePluginTranslations(PluginConfig.DownloadActiveLanguage, t.SelectedPlugins);
 				}
 			}
 		}
