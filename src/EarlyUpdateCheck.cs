@@ -536,7 +536,7 @@ namespace EarlyUpdateCheck
 				else
 				{
 					string url = upd.URL;
-					try { WinUtil.OpenUrl(url, null, true); }
+					try { Tools.OpenUrl(url); }
 					catch (Exception exUrl) { Tools.ShowError(url + "\n\n" + exUrl.Message); }
 				}
 			}
@@ -552,11 +552,7 @@ namespace EarlyUpdateCheck
 				PluginUpdate upd = PluginUpdateHandler.Plugins.Find(x => x.Title == lvi.SubItems[0].Text);
 				if (upd == null) return;
 				string url = upd.URL;
-				try { System.Diagnostics.Process.Start(url); }
-				catch (Exception exUrl)	{ Tools.ShowError(url + "\n\n" + exUrl.Message);
-				}
-
-				WinUtil.OpenUrl(url, null, true);
+				Tools.OpenUrl(url);
 			}
 			catch { }
 		}

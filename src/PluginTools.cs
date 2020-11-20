@@ -26,7 +26,19 @@ namespace PluginTools
 			KeePassVersion = typeof(KeePass.Program).Assembly.GetName().Version;
 			KeePassLanguageIso6391 = KeePass.Program.Translation.Properties.Iso6391Code;
 			if (string.IsNullOrEmpty(KeePassLanguageIso6391)) KeePassLanguageIso6391 = "en";
-			m_sPuginClassname = typeof(Tools).Assembly.GetName().Name + "Ext";
+			m_sPluginClassname = typeof(Tools).Assembly.GetName().Name + "Ext";
+		}
+
+		public static void OpenUrl(string sURL)
+		{
+			OpenUrl(sURL, null);
+		}
+
+		public static void OpenUrl(string sURL, KeePassLib.PwEntry pe)
+		{
+			//Use KeePass built-in logic instead of System.Diagnostics.Process.Start
+			//For details see: https://sourceforge.net/p/keepass/discussion/329221/thread/f399b6d74b/#4801 
+			KeePass.Util.WinUtil.OpenUrl(sURL, pe, true);
 		}
 
 		#region Form and field handling
@@ -142,7 +154,7 @@ namespace PluginTools
 
 		private static bool OptionsEnabled = (KeePass.Program.Config.UI.UIFlags & (ulong)KeePass.App.Configuration.AceUIFlags.DisableOptions) != (ulong)KeePass.App.Configuration.AceUIFlags.DisableOptions;
 		private static bool m_ActivatePluginTab = false;
-		private static string m_sPuginClassname = string.Empty;
+		private static string m_sPluginClassname = string.Empty;
 		private static OptionsForm m_of = null;
 		private const string c_tabRookiestyle = "m_tabRookiestyle";
 		private const string c_tabControlRookiestyle = "m_tabControlRookiestyle";
@@ -318,7 +330,7 @@ namespace PluginTools
 		private static void PluginURLClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			string target = e.Link.LinkData as string;
-			System.Diagnostics.Process.Start(target);
+			OpenUrl(target);
 		}
 
 		private static void OnOptionsFormShown(object sender, EventArgs e)
@@ -332,7 +344,7 @@ namespace PluginTools
 			{
 				tcMain.SelectedIndex = tcMain.TabPages.IndexOfKey(c_tabRookiestyle);
 				KeePass.Program.Config.Defaults.OptionsTabIndex = (uint)tcMain.SelectedIndex;
-				tcPlugins.SelectedIndex = tcPlugins.TabPages.IndexOfKey(c_tabRookiestyle + m_sPuginClassname);
+				tcPlugins.SelectedIndex = tcPlugins.TabPages.IndexOfKey(c_tabRookiestyle + m_sPluginClassname);
 			}
 			m_ActivatePluginTab = false;
 			tcMain.Selected += OnPluginTabsSelected;
