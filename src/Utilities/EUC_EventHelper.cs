@@ -22,7 +22,7 @@ namespace PluginTools
 			EventInfo ei = t.GetEvent(e, AllBindings);
 			FieldInfo fi = t.GetField(e, AllBindings);
 			if (fi == null) fi = t.GetField("Event" + ei.Name, AllBindings);
-			
+
 			if (fi == null) fi = t.GetField(ei.Name + "Event", AllBindings);
 
 			if (fi == null) fi = t.GetField("on" + ei.Name, AllBindings);
@@ -72,7 +72,7 @@ namespace PluginTools
 				{
 					object val = fi.GetValue(lvPlugins);
 					Delegate mdel = (val as Delegate);
-					if (mdel != null)	lResult.AddRange(mdel.GetInvocationList());
+					if (mdel != null) lResult.AddRange(mdel.GetInvocationList());
 				}
 			}
 			return lResult;
@@ -117,10 +117,10 @@ namespace PluginTools
 			if (ei == null) return;
 
 			if (KeePass.Program.MainForm != null)
-			lock (KeePass.Program.MainForm)
-			{
-				foreach (Delegate del in handlers) ei.RemoveEventHandler(KeePass.Program.MainForm, del);
-			}
+				lock (KeePass.Program.MainForm)
+				{
+					foreach (Delegate del in handlers) ei.RemoveEventHandler(KeePass.Program.MainForm, del);
+				}
 		}
 
 		internal static void RestoreFormLoadPostEventHandlers(List<Delegate> handlers)
@@ -156,7 +156,7 @@ namespace PluginTools
 					foreach (var del in handlers)
 						ei.AddEventHandler(KeePass.Program.MainForm, del);
 				}
-			}			
+			}
 		}
 	}
 }

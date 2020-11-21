@@ -277,7 +277,7 @@ namespace EarlyUpdateCheck
 
 						if (m_slUpdateCheck != null)
 						{
-							m_host.MainWindow.BeginInvoke(new KeePassLib.Delegates.GAction(() => { m_slUpdateCheck.EndLogging(); }));
+							m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() => { m_slUpdateCheck.EndLogging(); }));
 							m_slUpdateCheck = null;
 						}
 
