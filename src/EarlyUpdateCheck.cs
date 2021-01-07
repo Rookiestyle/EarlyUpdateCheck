@@ -29,6 +29,7 @@ namespace EarlyUpdateCheck
 		private IStatusLogger m_slUpdateCheck = null;
 		private Form m_CheckProgress = null;
 		private bool m_bRestartInvoke = false;
+		private bool m_bRestartTriggered = false;
 		private IStatusLogger m_slUpdatePlugins = null;
 		private bool m_bUpdateCheckDone = false;
 
@@ -115,17 +116,18 @@ namespace EarlyUpdateCheck
 			m_host.MainWindow.FormLoadPost -= MainWindow_FormLoadPost;
 
 			//Load plugins and check check for new translations if not already done
-			if (PluginUpdateHandler.CheckTranslations && !m_bRestartInvoke)
+			if (PluginUpdateHandler.CheckTranslations && !m_bRestartTriggered)
 			{
 				ThreadPool.QueueUserWorkItem(new WaitCallback(CheckPluginLanguages));
 			}
-			else if (!m_bRestartInvoke)
+			else if (!m_bRestartTriggered)
 			{
 				//Only load plugins, do NOT check for new translations
 				ThreadPool.QueueUserWorkItem(new WaitCallback((object o) => { PluginUpdateHandler.LoadPlugins(false); }));
 			}
 			PluginDebug.AddInfo("All plugins loaded", 0, DebugPrint);
 			m_bRestartInvoke = false;
+			m_bRestartTriggered = false;
 		}
 
 		private void WindowAdded(object sender, GwmWindowEventArgs e)
@@ -820,6 +822,7 @@ namespace EarlyUpdateCheck
 				RemoveAndBackupFormLoadPostHandlers();
 				HandleMutex(true);
 				fi.SetValue(m_host.MainWindow, true);
+				m_bRestartTriggered = true;
 				m_host.MainWindow.ProcessAppMessage((IntPtr)KeePass.Program.AppMessage.Exit, IntPtr.Zero);
 				HandleMutex(false);
 			}
