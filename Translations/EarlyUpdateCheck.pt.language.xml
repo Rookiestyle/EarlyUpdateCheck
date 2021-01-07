@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translation>
+  <TranslationVersion>0</TranslationVersion>
+  <item>
+    <key>Active</key>
+    <value>Ativo</value>
+  </item>
+  <item>
+    <key>CheckSync</key>
+    <value>Checar atualização em primeiro plano</value>
+  </item>
+  <item>
+    <key>CheckSyncDesc</key>
+    <value>EarlyUpdateCheck sempre iniciará a verificação de atualização o mais cedo possível.
+
+Se esta opção estiver ativa, EarlyUpdateCheck irá adicionalmente garantir que a verificação de atualização seja concluída ANTES que a janela 'Abrir Banco de Dados' seja exibida.
+Você pode fazer com que a verificação da atualização continue em segundo plano se não quiser esperar sua conclusão.</value>
+  </item>
+  <item>
+    <key>EnterBackgroundMode</key>
+    <value>Continue em segundo plano</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClick</key>
+    <value>Atualização do plugin em Um Clique</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClickDesc</key>
+    <value>Instale novas versões de plug-ins clicando no plug-in na janela 'Verificar atualização'.
+Isso requer acesso de gravação à pasta de plug-ins do KeePass.
+O KeePass precisa ser reiniciado posteriormente para usar a nova versão.
+
+Mantenha o arquivo ExternalPluginUpdates.xml para incluir plug-ins de outros autores, consulte o wiki para obter mais detalhes</value>
+  </item>
+  <item>
+    <key>PluginUpdate</key>
+    <value>Atualizar</value>
+  </item>
+  <item>
+    <key>PluginUpdateSelected</key>
+    <value>Iniciar atualização</value>
+  </item>
+  <item>
+    <key>PluginUpdateCaption</key>
+    <value>Verificação de atualização antecipada - atualizador de plug-in</value>
+  </item>
+  <item>
+    <key>PluginUpdating</key>
+    <value>Atualizando {0}, aguarde...</value>
+  </item>
+  <item>
+    <key>PluginUpdateSuccess</key>
+    <value>A atualização foi bem-sucedida, a(s) nova(s) versão(ões) estarão ativas após a reinicialização do KeePass.
+Reinicie agora?</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailed</key>
+    <value>Falha ao mover os arquivos baixados. Pretende abrir a pasta temporária?</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailedSpecific</key>
+    <value>Plugin: {0}
+A atualização falhou</value>
+  </item>
+  <item>
+    <key>PluginTranslationUpdateFailed</key>
+    <value>Plugin: {0}
+A atualização do arquivo de idioma {1} falhou</value>
+  </item>
+  <item>
+    <key>TryUAC</key>
+    <value>A atualização não pôde ser concluída. Tente um método alternativo?
+Isso pode mostrar o prompt do UAC.</value>
+  </item>
+  <item>
+    <key>OpenTempFolder</key>
+    <value>Abrir pasta temporária contendo os arquivos atualizados?</value>
+  </item>
+  <item>
+    <key>TranslationDownload_Update</key>
+    <value>Atualizar traduções manualmente</value>
+  </item>
+  <item>
+    <key>TranslationDownload_DownloadCurrent</key>
+    <value>Sempre baixe traduções para o idioma ativo: {0}</value>
+  </item>
+  <item>
+    <key>TranslationUpdateForm</key>
+    <value>Verificação de atualização antecipada - Atualizar traduções</value>
+  </item>
+  <item>
+    <key>SelectPluginsForTranslationUpdate</key>
+    <value>Selecione plugins para os quais as traduções devem ser atualizadas</value>
+  </item>
+</Translation>
