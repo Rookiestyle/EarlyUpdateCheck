@@ -78,6 +78,7 @@ namespace EarlyUpdateCheck
 			{
 				if (!bReload && Plugins.Count > 0) return;
 				Plugins.Clear();
+				List<PluginUpdate> lPlugins = new List<PluginUpdate>();
 				if (m_Plugins.Count == 0) m_Plugins = Tools.GetLoadedPluginsName();
 				if (Plugins.Count > 0) return; //Might have been filled from different thread meanwhile
 				List<string> lPluginnames = new List<string>();
@@ -100,12 +101,14 @@ namespace EarlyUpdateCheck
 						}
 						if (pu != null && Plugins.Find(x => x.Name == pu.Name) == null)
 						{
-							Plugins.Add(pu);
+							lPlugins.Add(pu);
 							if (pu.UpdatePossible) lPluginnames.Add(pu.Name);
 						}
 					}
 					catch (Exception ex) { PluginDebug.AddError(ex.Message, 0); }
 				}
+				Plugins.Clear();
+				Plugins.AddRange(lPlugins); //Many plugins in foreach => foreach might not be finished when update check form is shown
 				PluginDebug.AddInfo("Installed updatable plugins", 0, lPluginnames.ToArray());
 			}
 		}
@@ -199,7 +202,9 @@ namespace EarlyUpdateCheck
 
 		internal static void DeleteSpecialFile(string sFile)
 		{
-			if (!m_lFilesDelete.Contains(sFile)) m_lFilesDelete.Add(sFile);
+			if (m_lFilesDelete.Contains(sFile)) return;
+			m_lFilesDelete.Add(sFile);
+			PluginDebug.AddInfo("Remove old plugin file :" + sFile, 0);
 		}
 
 		private static Dictionary<string, Version> m_Plugins = new Dictionary<string, Version>();
@@ -685,13 +690,20 @@ namespace EarlyUpdateCheck
 
 			string sNewFileFull = MergeInPluginFolder(PluginUpdateHandler.PluginsFolder) + sNewFile;
 			string sOldFileFull = MergeInPluginFolder(PluginUpdateHandler.PluginsFolder) + sOldFile;
-
+			
 			//File.Exists is case sensitive if the OS is case sensitive
 			//As ExternalPluginUpdates.xml may contain filenames that don't match because of this, don't rely on File.Exists here
 			bool bExists = false;
 			if (!KeePassLib.Native.NativeLib.IsUnix()) bExists = File.Exists(sOldFileFull);
 			else bExists = UrlUtil.GetFilePaths(MergeInPluginFolder(PluginUpdateHandler.PluginsFolder), "*", SearchOption.TopDirectoryOnly).Find(x => string.Compare(UrlUtil.GetFileName(x), sOldFileFull, true) == 0) != null;
 			if (bExists && (string.Compare(sOldFileFull, PluginFile, true) == 0)) PluginUpdateHandler.DeleteSpecialFile(PluginFile);
+
+			sOldFileFull = this.PluginFile;
+			bExists = false;
+			if (!KeePassLib.Native.NativeLib.IsUnix()) bExists = File.Exists(sOldFileFull);
+			else bExists = UrlUtil.GetFilePaths(MergeInPluginFolder(PluginUpdateHandler.PluginsFolder), "*", SearchOption.TopDirectoryOnly).Find(x => string.Compare(UrlUtil.GetFileName(x), sOldFileFull, true) == 0) != null;
+			if (bExists && (string.Compare(sOldFileFull, PluginFile, true) == 0)) PluginUpdateHandler.DeleteSpecialFile(PluginFile);
+
 			return true;
 		}
 	}
@@ -727,16 +739,17 @@ namespace EarlyUpdateCheck
 	internal static class UpdateInfoParser
 	{
 		private static UpdateInfoExternList m_Info = new UpdateInfoExternList();
-
+		public static UpdateInfoExternList ExternalPluginList { get { return m_Info; } }
+		public static string PluginInfoFile { get; private set; }
 		static UpdateInfoParser()
 		{
 			m_Info.Clear();
-			string sFilename = PluginUpdateHandler.PluginsFolder + "ExternalPluginUpdates.xml";
+			PluginInfoFile = PluginUpdateHandler.PluginsFolder + "ExternalPluginUpdates.xml";
 			List<string> lMsg = new List<string>();
-			lMsg.Add("Expected filename for update information: " + sFilename);
+			lMsg.Add("Expected filename for update information: " + PluginInfoFile);
 			try
 			{
-				if (!File.Exists(sFilename))
+				if (!File.Exists(PluginInfoFile))
 				{
 					lMsg.Add("File does not exist");
 					return;
@@ -744,7 +757,7 @@ namespace EarlyUpdateCheck
 
 				try
 				{
-					string s = File.ReadAllText(sFilename);
+					string s = File.ReadAllText(PluginInfoFile);
 					XmlSerializer xs = new XmlSerializer(m_Info.GetType());
 					m_Info = (UpdateInfoExternList)xs.Deserialize(new StringReader(s));
 				}

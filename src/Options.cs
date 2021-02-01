@@ -6,6 +6,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using PluginTranslation;
+using KeePass.Resources;
 
 namespace EarlyUpdateCheck
 {
@@ -57,6 +58,29 @@ namespace EarlyUpdateCheck
 		private void gCheckSync_CheckedChanged(object sender, RookieUI.CheckedGroupCheckEventArgs e)
 		{
 			cbCheckSync.Enabled = gCheckSync.Checked;
+		}
+
+		private void Options_Load(object sender, EventArgs e)
+		{
+			tpEUCOptions.Text = KPRes.Options;
+			tpEUC3rdParty.Text = KPRes.More;
+			lFile.Text = KPRes.File;
+			tbFile.Text = UpdateInfoParser.PluginInfoFile;
+			if (System.IO.File.Exists(UpdateInfoParser.PluginInfoFile))
+			{
+				lFile.Links.Add(0, lFile.Text.Length);
+				lFile.LinkClicked += LFile_LinkClicked;
+			}
+			foreach (var p in PluginUpdateHandler.Plugins)
+			{
+				string s = p.Title;
+				if (p is OtherPluginUpdate) s += " - " + p.UpdateMode.ToString();
+				lv3rdPartyPlugins.Items.Add(s);
+			}
+		}
+		private void LFile_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			PluginTools.Tools.OpenUrl(UpdateInfoParser.PluginInfoFile);
 		}
 	}
 }

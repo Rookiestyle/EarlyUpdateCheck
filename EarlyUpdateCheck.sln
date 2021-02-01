@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2048
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EarlyUpdateCheck", "src\EarlyUpdateCheck.csproj", "{78C152F3-EAF8-4FFC-9BE3-F5DC0CD66E5D}"
 EndProject
@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeePass", "..\_KeePass_Sour
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{40E2AC4E-540E-4809-930E-0E9290D2A9F7}"
 	ProjectSection(SolutionItems) = preProject
+		ExternalPluginUpdates\ExternalPluginUpdates.xml = ExternalPluginUpdates\ExternalPluginUpdates.xml
 		plgxcreate.cmd = plgxcreate.cmd
 		version.info = version.info
 	EndProjectSection

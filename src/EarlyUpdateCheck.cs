@@ -447,9 +447,7 @@ namespace EarlyUpdateCheck
 		private void OnUpdateCheckFormShown(object sender, EventArgs e)
 		{
 			m_lEventHandlerItemActivate = null;
-			PluginDebug.AddSuccess("OUCFS 1", 0);
 			if (!PluginConfig.Active || !PluginConfig.OneClickUpdate) return;
-			PluginDebug.AddSuccess("OUCFS 2", 0);
 			CustomListViewEx lvPlugins = (CustomListViewEx)Tools.GetControl("m_lvInfo", sender as UpdateCheckForm);
 			if (lvPlugins == null)
 			{
@@ -457,7 +455,6 @@ namespace EarlyUpdateCheck
 				return;
 			}
 			else PluginDebug.AddSuccess("m_lvInfo found", 0);
-			PluginUpdateHandler.LoadPlugins(false);
 			if (PluginUpdateHandler.Plugins.Count == 0) return;
 			SetPluginSelectionStatus(false);
 			bool bColumnAdded = false;
@@ -471,9 +468,11 @@ namespace EarlyUpdateCheck
 			//Do NOT use ListView.SmallImageList
 			if (m_ImgApply == null)	m_ImgApply = (Image)KeePass.Program.Resources.GetObject("B16x16_Apply");
 			if (m_ImgUnselected == null) m_ImgUnselected = m_ImgApply == null ? null : UIUtil.CreateGrayImage(m_ImgApply);
+			PluginDebug.AddInfo("Installed updatable plugins", 0, PluginUpdateHandler.Plugins.ConvertAll(x => x.Name + " / " + x.Title + " / " + x.UpdateMode.ToString() + " / " + x.UpdatePossible.ToString()).ToArray());
 			foreach (ListViewItem item in lvPlugins.Items)
 			{
 				PluginDebug.AddInfo("Check plugin update status", 0, item.SubItems[0].Text, item.SubItems[1].Text);
+				string sHelp = "-"+item.SubItems[0].Text+"-"+item.SubItems[1].Text + "- " + (!item.SubItems[1].Text.Contains(KeePass.Resources.KPRes.NewVersionAvailable)).ToString();
 				if (!item.SubItems[1].Text.Contains(KeePass.Resources.KPRes.NewVersionAvailable)) continue;
 				foreach (PluginUpdate upd in PluginUpdateHandler.Plugins)
 				{
