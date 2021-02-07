@@ -143,9 +143,7 @@ namespace EarlyUpdateCheck
 				}
 				if (PluginConfig.OneClickUpdate)
 				{
-					PluginDebug.AddInfo("OneClickUpdate 1", 0, DebugPrint);
 					e.Form.Shown += OnUpdateCheckFormShown;
-					PluginDebug.AddInfo("OneClickUpdate 2", 0, DebugPrint);
 				}
 				return;
 			}
@@ -455,6 +453,7 @@ namespace EarlyUpdateCheck
 				return;
 			}
 			else PluginDebug.AddSuccess("m_lvInfo found", 0);
+			PluginUpdateHandler.LoadPlugins(false);
 			if (PluginUpdateHandler.Plugins.Count == 0) return;
 			SetPluginSelectionStatus(false);
 			bool bColumnAdded = false;

@@ -72,15 +72,22 @@ namespace EarlyUpdateCheck
 			PluginDebug.AddInfo("PluginUpdateHandler initialized", 0, lMsg.ToArray());
 		}
 
+		private static bool m_bPluginsLoaded = false;
+		public static bool PluginsLoaded { get { return m_bPluginsLoaded || Plugins.Count > 0; } }
 		internal static void LoadPlugins(bool bReload)
 		{
+			if (PluginsLoaded && !bReload) return;
 			lock (Plugins) //Might be called in multiple threads, ensure a plugin is listed only once
 			{
-				if (!bReload && Plugins.Count > 0) return;
+				m_bPluginsLoaded = false;
 				Plugins.Clear();
 				List<PluginUpdate> lPlugins = new List<PluginUpdate>();
 				if (m_Plugins.Count == 0) m_Plugins = Tools.GetLoadedPluginsName();
-				if (Plugins.Count > 0) return; //Might have been filled from different thread meanwhile
+				if (Plugins.Count > 0)
+				{
+					m_bPluginsLoaded = true;
+					return; //Might have been filled from different thread meanwhile
+				}
 				List<string> lPluginnames = new List<string>();
 				foreach (string sPlugin in m_Plugins.Keys)
 				{
@@ -110,6 +117,7 @@ namespace EarlyUpdateCheck
 				Plugins.Clear();
 				Plugins.AddRange(lPlugins); //Many plugins in foreach => foreach might not be finished when update check form is shown
 				PluginDebug.AddInfo("Installed updatable plugins", 0, lPluginnames.ToArray());
+				m_bPluginsLoaded = true;
 			}
 		}
 
