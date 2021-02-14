@@ -38,7 +38,7 @@
 			this.tbCheckSyncDesc = new System.Windows.Forms.TextBox();
 			this.cbCheckSync = new System.Windows.Forms.CheckBox();
 			this.tpEUC3rdParty = new System.Windows.Forms.TabPage();
-			this.lv3rdPartyPlugins = new System.Windows.Forms.ListBox();
+			this.lv3rdPartyPlugins = new System.Windows.Forms.ListView();
 			this.tbFile = new System.Windows.Forms.TextBox();
 			this.lFile = new System.Windows.Forms.LinkLabel();
 			this.tcEUC.SuspendLayout();
@@ -174,12 +174,14 @@
 			// lv3rdPartyPlugins
 			// 
 			this.lv3rdPartyPlugins.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.lv3rdPartyPlugins.FormattingEnabled = true;
-			this.lv3rdPartyPlugins.ItemHeight = 20;
+			this.lv3rdPartyPlugins.FullRowSelect = true;
+			this.lv3rdPartyPlugins.HideSelection = false;
 			this.lv3rdPartyPlugins.Location = new System.Drawing.Point(10, 62);
 			this.lv3rdPartyPlugins.Name = "lv3rdPartyPlugins";
 			this.lv3rdPartyPlugins.Size = new System.Drawing.Size(725, 304);
 			this.lv3rdPartyPlugins.TabIndex = 2;
+			this.lv3rdPartyPlugins.UseCompatibleStateImageBehavior = false;
+			this.lv3rdPartyPlugins.View = System.Windows.Forms.View.List;
 			// 
 			// tbFile
 			// 
@@ -231,7 +233,7 @@
 		private System.Windows.Forms.TabControl tcEUC;
 		private System.Windows.Forms.TabPage tpEUCOptions;
 		private System.Windows.Forms.TabPage tpEUC3rdParty;
-		private System.Windows.Forms.ListBox lv3rdPartyPlugins;
+		private System.Windows.Forms.ListView lv3rdPartyPlugins;
 		private System.Windows.Forms.TextBox tbFile;
 		private System.Windows.Forms.LinkLabel lFile;
 	}

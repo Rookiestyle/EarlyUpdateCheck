@@ -92,4 +92,9 @@ This might show the UAC prompt.</value>
     <key>SelectPluginsForTranslationUpdate</key>
     <value>Please select plugins for which translations shall be updated</value>
   </item>
+  <item>
+    <key>UpdateExternalInfo</key>
+    <value>A new veraion of ExternalPluginUpdates.xml is available.
+Download to update more 3rd party plugins?</value>
+  </item>
 </Translation>

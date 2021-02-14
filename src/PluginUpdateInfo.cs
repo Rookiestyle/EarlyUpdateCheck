@@ -101,7 +101,9 @@ namespace EarlyUpdateCheck
 						bool bOwnPlugin = string.Compare("rookiestyle", comp[0].Company, StringComparison.InvariantCultureIgnoreCase) == 0;
 
 						PluginUpdate pu = null;
-						if (bOwnPlugin) pu = new OwnPluginUpdate(p.GetType().Namespace);
+						if (p.GetType().Namespace == "EarlyUpdateCheck")
+							pu = new EarlyUpdateCheckUpdate();
+						else if (bOwnPlugin) pu = new OwnPluginUpdate(p.GetType().Namespace);
 						else
 						{
 							try { pu = new OtherPluginUpdate(p.GetType().Namespace); } catch { }
@@ -281,12 +283,14 @@ namespace EarlyUpdateCheck
 		internal bool AllowVersionStripping { get; set; }
 		internal string PluginFile { get; private set; }
 		internal bool Selected;
+
+		internal bool Ignore = false;
 		public override string ToString()
 		{
 			return Title + " - " + UpdateMode.ToString() + " (" + VersionInstalled.ToString() + " / " + VersionAvailable.ToString() + ")";
 		}
 
-		internal bool UpdatePossible { get { return !string.IsNullOrEmpty(PluginUpdateURL) && UpdateMode != UpdateOtherPluginMode.Unknown; } }
+		internal bool UpdatePossible { get { return !Ignore && !string.IsNullOrEmpty(PluginUpdateURL) && UpdateMode != UpdateOtherPluginMode.Unknown; } }
 
 		protected List<string> m_lDownloaded = new List<string>();
 
@@ -544,9 +548,10 @@ namespace EarlyUpdateCheck
 			catch (Exception) { }
 		}
 
+		protected Dictionary<string, List<UpdateComponentInfo>> m_dUpdateInfo = new Dictionary<string, List<UpdateComponentInfo>>();
 		private void UpdateAvailableTranslations()
 		{
-			Dictionary<string, List<UpdateComponentInfo>> dUpdateInfo = new Dictionary<string, List<UpdateComponentInfo>>();
+			m_dUpdateInfo.Clear();
 			Dictionary<string, long> dResult = new Dictionary<string, long>();
 			Type t = typeof(KeePass.Program).Assembly.GetType("KeePass.Util.UpdateCheckEx");
 			if (t == null)
@@ -566,12 +571,12 @@ namespace EarlyUpdateCheck
 				PluginDebug.AddError("Could not read plugin update url", 0);
 				return;
 			}
-
-			dUpdateInfo = mi.Invoke(null, new object[] { new List<string>() { VersionURL }, null }) as Dictionary<string, List<UpdateComponentInfo>>;
+			
+			m_dUpdateInfo = mi.Invoke(null, new object[] { new List<string>() { VersionURL }, null }) as Dictionary<string, List<UpdateComponentInfo>>;
 
 			List<string> lTranslationsNew = new List<string>();
 			string[] cSplit = new string[] { "!", "!!!" };
-			foreach (KeyValuePair<string, List<UpdateComponentInfo>> kvp in dUpdateInfo)
+			foreach (KeyValuePair<string, List<UpdateComponentInfo>> kvp in m_dUpdateInfo)
 			{
 				if (kvp.Value == null) continue;
 				Version vCheck = null;
@@ -626,17 +631,43 @@ namespace EarlyUpdateCheck
 		}
 	}
 
+	internal class EarlyUpdateCheckUpdate : OwnPluginUpdate
+	{
+		internal EarlyUpdateCheckUpdate() : base("EarlyUpdateCheck")
+		{
+			foreach(var l in m_dUpdateInfo)
+			{
+				var u = l.Value.Find(x => x.Name == "ExternalPluginUpdates");
+				if (u != null)
+				{
+					var v = new Version(StrUtil.VersionToString(u.VerAvailable, 2));
+					UpdateInfoExternParser.VersionAvailable = v.Major;
+					break;
+				}
+			}
+		}
+
+		internal bool DownloadExternalPluginUpdates(string sTempFolder)
+		{
+			if (UpdateInfoExternParser.VersionInstalled < 0 || UpdateInfoExternParser.VersionInstalled >= UpdateInfoExternParser.VersionAvailable) return true;
+			Directory.CreateDirectory(sTempFolder);
+			string sFile = URL.Replace("github.com", "raw.githubusercontent.com") + "../master/ExternalPluginUpdates/ExternalPluginUpdates.xml";
+			return DownloadFile(sFile, sTempFolder);
+		}
+	}
+
 	internal class OtherPluginUpdate : PluginUpdate
 	{
 		internal OtherPluginUpdate(string PluginName) : base(PluginName)
 		{
 			UpdateInfoExtern uie;
-			if (!UpdateInfoParser.Get(Title, out uie) && !UpdateInfoParser.Get(Name, out uie)) throw new ArgumentException("No update information available for " + PluginName);
+			if (!UpdateInfoExternParser.Get(Title, out uie) && !UpdateInfoExternParser.Get(Name, out uie)) throw new ArgumentException("No update information available for " + PluginName);
 
 			URL = uie.PluginURL;
 			PluginUpdateURL = uie.PluginUpdateURL;
 			UpdateMode = uie.UpdateMode;
 			AllowVersionStripping = uie.AllowVersionStripping;
+			Ignore = uie.Ignore;
 		}
 
 		internal override bool ProcessDownload(string sTargetFolder)
@@ -744,45 +775,70 @@ namespace EarlyUpdateCheck
 		ZipExtractDll = 4,
 	}
 
-	internal static class UpdateInfoParser
+	internal static class UpdateInfoExternParser
 	{
 		private static UpdateInfoExternList m_Info = new UpdateInfoExternList();
+
+		public static int VersionInstalled = -1;
+		public static int VersionAvailable = -1;
 		public static UpdateInfoExternList ExternalPluginList { get { return m_Info; } }
 		public static string PluginInfoFile { get; private set; }
-		static UpdateInfoParser()
+		static UpdateInfoExternParser()
+		{
+			Init();
+		}
+
+		public static void Init()
 		{
 			m_Info.Clear();
 			PluginInfoFile = PluginUpdateHandler.PluginsFolder + "ExternalPluginUpdates.xml";
+			m_Info = ParseInfoFile(PluginInfoFile, true);
+
+			string sPluginInfoFileUser = PluginUpdateHandler.PluginsFolder + "ExternalPluginUpdatesUser.xml";
+			var l = ParseInfoFile(sPluginInfoFileUser, false);
+			foreach (var i in l)
+			{
+				m_Info.RemoveAll(x => x.PluginTitle == i.PluginTitle);
+				m_Info.Add(i);
+			}
+		}
+
+		private static UpdateInfoExternList ParseInfoFile(string sPluginInfoFile, bool bDefault)
+		{
 			List<string> lMsg = new List<string>();
-			lMsg.Add("Expected filename for update information: " + PluginInfoFile);
+			UpdateInfoExternList lReturn = new UpdateInfoExternList();
+			lMsg.Add("Expected filename for update information: " + sPluginInfoFile);
 			try
 			{
-				if (!File.Exists(PluginInfoFile))
+				if (!File.Exists(sPluginInfoFile))
 				{
 					lMsg.Add("File does not exist");
-					return;
+					return lReturn;
 				}
+
+				if (bDefault) UpdateInfoExternParser.VersionInstalled = 0;
 
 				try
 				{
-					string s = File.ReadAllText(PluginInfoFile);
+					string s = File.ReadAllText(sPluginInfoFile);
 					XmlSerializer xs = new XmlSerializer(m_Info.GetType());
-					m_Info = (UpdateInfoExternList)xs.Deserialize(new StringReader(s));
+					lReturn = (UpdateInfoExternList)xs.Deserialize(new StringReader(s));
 				}
 				catch (Exception ex)
 				{
-					lMsg.Add("Error parsing ExternalPluginUpdates.xml: " + ex.Message);
-					Tools.ShowError("Error parsing ExternalPluginUpdates.xml: " + ex.Message);
-					return;
+					lMsg.Add("Error parsing "+ sPluginInfoFile+": " + ex.Message);
+					Tools.ShowError("Error parsing "+sPluginInfoFile + ": " + ex.Message);
+					return lReturn;
 				}
 				lMsg.Add("Update information file parsed successfully, parsed data can be found in the following log entries");
-				lMsg.Add("Parsed entries: " + m_Info.Count.ToString());
-				foreach (var uie in m_Info) lMsg.Add("3rd party plugin: " + uie.ToString());
+				lMsg.Add("Parsed entries: " + lReturn.Count.ToString());
+				foreach (var uie in lReturn) lMsg.Add("3rd party plugin: " + uie.ToString());
 			}
 			finally
 			{
-				PluginDebug.AddInfo("Loading update information for 3rd party plugins", 0, lMsg.ToArray());
+				PluginDebug.AddInfo("Loading update information for 3rd party plugins" + (bDefault ? string.Empty : " (user-specific)"), 0, lMsg.ToArray());
 			}
+			return lReturn;
 		}
 
 		internal static bool Get(string PluginName, out UpdateInfoExtern upd)
@@ -812,14 +868,23 @@ namespace EarlyUpdateCheck
 			bool wasEmpty = reader.IsEmptyElement;
 			reader.Read();
 			if (wasEmpty) return;
+
 			while (reader.NodeType != XmlNodeType.EndElement)
 			{
 				UpdateInfoExtern uie = new UpdateInfoExtern();
 				while (reader.NodeType == XmlNodeType.Comment) reader.Skip();
 
+				string sElement = reader.Name;
+				if (sElement == "Version")
+				{
+					int v = -1;
+					if (int.TryParse(reader.ReadElementContentAsString(), out v)) UpdateInfoExternParser.VersionInstalled = v;
+					sElement = reader.Name;
+				}
+				if (sElement != "UpdateInfoExtern") break;
 				reader.ReadStartElement("UpdateInfoExtern");
 
-				string sElement = reader.Name;
+				sElement = reader.Name;
 				while (sElement != "UpdateInfoExtern")
 				{
 					while (reader.NodeType == XmlNodeType.Comment)
@@ -828,7 +893,8 @@ namespace EarlyUpdateCheck
 						sElement = reader.Name;
 					}
 					reader.ReadStartElement(sElement);
-					if (sElement == "PluginName") uie.PluginTitle = reader.ReadContentAsString();
+					if (sElement == "Ignore") uie.Ignore = true;
+					else if (sElement == "PluginName") uie.PluginTitle = reader.ReadContentAsString();
 					else if (sElement == "PluginURL") uie.PluginURL = reader.ReadContentAsString();
 					else if (sElement == "PluginUpdateURL") uie.PluginUpdateURL = reader.ReadContentAsString();
 					else if (sElement == "UpdateMode")
@@ -844,7 +910,7 @@ namespace EarlyUpdateCheck
 					{
 						uie.AllowVersionStripping = StrUtil.StringToBool(reader.ReadContentAsString());
 					}
-					reader.ReadEndElement();
+					if (sElement != "Ignore") reader.ReadEndElement();
 					sElement = reader.Name;
 				}
 
@@ -896,10 +962,10 @@ namespace EarlyUpdateCheck
 		internal string PluginUpdateURL;
 		internal UpdateOtherPluginMode UpdateMode;
 		internal bool AllowVersionStripping = true;
-
+		internal bool Ignore = false;
 		public override string ToString()
 		{
-			return PluginTitle + " - " + UpdateMode.ToString();
+			return PluginTitle + " - " + UpdateMode.ToString() + (Ignore ? " (ignore)" : string.Empty);
 		}
 	}
 }

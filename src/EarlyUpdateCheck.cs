@@ -123,7 +123,11 @@ namespace EarlyUpdateCheck
 			else if (!m_bRestartTriggered)
 			{
 				//Only load plugins, do NOT check for new translations
-				ThreadPool.QueueUserWorkItem(new WaitCallback((object o) => { PluginUpdateHandler.LoadPlugins(false); }));
+				ThreadPool.QueueUserWorkItem(new WaitCallback((object o) => 
+				{ 
+					PluginUpdateHandler.LoadPlugins(false);
+					CheckExternalPluginUpdate();
+				}));
 			}
 			PluginDebug.AddInfo("All plugins loaded", 0, DebugPrint);
 			m_bRestartInvoke = false;
@@ -402,6 +406,8 @@ namespace EarlyUpdateCheck
 			PluginUpdateHandler.LoadPlugins(false);
 			if (!PluginConfig.Active) return;
 			if (m_bPluginLanguagesChecked) return;
+
+			CheckExternalPluginUpdate();
 			m_bPluginLanguagesChecked = true;
 			string translations = string.Empty;
 			List<OwnPluginUpdate> lPlugins = new List<OwnPluginUpdate>();
@@ -417,6 +423,7 @@ namespace EarlyUpdateCheck
 					}
 				}
 			}
+
 			if (lPlugins.Count == 0) return;
 			var arrPlugins = lPlugins.ConvertAll(x => x.ToString()).ToArray();
 			PluginDebug.AddInfo("Available translation updates", 0, arrPlugins);
@@ -432,6 +439,21 @@ namespace EarlyUpdateCheck
 				}
 			};
 			m_host.MainWindow.BeginInvoke(DisplayTranslationForm);
+		}
+
+		private bool m_bExternalPluginInfoChecked = false;
+		private void CheckExternalPluginUpdate()
+		{
+			if (!PluginConfig.Active) return;
+			if (!PluginConfig.OneClickUpdate) return;
+			if (m_bExternalPluginInfoChecked) return;
+			m_bExternalPluginInfoChecked = true;
+			if (UpdateInfoExternParser.VersionInstalled < 0) return;
+			if (UpdateInfoExternParser.VersionInstalled >= UpdateInfoExternParser.VersionAvailable) return;
+			var pu = PluginUpdateHandler.Plugins.Find(x => x is EarlyUpdateCheckUpdate) as OwnPluginUpdate;
+			if (pu == null) return;
+			if (Tools.AskYesNo(PluginTranslate.UpdateExternalInfo) != DialogResult.Yes) return;
+			m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() => { UpdatePlugins(UpdateFlags.ExternalUpdateInfo); }), null);
 		}
 		#endregion
 
@@ -455,6 +477,7 @@ namespace EarlyUpdateCheck
 			else PluginDebug.AddSuccess("m_lvInfo found", 0);
 			PluginUpdateHandler.LoadPlugins(false);
 			if (PluginUpdateHandler.Plugins.Count == 0) return;
+			CheckExternalPluginUpdate();
 			SetPluginSelectionStatus(false);
 			bool bColumnAdded = false;
 			m_lEventHandlerItemActivate = EventHelper.GetItemActivateHandlers(lvPlugins);
@@ -665,7 +688,7 @@ namespace EarlyUpdateCheck
 
 			//If called from CheckPluginLanguages, we're running in a different thread
 			//Use Invoke because the IStatusLogger will attach to the KeyPromptForm within the UI thread
-			m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() => { UpdatePlugins(true); }), null);
+			m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() => { UpdatePlugins(UpdateFlags.Translations); }), null);
 			PluginConfig.DownloadActiveLanguage = bBackup;
 			foreach (var upd in PluginUpdateHandler.Plugins)
 			{
@@ -692,12 +715,21 @@ namespace EarlyUpdateCheck
 			SetPluginSelectionStatus(false);
 		}
 
+		[Flags]
+		private enum UpdateFlags
+		{
+			None = 0,
+			Plugin = 1,
+			Translations = 2,
+			ExternalUpdateInfo = 4,
+			All = Plugin | Translations | ExternalUpdateInfo,
+		}
 		private void bUpdatePlugins_Click(object sender, EventArgs e)
 		{
-			UpdatePlugins(false);
+			UpdatePlugins(UpdateFlags.All);
 		}
 
-		private void UpdatePlugins(bool bUpdateTranslationsOnly)
+		private void UpdatePlugins(UpdateFlags uf)
 		{ 
 			PluginDebug.AddInfo("UpdatePlugins start ", DebugPrint);
 			Form fUpdateLog = null;
@@ -715,8 +747,15 @@ namespace EarlyUpdateCheck
 				//Download files
 				foreach (PluginUpdate upd in PluginUpdateHandler.Plugins)
 				{
-					if (!upd.Selected) continue;
-					success |= UpdatePlugin(upd, sTempPluginsFolder, bUpdateTranslationsOnly);
+					if (uf == UpdateFlags.ExternalUpdateInfo && upd is EarlyUpdateCheckUpdate)
+					{
+						success |= UpdatePlugin(upd, sTempPluginsFolder, uf);
+					}
+					else
+					{
+						if (!upd.Selected) continue;
+						success |= UpdatePlugin(upd, sTempPluginsFolder, uf);
+					}
 				}
 			});
 			Thread t = new Thread(ts);
@@ -749,7 +788,14 @@ namespace EarlyUpdateCheck
 			success = true;
 			//Restart KeePass to use new plugin versions
 			PluginDebug.AddInfo("Update finished", "Succes: " + success.ToString(), DebugPrint);
-			if (success && !bUpdateTranslationsOnly)
+			if (success && uf == UpdateFlags.ExternalUpdateInfo)
+			{
+				KeePass.Program.Config.Application.LastUpdateCheck = TimeUtil.SerializeUtc(DateTime.UtcNow.AddDays(-1));
+				UpdateInfoExternParser.Init();
+				PluginUpdateHandler.LoadPlugins(true);
+			}
+
+			if (success && UpdateFlagSet(uf, UpdateFlags.Plugin))
 			{
 				if (Tools.AskYesNo(PluginTranslate.PluginUpdateSuccess, PluginTranslate.PluginUpdateCaption) == DialogResult.Yes)
 				{
@@ -767,22 +813,33 @@ namespace EarlyUpdateCheck
 		/// <param name="upd">Update information for plugin</param>
 		/// <param name="sPluginFolder">Target folder for plugin file</param>
 		/// <param name="sTranslationFolder">Target folder for plugin translations</param>
-		/// <param name="bTranslationsOnly">Only download newest translations</param>
+		/// <param name="uf">Only download newest translations</param>
 		/// <returns></returns>
-		internal bool UpdatePlugin(PluginUpdate upd, string sPluginFolder, bool bTranslationsOnly)
+		private bool UpdatePlugin(PluginUpdate upd, string sPluginFolder, UpdateFlags uf)
 		{
 			bool bOK = true;
 			if (m_slUpdatePlugins != null)
 				m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title), LogStatusType.Info);
-			if (!bTranslationsOnly) bOK = upd.Download(sPluginFolder);
-			if (upd is OwnPluginUpdate)
+			if (UpdateFlagSet(uf, UpdateFlags.Plugin)) bOK = upd.Download(sPluginFolder);
+			if (upd is OwnPluginUpdate && UpdateFlagSet(uf, UpdateFlags.Translations))
 			{
-				bool bTranslationsOK = (upd as OwnPluginUpdate).DownloadTranslations(sPluginFolder, PluginConfig.DownloadActiveLanguage, bTranslationsOnly);
-				if (bTranslationsOnly) bOK = bTranslationsOK;
+				bool bTranslationsOK = (upd as OwnPluginUpdate).DownloadTranslations(sPluginFolder, PluginConfig.DownloadActiveLanguage, !UpdateFlagSet(uf, UpdateFlags.Plugin));
+				if (!UpdateFlagSet(uf, UpdateFlags.Plugin)) bOK = bTranslationsOK;
+			}
+			if (upd is EarlyUpdateCheckUpdate && UpdateFlagSet(uf, UpdateFlags.ExternalUpdateInfo))
+			{
+				var euc = upd as EarlyUpdateCheckUpdate;
+				bool bExtOK = euc.DownloadExternalPluginUpdates(sPluginFolder);
+				if (uf == UpdateFlags.ExternalUpdateInfo) bOK = bExtOK;
 			}
 			if (bOK) bOK = upd.ProcessDownload(sPluginFolder);
 			upd.Cleanup();
 			return bOK;
+		}
+
+		private bool UpdateFlagSet(UpdateFlags flags, UpdateFlags flag)
+		{
+			return (flags & flag) == flag;
 		}
 
 		private void Restart()

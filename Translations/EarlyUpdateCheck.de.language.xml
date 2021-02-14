@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Translation>
-  <TranslationVersion>4</TranslationVersion>
+  <TranslationVersion>5</TranslationVersion>
   <item>
     <key>Active</key>
     <value>Aktiv</value>
@@ -91,5 +91,10 @@ Die Windows Benutzerkontensteuerung wird eventuell angezeigt und muss bestätigt
   <item>
     <key>SelectPluginsForTranslationUpdate</key>
     <value>Bitte wähle die Plugins aus, bei denen aktualisierte Übersetzungen installiert werden sollen.</value>
+  </item>
+  <item>
+    <key>UpdateExternalInfo</key>
+    <value>Eine neue Version von ExternalPluginUpdates.xml steht zur Verfügung.
+Herunterladen, um mehr Plugins automatisch aktualisieren zu können?</value>
   </item>
 </Translation>

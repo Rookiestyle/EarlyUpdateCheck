@@ -65,22 +65,27 @@ namespace EarlyUpdateCheck
 			tpEUCOptions.Text = KPRes.Options;
 			tpEUC3rdParty.Text = KPRes.More;
 			lFile.Text = KPRes.File;
-			tbFile.Text = UpdateInfoParser.PluginInfoFile;
-			if (System.IO.File.Exists(UpdateInfoParser.PluginInfoFile))
+			tbFile.Text = UpdateInfoExternParser.PluginInfoFile;
+			if (System.IO.File.Exists(UpdateInfoExternParser.PluginInfoFile))
 			{
 				lFile.Links.Add(0, lFile.Text.Length);
 				lFile.LinkClicked += LFile_LinkClicked;
 			}
 			foreach (var p in PluginUpdateHandler.Plugins)
 			{
-				string s = p.Title;
-				if (p is OtherPluginUpdate) s += " - " + p.UpdateMode.ToString();
-				lv3rdPartyPlugins.Items.Add(s);
+				string s = p.Title + (p is OtherPluginUpdate ? " - " + p.UpdateMode.ToString() : string.Empty);
+				if (p.Ignore)
+				{
+					ListViewItem lvi = new ListViewItem(p.Title);
+					lvi.Font = new Font(lvi.Font, lvi.Font.Style | FontStyle.Strikeout);
+					lv3rdPartyPlugins.Items.Add(lvi);
+				}
+				else lv3rdPartyPlugins.Items.Add(s);
 			}
 		}
 		private void LFile_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			PluginTools.Tools.OpenUrl(UpdateInfoParser.PluginInfoFile);
+			PluginTools.Tools.OpenUrl(UpdateInfoExternParser.PluginInfoFile);
 		}
 	}
 }

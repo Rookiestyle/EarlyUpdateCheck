@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is _not_ part of EarlyUpdateCheck's one-click update
+
+It MUST NOT contain a version tag
+
+It can be used to add / change update information, e. g. for plugins
+available in your local network (private, office, ...)
+It can also be used tomexclude plugins from one-click update
+-->
+<UpdateInfoExternList>
+	<!-- Example for additional plugins -->
+	<!--
+	<UpdateInfoExtern>
+		<PluginName>My plugin</PluginName>
+		<PluginURL>https://localhost/myplugin</PluginURL>
+		<PluginUpdateURL>https://localhost/myplugin/download/myplugin.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	-->
+	
+	<!-- Example for plugin to ignore -->
+	<!--
+	<UpdateInfoExtern>
+		<PluginName>Some other plugin</PluginName>
+		<Ignore />
+	</UpdateInfoExtern>
+	-->
+</UpdateInfoExternList>

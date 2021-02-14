@@ -64,6 +64,8 @@ This might show the UAC prompt.";
 		public static readonly string TranslationDownload_DownloadCurrent = @"Always download translations for active language: {0}";
 		public static readonly string TranslationUpdateForm = @"Early Update Check - Update translations";
 		public static readonly string SelectPluginsForTranslationUpdate = @"Please select plugins for which translations shall be updated";
+		public static readonly string UpdateExternalInfo = @"A new version of ExternalPluginUpdates.xml is available.
+Download to update more 3rd party plugins?";
 		#endregion
 
 		#region NO changes in this area

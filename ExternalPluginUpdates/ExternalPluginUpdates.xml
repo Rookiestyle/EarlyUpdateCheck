@@ -1,38 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is part of EarlyUpdateCheck's one-click update
+
+If a newer version is released than the version you're using
+this new version will be downloaded automatically
+
+In the rare case of issues with updated plugins, you
+can use ExternalPluginUpdatesUser.xml to remove certain plugins
+from one-click update
+-->
 <UpdateInfoExternList>
-  <UpdateInfoExtern>
-    <PluginName>WebAutoType</PluginName>
-    <PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
-    <PluginUpdateURL>https://sourceforge.net/projects/webautotype/files/latest/download</PluginUpdateURL>
-    <UpdateMode>ZipExtractPlgx</UpdateMode>
-    <AllowVersionStripping>True</AllowVersionStripping>
-  </UpdateInfoExtern>
-  <UpdateInfoExtern>
-    <PluginName>KPEnhancedEntryView</PluginName>
-    <PluginURL>https://sourceforge.net/projects/kpenhentryview/</PluginURL>
-    <PluginUpdateURL>https://sourceforge.net/projects/kpenhentryview/files/latest/download</PluginUpdateURL>
-    <UpdateMode>ZipExtractPlgx</UpdateMode>
-    <AllowVersionStripping>True</AllowVersionStripping>
-  </UpdateInfoExtern>
-  <UpdateInfoExtern>
-    <PluginName>SourceForgeUpdateChecker</PluginName>
-    <PluginURL>https://sourceforge.net/projects/kpsfupdatechecker/</PluginURL>
-    <PluginUpdateURL>https://sourceforge.net/projects/kpsfupdatechecker/files/latest/download</PluginUpdateURL>
-    <UpdateMode>ZipExtractPlgx</UpdateMode>
-    <AllowVersionStripping>True</AllowVersionStripping>
-  </UpdateInfoExtern>
-  <UpdateInfoExtern>
-    <PluginName>KeePass Sync For Google Drive</PluginName>
-    <PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
-    <PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/keepasssyncfordrive-{major}.{minor}.{build}-beta.plgx</PluginUpdateURL>
-    <UpdateMode>PlgxDirect</UpdateMode>
-    <AllowVersionStripping>False</AllowVersionStripping>
-  </UpdateInfoExtern>
-  <UpdateInfoExtern>
-    <PluginName>KeeAutoExec</PluginName>
-    <PluginURL>https://keepass.info/plugins.html#keeautoexec</PluginURL>
-    <PluginUpdateURL>https://keepass.info/extensions/v2/keeautoexec/KeeAutoExec-{major}{.minor}{.build}.zip</PluginUpdateURL>
-    <UpdateMode>ZipExtractPlgx</UpdateMode>
-    <AllowVersionStripping>True</AllowVersionStripping>
-  </UpdateInfoExtern>
+	<Version>2</Version>
+	<UpdateInfoExtern>
+		<PluginName>WebAutoType</PluginName>
+		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/webautotype/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KPEnhancedEntryView</PluginName>
+		<PluginURL>https://sourceforge.net/projects/kpenhentryview/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/kpenhentryview/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>SourceForgeUpdateChecker</PluginName>
+		<PluginURL>https://sourceforge.net/projects/kpsfupdatechecker/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/kpsfupdatechecker/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePass Sync For Google Drive</PluginName>
+		<PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
+		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/keepasssyncfordrive-{major}.{minor}.{build}-beta.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeAutoExec</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#keeautoexec</PluginURL>
+		<PluginUpdateURL>https://keepass.info/extensions/v2/keeautoexec/KeeAutoExec-{major}{.minor}{.build}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
 </UpdateInfoExternList>
