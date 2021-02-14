@@ -45,40 +45,40 @@ from one-click update
 		<PluginUpdateURL>https://keepass.info/extensions/v2/keeautoexec/KeeAutoExec-{major}{.minor}{.build}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>True</AllowVersionStripping>
-      </UpdateInfoExtern>
-      <UpdateInfoExtern>
-        <PluginName>HIBPOfflineCheck</PluginName>
-        <PluginURL>https://keepass.info/plugins.html#breachchk</PluginURL>
-        <PluginUpdateURL>https://github.com/mihaifm/HIBPOfflineCheck/releases/latest/download/HIBPOfflineCheck.plgx</PluginUpdateURL>
-        <UpdateMode>PlgxDirect</UpdateMode>
-        <AllowVersionStripping>False</AllowVersionStripping>
-      </UpdateInfoExtern>
-      <UpdateInfoExtern>
-        <PluginName>KeePassQRCodeView</PluginName>
-        <PluginURL>https://keepass.info/plugins.html#qrcodeview</PluginURL>
-        <PluginUpdateURL>https://github.com/JanisEst/KeePassQRCodeView/releases/latest/download/KeePassQRCodeView.plgx</PluginUpdateURL>
-        <UpdateMode>PlgxDirect</UpdateMode>
-        <AllowVersionStripping>False</AllowVersionStripping>
-      </UpdateInfoExtern>
-      <UpdateInfoExtern>
-        <PluginName>Yet Another Favicon Downloader</PluginName>
-        <PluginURL>https://keepass.info/plugins.html#yafd</PluginURL>
-        <PluginUpdateURL>https://github.com/navossoc/KeePass-Yet-Another-Favicon-Downloader/releases/latest/download/YetAnotherFaviconDownloader.plgx</PluginUpdateURL>
-        <UpdateMode>PlgxDirect</UpdateMode>
-        <AllowVersionStripping>False</AllowVersionStripping>
-      </UpdateInfoExtern>
-      <UpdateInfoExtern>
-        <PluginName>ExeIconPicker</PluginName>
-        <PluginURL>https://keepass.info/plugins.html#exeiconpicker</PluginURL>
-        <PluginUpdateURL>https://github.com/Eveldee/KeePass-ExeIconPicker/releases/latest/download/ExeIconPicker.plgx</PluginUpdateURL>
-        <UpdateMode>PlgxDirect</UpdateMode>
-        <AllowVersionStripping>False</AllowVersionStripping>
-      </UpdateInfoExtern>
-      <UpdateInfoExtern>
-        <PluginName>KeeAnywhere</PluginName>
-        <PluginURL>https://keepass.info/plugins.html#keeanywhere</PluginURL>
-        <PluginUpdateURL>https://github.com/Kyrodan/KeeAnywhere/releases/latest/download/KeeAnywhere-{major}.{minor}.{build}.plgx</PluginUpdateURL>
-        <UpdateMode>PlgxDirect</UpdateMode>
-        <AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>HIBPOfflineCheck</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#breachchk</PluginURL>
+		<PluginUpdateURL>https://github.com/mihaifm/HIBPOfflineCheck/releases/latest/download/HIBPOfflineCheck.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassQRCodeView</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#qrcodeview</PluginURL>
+		<PluginUpdateURL>https://github.com/JanisEst/KeePassQRCodeView/releases/latest/download/KeePassQRCodeView.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>Yet Another Favicon Downloader</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#yafd</PluginURL>
+		<PluginUpdateURL>https://github.com/navossoc/KeePass-Yet-Another-Favicon-Downloader/releases/latest/download/YetAnotherFaviconDownloader.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>ExeIconPicker</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#exeiconpicker</PluginURL>
+		<PluginUpdateURL>https://github.com/Eveldee/KeePass-ExeIconPicker/releases/latest/download/ExeIconPicker.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeAnywhere</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#keeanywhere</PluginURL>
+		<PluginUpdateURL>https://github.com/Kyrodan/KeeAnywhere/releases/latest/download/KeeAnywhere-{major}.{minor}.{build}.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 </UpdateInfoExternList>
