@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translation>
+  <TranslationVersion>1</TranslationVersion>
+  <item>
+    <key>Active</key>
+    <value>Attivo</value>
+  </item>
+  <item>
+    <key>CheckSync</key>
+    <value>Controlla aggiornamenti in primo piano</value>
+  </item>
+  <item>
+    <key>CheckSyncDesc</key>
+    <value>EarlyUpdateCheck inizierà sempre il controllo degli aggiornamenti il prima possibile.
+
+Se questa opzione è attiva, EarlyUpdateCheck si assicurerà che il controllo degli aggiornamenti sia completato PRIMA che la finestra 'Apri Database' sia mostrata.
+Potresti permettere al controllo degli aggiornamenti di continuare in background se non vuoi aspettare il suo completamento.</value>
+  </item>
+  <item>
+    <key>EnterBackgroundMode</key>
+    <value>Continua in background</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClick</key>
+    <value>Aggiornamento plugin One-Click</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClickDesc</key>
+    <value>Installa nuove versioni dei plugin cliccando su un plugin nella finestra 'Controllo Aggiornamenti'.
+Richiede permessi di scrittura nella cartella 'Plugins' di KeePass.
+È necessario un riavvio di KeePass per poter utilizzare la nuova versione.
+
+Aggiornare il file ExternalPluginUpdates.xml per poter includere plugin di altri autori. Visitare la wiki per maggiori dettagli</value>
+  </item>
+  <item>
+    <key>PluginUpdate</key>
+    <value>Aggiorna</value>
+  </item>
+  <item>
+    <key>PluginUpdateSelected</key>
+    <value>Avvia aggiornamento</value>
+  </item>
+  <item>
+    <key>PluginUpdateCaption</key>
+    <value>Early Update Check - Plugin Updater</value>
+  </item>
+  <item>
+    <key>PluginUpdating</key>
+    <value>Aggiornamento {0} in corso, attendere...</value>
+  </item>
+  <item>
+    <key>PluginUpdateSuccess</key>
+    <value>L'aggiornamento completato con successo, la/e nuova/e versione/i sarà/saranno attive dopo il riavvio di KeePass.
+Riavviare ora?</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailed</key>
+    <value>Spostamento dei file scaricati fallito. Aprire la cartella temporanea?</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailedSpecific</key>
+    <value>Plugin: {0}
+Aggiornamento fallito</value>
+  </item>
+  <item>
+    <key>PluginTranslationUpdateFailed</key>
+    <value>Plugin: {0}
+Aggiornamento del file della lingua {1} fallito</value>
+  </item>
+  <item>
+    <key>TryUAC</key>
+    <value>L'aggiornamento non può essere completato. Provare il metodo alternativo?
+Ciò potrebbe mostrare il prompt delle credenziali UAC.</value>
+  </item>
+  <item>
+    <key>OpenTempFolder</key>
+    <value>Aprire la cartella temporanea contenente i file aggiornati?</value>
+  </item>
+  <item>
+    <key>TranslationDownload_Update</key>
+    <value>Aggiornare manualmente le traduzioni</value>
+  </item>
+  <item>
+    <key>TranslationDownload_DownloadCurrent</key>
+    <value>Scaricare sempre le traduzioni per la lingua attiva: {0}</value>
+  </item>
+  <item>
+    <key>TranslationUpdateForm</key>
+    <value>Early Update Check - Aggiorna traduzioni</value>
+  </item>
+  <item>
+    <key>SelectPluginsForTranslationUpdate</key>
+    <value>Selezionare i plugin per i quali devono essere aggiornati i file della lingua</value>
+  </item>
+  <item>
+    <key>UpdateExternalInfo</key>
+    <value>È disponibile una nuova versione del file ExternalPluginUpdates.xml.
+Vuoi scaricarla così da aggiornare nuovi plugin di terze parti?</value>
+  </item>
+</Translation>
