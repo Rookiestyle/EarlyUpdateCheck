@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translation>
+  <TranslationVersion>1</TranslationVersion>
+  <item>
+    <key>Active</key>
+    <value>活动</value>
+  </item>
+  <item>
+    <key>CheckSync</key>
+    <value>前台显示更新</value>
+  </item>
+  <item>
+    <key>CheckSyncDesc</key>
+    <value>EarlyUpdateCheck 将始终尽早开始更新检查。
+
+如果此选项处于活动状态，则在显示“打开数据库”窗口之前，EarlyUpdateCheck 将另外确保更新检查已完成。
+如果不想等待升级检查完成，可以在后台继续进行升级检查。</value>
+  </item>
+  <item>
+    <key>EnterBackgroundMode</key>
+    <value>在后台继续</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClick</key>
+    <value>一键式插件更新</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClickDesc</key>
+    <value>通过单击“更新检查”窗口中的插件来安装新版本的插件。
+这需要对 KeePass 的 Plugins 文件夹的具有写访问权。
+之后，必须重新启动 KeePass 才能使用新版本。
+
+维护文件 ExternalPluginUpdates.xml 以包括其他作者的插件，有关更多详细信息，请参见Wiki。</value>
+  </item>
+  <item>
+    <key>PluginUpdate</key>
+    <value>更新</value>
+  </item>
+  <item>
+    <key>PluginUpdateSelected</key>
+    <value>开始更新</value>
+  </item>
+  <item>
+    <key>PluginUpdateCaption</key>
+    <value>Early Update Check - 插件更新</value>
+  </item>
+  <item>
+    <key>PluginUpdating</key>
+    <value>正在更新 {0}, 请稍候...</value>
+  </item>
+  <item>
+    <key>PluginUpdateSuccess</key>
+    <value>更新成功，新版本将在KeePass重新启动后生效。
+现在重启？</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailed</key>
+    <value>移动下载的文件失败。打开临时文件夹？</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailedSpecific</key>
+    <value>插件 {0}
+更新失败</value>
+  </item>
+  <item>
+    <key>PluginTranslationUpdateFailed</key>
+    <value>插件： {0}
+语言文件 {1} 的更新失败</value>
+  </item>
+  <item>
+    <key>TryUAC</key>
+    <value>更新无法完成。 尝试其他方法？
+这可能会显示UAC提示。</value>
+  </item>
+  <item>
+    <key>OpenTempFolder</key>
+    <value>打开包含更新文件的临时文件夹？</value>
+  </item>
+  <item>
+    <key>TranslationDownload_Update</key>
+    <value>手动更新翻译</value>
+  </item>
+  <item>
+    <key>TranslationDownload_DownloadCurrent</key>
+    <value>始终下载设置语言的翻译：{0}</value>
+  </item>
+  <item>
+    <key>TranslationUpdateForm</key>
+    <value>Early Update Check - 更新翻译</value>
+  </item>
+  <item>
+    <key>SelectPluginsForTranslationUpdate</key>
+    <value>请选择需要更新翻译的插件</value>
+  </item>
+  <item>
+    <key>UpdateExternalInfo</key>
+    <value>可以使用新版本的外部插件Updates.xml。
+下载以更新更多的第三方插件？</value>
+  </item>
+</Translation>
