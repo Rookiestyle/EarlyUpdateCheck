@@ -158,7 +158,15 @@ namespace EarlyUpdateCheck
 			foreach (string sFile in lFiles)
 			{
 				string sTargetFile = sFile.Replace(sTempFolder, sTargetFolder);
-				try { File.Copy(sFile, sTargetFile, true); }
+				try
+				{
+					string sFolder = UrlUtil.GetFileDirectory(sTargetFile, true, true);
+					//Create target folder if required
+					//CreateDirectory internally checks for existence
+					//Thus, no need to check in our codd
+					Directory.CreateDirectory(sFolder);
+					File.Copy(sFile, sTargetFile, true); 
+				}
 				catch (Exception ex)
 				{
 					bSuccess = false;
@@ -429,7 +437,7 @@ namespace EarlyUpdateCheck
 					s.Close();
 					byte[] pb = ms.ToArray();
 					ms.Close();
-					//Create target folder, Directory.CreateDirectory internally checks for existance of the folder
+					//Create target folder, Directory.CreateDirectory internally checks for existence of the folder
 					Directory.CreateDirectory(sTargetFolder);
 					File.WriteAllBytes(sTarget, pb);
 					m_lDownloaded.Add(sTarget);
@@ -706,10 +714,35 @@ namespace EarlyUpdateCheck
 								f[0].Extract(msTarget);
 								pb = msTarget.ToArray();
 								string sTargetFile = UrlUtil.GetFileDirectory(m_lDownloaded[0], true, true) + f[0].FileName;
+								//target filename might contain directory seperators that need to be converted
+								sTargetFile = UrlUtil.ConvertSeparators(sTargetFile);
+								//Create target folder if required
+								//CreateDirectory internally checks for existence
+								//Thus, no need to check in our codd
+								Directory.CreateDirectory(UrlUtil.GetFileDirectory(sTargetFile, true, true));
 								File.WriteAllBytes(sTargetFile, pb);
 								m_lDownloaded[0] = sTargetFile;
 								PluginDebug.AddInfo("Other plugin update", 0, "Extracted file: " + f[0].FileName);
 							}
+						}
+						return true;
+					}
+				case UpdateOtherPluginMode.ZipExtractAll:
+					string sSourceZip = m_lDownloaded[0];
+					byte[] pbZip = File.ReadAllBytes(sSourceZip);
+					File.Delete(sSourceZip);
+					using (MemoryStream ms = new MemoryStream())
+					{
+						ms.Write(pbZip, 0, pbZip.Length);
+						ms.Position = 0;
+						pb = null;
+						using (Ionic.Zip.ZipFile z = Ionic.Zip.ZipFile.Read(ms))
+						{
+							string sTargetFileZip = UrlUtil.GetFileDirectory(m_lDownloaded[0], true, true);
+							z.ExtractAll(sTargetFileZip, Ionic.Zip.ExtractExistingFileAction.OverwriteSilently);
+							List<string> lFiles = new List<string>();
+							foreach (var f in z.SelectEntries("*")) lFiles.Add(f.FileName + (f.IsDirectory ? " (directory)" : string.Empty));
+							PluginDebug.AddInfo("Other plugin update", 0, lFiles.ToArray());
 						}
 						return true;
 					}
@@ -720,6 +753,21 @@ namespace EarlyUpdateCheck
 		private bool PostProcessDownload(string sTargetFolder, bool bProcessOK)
 		{
 			if (!bProcessOK) return false;
+
+			if (UpdateMode == UpdateOtherPluginMode.ZipExtractAll) return true;
+			/* 
+			Do NOT remove everything
+			Might delete all plugins in worst case
+			Wont't work for dll files anyhow
+			{
+				//Remove everything, we replace it anyhow
+				string s = MergeInPluginFolder(PluginUpdateHandler.PluginsFolder);
+				List<string> lFiles = UrlUtil.GetFilePaths(s, "*", SearchOption.AllDirectories);
+				foreach (var sFile in lFiles) PluginUpdateHandler.DeleteSpecialFile(sFile);
+				return true;
+			}
+			*/
+
 			//Some plugins contain the plugin version in the filename
 			//Identify this case and trigger deletion of old version
 			string sNewFile = UrlUtil.GetFileName(MergeInVersion(true));
@@ -773,6 +821,7 @@ namespace EarlyUpdateCheck
 		ZipExtractPlgx = 1,
 		DllDirect = 3,
 		ZipExtractDll = 4,
+		ZipExtractAll = 5,
 	}
 
 	internal static class UpdateInfoExternParser
