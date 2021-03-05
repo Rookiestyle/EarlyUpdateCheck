@@ -81,4 +81,18 @@ from one-click update
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassNatMsg</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#keepassnatmsg</PluginURL>
+		<PluginUpdateURL>https://github.com/smorks/keepassnatmsg/releases/latest/download/KeePassNatMsg-v{MAJOR}.{MINOR}.{BUILD}-binaries.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractAll</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassRPC</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#keepassrpc</PluginURL>
+		<PluginUpdateURL>https://github.com/kee-org/keepassrpc/releases/latest/download/KeePassRPC.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
 </UpdateInfoExternList>
