@@ -738,7 +738,8 @@ namespace EarlyUpdateCheck
 						pb = null;
 						using (Ionic.Zip.ZipFile z = Ionic.Zip.ZipFile.Read(ms))
 						{
-							string sTargetFileZip = UrlUtil.GetFileDirectory(m_lDownloaded[0], true, true);
+							string sTargetFileZip = GetTargetFolder(z, m_lDownloaded[0]);
+
 							z.ExtractAll(sTargetFileZip, Ionic.Zip.ExtractExistingFileAction.OverwriteSilently);
 							List<string> lFiles = new List<string>();
 							foreach (var f in z.SelectEntries("*")) lFiles.Add(f.FileName + (f.IsDirectory ? " (directory)" : string.Empty));
@@ -748,6 +749,40 @@ namespace EarlyUpdateCheck
 					}
 				default: return false;
 			}
+		}
+
+		public string GetTargetFolder(Ionic.Zip.ZipFile z, string sDownload)
+		{
+			/*
+			sDownload already contains the plugin-specific folder (if any)
+			If the zip file contains the plugin folder as well, we need to avoid duplication
+			*/
+			string sDownloadFolder = UrlUtil.GetFileDirectory(sDownload, true, true);
+			if (z.EntriesSorted.Count == 0) return sDownloadFolder;
+			
+			string[] aSep = new string[] { "/", "\\", UrlUtil.LocalDirSepChar.ToString() };
+			string sPluginFileFolder = UrlUtil.GetFileDirectory(PluginFile, true, true);
+			if (sPluginFileFolder == PluginUpdateHandler.PluginsFolder) return sDownloadFolder;
+
+			List<string> lPluginFolders = new List<string>();
+			lPluginFolders.AddRange(sPluginFileFolder.Split(aSep, StringSplitOptions.RemoveEmptyEntries));
+
+			List<string> lDownloadFolders = new List<string>();
+			lDownloadFolders.AddRange(sDownloadFolder.Split(aSep, StringSplitOptions.RemoveEmptyEntries));
+			Ionic.Zip.ZipEntry zeEntryRoot = null;
+			foreach (var zeEntryFile in z.EntriesSorted)
+			{
+				if (zeEntryRoot == null)
+				{
+					zeEntryRoot = zeEntryFile;
+					if (!zeEntryRoot.IsDirectory) return sDownloadFolder;
+					string sHelp = zeEntryFile.FileName.Replace("/", string.Empty).Replace("\\", string.Empty);
+					if (lDownloadFolders[lDownloadFolders.Count - 1] != sHelp) return sDownloadFolder;
+					continue;
+				}
+				if (!zeEntryFile.FileName.StartsWith(zeEntryRoot.FileName)) return sDownloadFolder;
+			}
+			return UrlUtil.GetShortestAbsolutePath(sDownloadFolder + "..");
 		}
 
 		private bool PostProcessDownload(string sTargetFolder, bool bProcessOK)

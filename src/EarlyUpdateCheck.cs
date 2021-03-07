@@ -785,7 +785,7 @@ namespace EarlyUpdateCheck
 				if (pu is OwnPluginUpdate) (pu as OwnPluginUpdate).UpdateTranslationInfo(true);
 			}
 			if (success) PluginUpdateHandler.Cleanup(sTempPluginsFolder);
-			success = true;
+
 			//Restart KeePass to use new plugin versions
 			PluginDebug.AddInfo("Update finished", "Succes: " + success.ToString(), DebugPrint);
 			if (success && uf == UpdateFlags.ExternalUpdateInfo)
