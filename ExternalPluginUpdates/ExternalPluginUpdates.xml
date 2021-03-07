@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>3</Version>
+	<Version>4</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -78,6 +78,20 @@ from one-click update
 		<PluginName>KeeAnywhere</PluginName>
 		<PluginURL>https://keepass.info/plugins.html#keeanywhere</PluginURL>
 		<PluginUpdateURL>https://github.com/Kyrodan/KeeAnywhere/releases/latest/download/KeeAnywhere-{major}.{minor}.{build}.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassNatMsg</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#keepassnatmsg</PluginURL>
+		<PluginUpdateURL>https://github.com/smorks/keepassnatmsg/releases/latest/download/KeePassNatMsg-v{MAJOR}.{MINOR}.{BUILD}-binaries.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractAll</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassRPC</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#keepassrpc</PluginURL>
+		<PluginUpdateURL>https://github.com/kee-org/keepassrpc/releases/latest/download/KeePassRPC.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
