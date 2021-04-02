@@ -66,6 +66,7 @@ namespace EarlyUpdateCheck
 			tpEUC3rdParty.Text = KPRes.More;
 			lFile.Text = KPRes.File;
 			tbFile.Text = UpdateInfoExternParser.PluginInfoFile;
+			//AlignFields();
 			if (System.IO.File.Exists(UpdateInfoExternParser.PluginInfoFile))
 			{
 				lFile.Links.Add(0, lFile.Text.Length);
@@ -83,7 +84,14 @@ namespace EarlyUpdateCheck
 				else lv3rdPartyPlugins.Items.Add(s);
 			}
 		}
-		private void LFile_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+
+		private void OnShow3rdPartyTab(object sender, EventArgs e)
+        {
+			tbFile.Width = tbFile.Parent.ClientSize.Width - 2 * tbFile.Parent.Padding.Left - 2 * lFile.Left - lFile.Width - 20;
+			tbFile.Left = lFile.Left + lFile.Width + 10;
+        }
+
+        private void LFile_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			PluginTools.Tools.OpenUrl(UpdateInfoExternParser.PluginInfoFile);
 		}
