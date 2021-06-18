@@ -6,7 +6,7 @@ It MUST NOT contain a version tag
 
 It can be used to add / change update information, e. g. for plugins
 available in your local network (private, office, ...)
-It can also be used tomexclude plugins from one-click update
+It can also be used to exclude plugins from one-click update
 -->
 <UpdateInfoExternList>
 	<!-- Example for additional plugins -->
