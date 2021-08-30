@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Translation>
-  <TranslationVersion>1</TranslationVersion>
+  <TranslationVersion>2</TranslationVersion>
   <item>
     <key>Active</key>
     <value>Ativo</value>
@@ -90,6 +90,10 @@ Isso pode mostrar o prompt do UAC.</value>
   </item>
   <item>
     <key>SelectPluginsForTranslationUpdate</key>
-    <value>Selecione plugins para os quais as traduções devem ser atualizadas</value>
+    <value>Selecione plugins para os quais as traduções devem ser atualizadas</value>  </item>
+  <item>
+    <key>UpdateExternalInfo</key>
+    <value>Uma nova versão de ExternalPluginUpdates.xml está disponível.
+Baixar para atualizar mais plugins de terceiros?</value>
   </item>
 </Translation>
