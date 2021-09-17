@@ -151,9 +151,11 @@ Download to update more 3rd party plugins?";
 				}
 				catch (Exception ex)
 				{
-					lDebugStrings.Add("Error parsing file: " + ex.Message);
+					string sException = ex.Message;
+					if (ex.InnerException != null) sException += "\n" + ex.InnerException.Message;
+					lDebugStrings.Add("Error parsing file: " + sException);
 					LanguageCodeIso6391 = "en";
-					MessageBox.Show("Error parsing translation file\n" + ex.Message, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show("Error parsing translation file\n\n" + sException, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 					bError = true;
 					return LanguageCodeIso6391;
 				}
