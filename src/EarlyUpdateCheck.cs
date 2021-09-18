@@ -503,9 +503,11 @@ namespace EarlyUpdateCheck
 					if (!bColumnAdded)
 					{
 						lvPlugins.Columns.Add(PluginTranslate.PluginUpdate);
+                        lvPlugins.KeyPress += LvPlugins_KeyPress;
 						bColumnAdded = true;
 					}
 					ListViewItem.ListViewSubItem lvsiUpdate = new ListViewItem.ListViewSubItem(item, PluginTranslate.PluginUpdate);
+					lvsiUpdate.Name = "EarlyUpdateCheck_UpdateColumn";
 					lvsiUpdate.Tag = upd;
 					item.SubItems.Add(lvsiUpdate);
 					upd.Selected = true;
@@ -542,6 +544,16 @@ namespace EarlyUpdateCheck
 				}
 				else PluginDebug.AddWarning("m_lvEntries.ContextMenuStrip already defined, special handling for added 'go to release page' to be defined", 0);
 			}
+		}
+
+        private void LvPlugins_KeyPress(object sender, KeyPressEventArgs e)
+        {
+			if (e.KeyChar != (char)Keys.Space) return;
+			var lv = sender as ListView;
+			if (lv == null || lv.SelectedItems.Count < 0) return;
+			ListViewItem lvi = lv.SelectedItems[0];
+			int idx = lvi.SubItems.IndexOfKey("EarlyUpdateCheck_UpdateColumn");
+			if (idx >= 0) ToggleUpdateFlag(lv, lvi.SubItems[idx].Tag as PluginUpdate);
 		}
 
 		private void LvPlugins_ItemActivate(object sender, EventArgs e)
@@ -596,16 +608,21 @@ namespace EarlyUpdateCheck
 		private void OnUpdateCheckFormPluginMouseClick(object sender, MouseEventArgs e)
 		{
 			ListViewHitTestInfo info = (sender as ListView).HitTest(e.X, e.Y);
-			PluginUpdate upd = info.Item.SubItems[info.Item.SubItems.Count - 1].Tag as PluginUpdate;
-			if (upd == null) return;
+
+			ToggleUpdateFlag(sender as ListView, info.SubItem.Tag as PluginUpdate);
+		}
+
+        private void ToggleUpdateFlag(ListView lv, PluginUpdate upd)
+        {
+			if (lv == null || upd == null) return;
 			upd.Selected = !upd.Selected;
-			if (!ShowUpdateButton((sender as Control).Parent as Form, PluginUpdateHandler.Plugins.Find(x => x.Selected == true) != null))
+			if (!ShowUpdateButton(lv.FindForm(), PluginUpdateHandler.Plugins.Find(x => x.Selected == true) != null))
 			{
 				upd.Selected = !upd.Selected;
-				bUpdatePlugins_Click(sender, e);
+				bUpdatePlugins_Click(lv, null);
 			}
-			else
-				(sender as ListView).Parent.Refresh();
+			else lv.Parent.Refresh();
+
 		}
 
 		/// <summary>
