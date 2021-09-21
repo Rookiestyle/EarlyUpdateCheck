@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translation>
+  <TranslationVersion>1</TranslationVersion>
+  <item>
+    <key>Active</key>
+    <value>有効</value>
+  </item>
+  <item>
+    <key>CheckSync</key>
+    <value>フォアグラウンドで更新の確認</value>
+  </item>
+  <item>
+    <key>CheckSyncDesc</key>
+    <value>EarlyUpdateCheck は、常に可能な限り早期に更新の確認を開始します。
+
+このオプションが有効なときは、EarlyUpdateCheck は “データベースを開く” ウィンドウが表示される前に更新の確認が完了していることを保証します。
+更新の確認の完了を待たずに、バックグラウンドで更新の確認を続行できます。</value>
+  </item>
+  <item>
+    <key>EnterBackgroundMode</key>
+    <value>バックグラウンドで続行</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClick</key>
+    <value>ワンクリックでプラグインを更新</value>
+  </item>
+  <item>
+    <key>PluginUpdateOneClickDesc</key>
+    <value>“更新の確認” ウィンドウでプラグインをクリックして最新版をインストールします。
+これには KeePass のプラグインのフォルダーへの書き込み権限を必要とします。
+新しいバージョンを使用するには、KeePass を再起動する必要があります。
+
+他の作成者のプラグインを含めるためにファイル ExternalPluginUpdates.xml を維持しています。詳細については、wiki を参照してください。</value>
+  </item>
+  <item>
+    <key>PluginUpdate</key>
+    <value>更新</value>
+  </item>
+  <item>
+    <key>PluginUpdateSelected</key>
+    <value>更新を開始</value>
+  </item>
+  <item>
+    <key>PluginUpdateCaption</key>
+    <value>Early Update Check - プラグインの更新</value>
+  </item>
+  <item>
+    <key>PluginUpdating</key>
+    <value>{0} を更新しています。しばらくお待ちください...</value>
+  </item>
+  <item>
+    <key>PluginUpdateSuccess</key>
+    <value>更新が成功しました。新しいバージョンは KeePass を再起動した後に利用できます。
+再起動しますか？</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailed</key>
+    <value>ダウンロードしたファイルの移動に失敗しました。一時フォルダーを開きますか？</value>
+  </item>
+  <item>
+    <key>PluginUpdateFailedSpecific</key>
+    <value>プラグイン: {0}
+更新に失敗しました。</value>
+  </item>
+  <item>
+    <key>PluginTranslationUpdateFailed</key>
+    <value>プラグイン: {0}
+言語ファイル {1} の更新に失敗しました。</value>
+  </item>
+  <item>
+    <key>TryUAC</key>
+    <value>更新できませんでした。他の方法を試しますか？
+これにより、UAC プロンプトが表示される場合があります。</value>
+  </item>
+  <item>
+    <key>OpenTempFolder</key>
+    <value>更新したファイルがある一時フォルダーを開きますか？</value>
+  </item>
+  <item>
+    <key>TranslationDownload_Update</key>
+    <value>手動で言語を更新</value>
+  </item>
+  <item>
+    <key>TranslationDownload_DownloadCurrent</key>
+    <value>常に設定された言語をダウンロードします: {0}</value>
+  </item>
+  <item>
+    <key>TranslationUpdateForm</key>
+    <value>Early Update Check - 言語の更新</value>
+  </item>
+  <item>
+    <key>SelectPluginsForTranslationUpdate</key>
+    <value>言語を更新するプラグインを選択してください</value>
+  </item>
+  <item>
+    <key>UpdateExternalInfo</key>
+    <value>ExternalPluginUpdates.xml の新しいバージョンが利用できます。
+ダウンロードしてサードパーティー製のプラグインを更新しますか？</value>
+  </item>
+</Translation>
