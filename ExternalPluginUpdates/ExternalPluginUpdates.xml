@@ -40,6 +40,13 @@ from one-click update
 		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
+    <PluginName>KeeOtp2</PluginName>
+		<PluginURL>https://github.com/tiuub/KeeOtp2#keeotp2</PluginURL>
+		<PluginUpdateURL>https://github.com/tiuub/KeeOtp2/releases/latest/download/KeeOtp2.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
 		<PluginName>KeePass Sync For Google Drive</PluginName>
 		<PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
 		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/KPSyncForDrive-{major}.{minor}.{build}-beta.plgx</PluginUpdateURL>
