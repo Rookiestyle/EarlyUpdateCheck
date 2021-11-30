@@ -33,6 +33,13 @@ from one-click update
 		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
+		<PluginName>KeeParanoia</PluginName>
+		<PluginURL>https://sourceforge.net/projects/keeparanoia/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/keeparanoia/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
 		<PluginName>KeePass Sync For Google Drive</PluginName>
 		<PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
 		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/KPSyncForDrive-{major}.{minor}.{build}-beta.plgx</PluginUpdateURL>
