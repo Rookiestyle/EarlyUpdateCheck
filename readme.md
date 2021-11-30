@@ -68,14 +68,14 @@ Please follow these links to download the plugin file itself.
 
 If you're interested in any of the available translations in addition, please download them from the [Translations](Translations) folder.
 
-#### Chocolatey
-Or [install automaticly via Chocolatey](https://community.chocolatey.org/packages/keepass-early-update-check#install):
+#### Chocolatey 📦 
+Or you can [use Chocolatey to install](https://community.chocolatey.org/packages/keepass-early-update-check#install) it in a more automated manner:
 
 ```
 choco install keepass-early-update-check
 ```
 
-To [upgrade KeePass Plugin KeePassOTP](https://community.chocolatey.org/packages/keepass-early-update-check#upgrade) to the [latest release version](https://community.chocolatey.org/packages/keepass-early-update-check#versionhistory) for enjoying the newest features, run the following command from the command line or from PowerShell:
+To [upgrade KeePass Plugin Early Update Check](https://community.chocolatey.org/packages/keepass-early-update-check#upgrade) to the [latest release version](https://community.chocolatey.org/packages/keepass-early-update-check#versionhistory) for enjoying the newest features, run the following command from the command line or from PowerShell:
 
 ```
 choco upgrade keepass-early-update-check
