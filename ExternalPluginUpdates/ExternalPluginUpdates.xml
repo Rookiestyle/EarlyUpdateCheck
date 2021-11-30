@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>5</Version>
+	<Version>6</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -31,6 +31,20 @@ from one-click update
 		<PluginUpdateURL>https://sourceforge.net/projects/kpsfupdatechecker/files/latest/download</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeParanoia</PluginName>
+		<PluginURL>https://sourceforge.net/projects/keeparanoia/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/keeparanoia/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeOtp2</PluginName>
+		<PluginURL>https://github.com/tiuub/KeeOtp2#keeotp2</PluginURL>
+		<PluginUpdateURL>https://github.com/tiuub/KeeOtp2/releases/latest/download/KeeOtp2.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>KeePass Sync For Google Drive</PluginName>
