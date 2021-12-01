@@ -47,6 +47,13 @@ from one-click update
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
+		<PluginName>KoenZomers.KeePass.OneDriveSync</PluginName>
+		<PluginURL>https://github.com/KoenZomers/KeePassOneDriveSync#keepass-onedrive-sync</PluginURL>
+		<PluginUpdateURL>https://github.com/KoenZomers/KeePassOneDriveSync/releases/latest/download/KeeOneDriveSync.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
 		<PluginName>KeePass Sync For Google Drive</PluginName>
 		<PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
 		<!-- Workaround to allow updating older version, details: https://github.com/Rookiestyle/EarlyUpdateCheck/issues/33 -->
