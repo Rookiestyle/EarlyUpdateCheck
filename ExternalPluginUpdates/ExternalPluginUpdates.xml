@@ -40,6 +40,13 @@ from one-click update
 		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
+		<PluginName>KeePass Pronounceable Password Generator</PluginName>
+		<PluginURL>https://sourceforge.net/projects/pronouncepwgen/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/pronouncepwgen/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
 		<PluginName>KeeOtp2</PluginName>
 		<PluginURL>https://github.com/tiuub/KeeOtp2#keeotp2</PluginURL>
 		<PluginUpdateURL>https://github.com/tiuub/KeeOtp2/releases/latest/download/KeeOtp2.plgx</PluginUpdateURL>
