@@ -16,7 +16,7 @@ from one-click update
 		<PluginURL>https://keepass.info/plugins.html#testplugin</PluginURL>
 		<PluginUpdateURL>https://keepass.info/extensions/v2/misc/CustomSecureTextBox-{major}.{minor}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
+		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
