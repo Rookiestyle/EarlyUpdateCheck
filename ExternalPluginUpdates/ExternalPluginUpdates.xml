@@ -47,6 +47,13 @@ from one-click update
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
+		<PluginName>KeePassSync</PluginName>
+		<PluginURL>https://sourceforge.net/projects/keepasssync/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/keepasssync/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
 		<PluginName>KeePass Sync For Google Drive</PluginName>
 		<PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
 		<!-- Workaround to allow updating older version, details: https://github.com/Rookiestyle/EarlyUpdateCheck/issues/33 -->
