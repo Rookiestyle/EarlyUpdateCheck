@@ -10,7 +10,14 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>7</Version>
+	<Version>8</Version>	
+	<UpdateInfoExtern>
+		<PluginName>CustomSecureTextBox</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#testplugin</PluginURL>
+		<PluginUpdateURL>https://keepass.info/extensions/v2/misc/CustomSecureTextBox-{major}.{minor}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
