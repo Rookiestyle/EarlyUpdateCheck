@@ -107,9 +107,40 @@ namespace EarlyUpdateCheck
 			FOF_NORECURSEREPARSE = 0x8000,
 		}
 
-		internal static bool DeleteFiles(params string[] files)
-		{
-			bool success = false;
+		internal static int MoveFilesToTemp(params string[] files)
+        {
+			// 0 = success
+			// -1 = aborted by user
+			// other value = error
+
+			string from = string.Empty;
+			foreach (string file in files)
+				from += file + "\0";
+			from += "\0";
+
+			string sTemp = PluginUpdateHandler.GetTempFolder() + "\0\0";
+
+			SHFILEOPSTRUCT lpFileOp = new SHFILEOPSTRUCT();
+			lpFileOp.hwnd = IntPtr.Zero;
+			lpFileOp.wFunc = FILE_OP_TYPE.FO_MOVE;
+			lpFileOp.pFrom = from;
+			lpFileOp.pTo = sTemp;
+			lpFileOp.fFlags = FILE_OP_FLAGS.FOF_NOCONFIRMMKDIR | FILE_OP_FLAGS.FOF_NOCONFIRMATION | FILE_OP_FLAGS.FOF_ALLOWUNDO;
+			lpFileOp.fAnyOperationsAborted = false;
+			lpFileOp.hNameMappings = IntPtr.Zero;
+			lpFileOp.lpszProgressTitle = string.Empty;
+
+			int result = SHFileOperation(ref lpFileOp);
+			if (result == 0 && lpFileOp.fAnyOperationsAborted) result = -1;
+			PluginDebug.AddInfo("Move in UAC mode: " + result.ToString());
+			return result;
+		}
+
+		internal static int DeleteFiles(params string[] files)
+		{           
+			// 0 = success
+			// -1 = aborted by user
+			// other value = error
 
 			string from = string.Empty;
 			foreach (string file in files)
@@ -127,10 +158,9 @@ namespace EarlyUpdateCheck
 			lpFileOp.lpszProgressTitle = string.Empty;
 
 			int result = SHFileOperation(ref lpFileOp);
-			if (result == 0)
-				success = !lpFileOp.fAnyOperationsAborted;
-			PluginDebug.AddInfo("Delete in UAC mode: " + success.ToString());
-			return success;
+			if (result == 0 && lpFileOp.fAnyOperationsAborted) result = -1;
+			PluginDebug.AddInfo("Delete in UAC mode: " + result.ToString());
+			return result;
 		}
 
 		internal static bool CopyFiles(string from, string to)

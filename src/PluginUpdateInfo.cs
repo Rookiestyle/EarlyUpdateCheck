@@ -149,10 +149,25 @@ namespace EarlyUpdateCheck
 			List<string> lFiles = UrlUtil.GetFilePaths(sTempFolder, "*", SearchOption.AllDirectories);
 			List<string> lMsg = new List<string>();
 
+			//dummy file name when move instead of delete is required
+			//simply pverwrite this file over and over again if reuired
+			string sTemp = GetTempFolder() + "old_plugin.dmy";
+
 			foreach (string sFile in m_lFilesDelete)
 			{
 				try	{ File.Delete(sFile);	}
-				catch (Exception ex) { lMsg.Add(ex.Message); }
+				catch (Exception ex) 
+				{ 
+					lMsg.Add(ex.Message);
+					//In case of dll files try moving it to a temp folder and delete them from temp
+					//cf. https://github.com/Rookiestyle/EarlyUpdateCheck/issues/37
+					try
+					{
+						File.Delete(sTemp);
+						File.Move(sFile, sTemp);
+					}
+					catch (Exception ex2) { lMsg.Add(ex2.Message); }
+				}
 			}
 
 			foreach (string sFile in lFiles)
@@ -163,7 +178,7 @@ namespace EarlyUpdateCheck
 					string sFolder = UrlUtil.GetFileDirectory(sTargetFile, true, true);
 					//Create target folder if required
 					//CreateDirectory internally checks for existence
-					//Thus, no need to check in our codd
+					//Thus, no need to check in our code
 					Directory.CreateDirectory(sFolder);
 					File.Copy(sFile, sTargetFile, true); 
 				}
@@ -199,7 +214,20 @@ namespace EarlyUpdateCheck
 
 			if (WinUtil.IsAtLeastWindowsVista && (NativeMethods.ShieldifyNativeDialog(DialogResult.Yes, f) == DialogResult.Yes))
 			{
-				if (m_lFilesDelete.Count > 0 && FileCopier.DeleteFiles(m_lFilesDelete.ToArray())) m_lFilesDelete.Clear();
+				if (m_lFilesDelete.Count > 0)
+				{
+					int iDeleted = FileCopier.DeleteFiles(m_lFilesDelete.ToArray());
+					if (iDeleted == 0)
+					{
+						m_lFilesDelete.Clear();
+					}
+					else
+					{
+						//In case of dll files try moving it to a temp folder and delete them from temp
+						//cf. https://github.com/Rookiestyle/EarlyUpdateCheck/issues/37
+						if (m_lFilesDelete.Count > 0 && FileCopier.MoveFilesToTemp(m_lFilesDelete.ToArray()) <= 0) m_lFilesDelete.Clear();
+					}
+				}
 
 				bSuccess = FileCopier.CopyFiles(sTempFolder, sTargetFolder);
 				if (!bSuccess) bOpenTempFolder = Tools.AskYesNo(PluginTranslate.PluginUpdateFailed, PluginTranslate.PluginUpdateCaption) == DialogResult.Yes;
