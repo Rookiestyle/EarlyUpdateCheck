@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>8</Version>
+	<Version>9</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -100,6 +100,13 @@ from one-click update
 		<PluginName>KeePassQRCodeView</PluginName>
 		<PluginURL>https://keepass.info/plugins.html#qrcodeview</PluginURL>
 		<PluginUpdateURL>https://github.com/JanisEst/KeePassQRCodeView/releases/latest/download/KeePassQRCodeView.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>SftpSync</PluginName>
+		<PluginURL>https://github.com/shellster/keepass-sftp-sync#keepass-sftpsync</PluginURL>
+		<PluginUpdateURL>https://github.com/shellster/keepass-sftp-sync/releases/latest/download/SftpSync.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
