@@ -62,7 +62,7 @@ from one-click update
 	</UpdateInfoExtern>	
 	<UpdateInfoExtern>
 		<PluginName>KeeTheme</PluginName>
-		<PluginURL>https://github.com/xatupal/KeeTheme#keetheme</PluginURL>
+		<PluginURL>https://keepass.info/plugins.html#keetheme</PluginURL>
 		<PluginUpdateURL>https://github.com/xatupal/KeeTheme/releases/latest/download/KeeTheme.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
