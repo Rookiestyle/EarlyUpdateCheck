@@ -836,6 +836,7 @@ namespace EarlyUpdateCheck
 			string sNewFile = UrlUtil.GetFileName(MergeInVersion(true));
 			string sOldFile = UrlUtil.GetFileName(MergeInVersion(false));
 
+			if (string.Compare(sNewFile, sOldFile, true) == 0) sOldFile = UrlUtil.GetFileName(PluginFile);
 			if (string.Compare(sNewFile, sOldFile, true) == 0) return true;
 
 			string sNewFileFull = MergeInPluginFolder(PluginUpdateHandler.PluginsFolder) + sNewFile;
