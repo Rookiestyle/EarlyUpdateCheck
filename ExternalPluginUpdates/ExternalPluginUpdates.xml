@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>10</Version>
+	<Version>11</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -85,7 +85,7 @@ from one-click update
 	<UpdateInfoExtern>
 		<PluginName>KPSync For Google Drive</PluginName>
 		<PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
-		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/KPSyncForDrive-{major}.{minor}.{build}-beta.plgx</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/KPSyncForDrive-{major}.{minor}.{build}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
