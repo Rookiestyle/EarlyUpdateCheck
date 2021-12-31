@@ -106,7 +106,7 @@ namespace EarlyUpdateCheck
 						else if (bOwnPlugin) pu = new OwnPluginUpdate(p.GetType().Namespace);
 						else
 						{
-							try { pu = new OtherPluginUpdate(p.GetType().Namespace); } catch { }
+							try { pu = OtherPluginUpdate.Factory(p.GetType().Namespace); /* new OtherPluginUpdate(p.GetType().Namespace); */ } catch { }
 						}
 						if (pu != null && Plugins.Find(x => x.Name == pu.Name) == null)
 						{
@@ -321,6 +321,12 @@ namespace EarlyUpdateCheck
 		internal bool Selected;
 
 		internal bool Ignore = false;
+
+		protected void SetVersionInstalled(Version vInstalled)
+        {
+			VersionInstalled = vInstalled;
+        }
+
 		public override string ToString()
 		{
 			return Title + " - " + UpdateMode.ToString() + " (" + VersionInstalled.ToString() + " / " + VersionAvailable.ToString() + ")";
@@ -857,7 +863,30 @@ namespace EarlyUpdateCheck
 
 			return true;
 		}
-	}
+
+        internal static PluginUpdate Factory(string sPluginNamespace)
+        {
+			switch (sPluginNamespace.ToLowerInvariant())
+            {
+				case "kpsyncfordrive": return new OPU_KPSyncForDrive(sPluginNamespace);
+				default: return new OtherPluginUpdate(sPluginNamespace);
+			}
+            throw new NotImplementedException();
+        }
+    }
+
+	internal class OPU_KPSyncForDrive : OtherPluginUpdate
+    {
+		internal OPU_KPSyncForDrive(string PluginName) : base(PluginName) { }
+        protected override string MergeInVersion(bool bUseAvailableVersion)
+        {
+			//KPSyn for Drive always uses major, minor and revision
+			//Replace -1 by 0 if required
+			if (VersionAvailable.Build < 0) VersionAvailable = new Version(VersionAvailable.Major, VersionAvailable.Minor, 0);
+			if (VersionInstalled.Build < 0) SetVersionInstalled(new Version(VersionInstalled.Major, VersionInstalled.Minor, 0)); 
+			return base.MergeInVersion(bUseAvailableVersion);
+        }
+    }
 
 	internal class TranslationVersionCheck
 	{
