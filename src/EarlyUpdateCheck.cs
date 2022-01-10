@@ -448,11 +448,19 @@ namespace EarlyUpdateCheck
 			if (!PluginConfig.OneClickUpdate) return;
 			if (m_bExternalPluginInfoChecked) return;
 			m_bExternalPluginInfoChecked = true;
-			if (UpdateInfoExternParser.VersionInstalled < 0) return;
+			bool bDownloadFile = false;
+			if (UpdateInfoExternParser.VersionInstalled < 0)
+			{
+				if (PluginConfig.ExternalUpdateFileAskedForInitialDownload) return;
+				PluginConfig.ExternalUpdateFileAskedForInitialDownload = true;
+				bDownloadFile = Tools.AskYesNo(PluginTranslate.UpdateExternalInfoInitialDownload) == DialogResult.Yes;
+				if (!bDownloadFile) return;
+			}
 			if (UpdateInfoExternParser.VersionInstalled >= UpdateInfoExternParser.VersionAvailable) return;
 			var pu = PluginUpdateHandler.Plugins.Find(x => x is EarlyUpdateCheckUpdate) as OwnPluginUpdate;
 			if (pu == null) return;
-			if (Tools.AskYesNo(PluginTranslate.UpdateExternalInfo) != DialogResult.Yes) return;
+			if (!bDownloadFile) bDownloadFile = Tools.AskYesNo(PluginTranslate.UpdateExternalInfo) != DialogResult.Yes;
+			if (!bDownloadFile) return;
 			m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() => { UpdatePlugins(UpdateFlags.ExternalUpdateInfo); }), null);
 		}
 		#endregion
@@ -733,7 +741,7 @@ namespace EarlyUpdateCheck
 		}
 
 		[Flags]
-		private enum UpdateFlags
+		internal enum UpdateFlags
 		{
 			None = 0,
 			Plugin = 1,
@@ -747,6 +755,10 @@ namespace EarlyUpdateCheck
 		}
 
 		private void UpdatePlugins(UpdateFlags uf)
+        {
+			UpdatePlugins(uf, false);
+        }
+		private void UpdatePlugins(UpdateFlags uf, bool bForceExternalPluginUpdatesDownload)
 		{ 
 			PluginDebug.AddInfo("UpdatePlugins start ", DebugPrint);
 			Form fUpdateLog = null;
@@ -766,12 +778,12 @@ namespace EarlyUpdateCheck
 				{
 					if (uf == UpdateFlags.ExternalUpdateInfo && upd is EarlyUpdateCheckUpdate)
 					{
-						success |= UpdatePlugin(upd, sTempPluginsFolder, uf);
+						success |= UpdatePlugin(upd, sTempPluginsFolder, uf, bForceExternalPluginUpdatesDownload);
 					}
 					else
 					{
 						if (!upd.Selected) continue;
-						success |= UpdatePlugin(upd, sTempPluginsFolder, uf);
+						success |= UpdatePlugin(upd, sTempPluginsFolder, uf, false);
 					}
 				}
 			});
@@ -832,7 +844,7 @@ namespace EarlyUpdateCheck
 		/// <param name="sTranslationFolder">Target folder for plugin translations</param>
 		/// <param name="uf">Only download newest translations</param>
 		/// <returns></returns>
-		private bool UpdatePlugin(PluginUpdate upd, string sPluginFolder, UpdateFlags uf)
+		private bool UpdatePlugin(PluginUpdate upd, string sPluginFolder, UpdateFlags uf, bool bForceExternalPluginUpdatesDownload)
 		{
 			bool bOK = true;
 			if (m_slUpdatePlugins != null)
@@ -846,7 +858,7 @@ namespace EarlyUpdateCheck
 			if (upd is EarlyUpdateCheckUpdate && UpdateFlagSet(uf, UpdateFlags.ExternalUpdateInfo))
 			{
 				var euc = upd as EarlyUpdateCheckUpdate;
-				bool bExtOK = euc.DownloadExternalPluginUpdates(sPluginFolder);
+				bool bExtOK = euc.DownloadExternalPluginUpdates(sPluginFolder, bForceExternalPluginUpdatesDownload);
 				if (uf == UpdateFlags.ExternalUpdateInfo) bOK = bExtOK;
 			}
 			if (bOK) bOK = upd.ProcessDownload(sPluginFolder);
@@ -974,6 +986,7 @@ namespace EarlyUpdateCheck
 			options.cbCheckSync.Checked = PluginConfig.CheckSync;
 			options.gOneClickUpdate.Checked = PluginConfig.OneClickUpdate;
 			options.cbDownloadCurrentTranslation.Checked = PluginConfig.DownloadActiveLanguage;
+			options.UpdateExternalPluginUpdates = UpdatePlugins;
 			options.Plugin = this;
 			Tools.AddPluginToOptionsForm(this, options);
 		}

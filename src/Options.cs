@@ -13,6 +13,8 @@ namespace EarlyUpdateCheck
 	public partial class Options : UserControl
 	{
 		public EarlyUpdateCheckExt Plugin = null;
+
+		internal KeePassLib.Delegates.GAction<EarlyUpdateCheckExt.UpdateFlags, bool> UpdateExternalPluginUpdates;
 		public Options()
 		{
 			InitializeComponent();
@@ -27,6 +29,7 @@ namespace EarlyUpdateCheck
 				cbDownloadCurrentTranslation.Text = string.Format(PluginTranslate.TranslationDownload_DownloadCurrent, KeePass.Program.Translation.Properties.NameNative);
 			bUpdateTranslations.Text = PluginTranslate.TranslationDownload_Update;
 			if (PluginUpdateHandler.Shieldify) KeePass.UI.UIUtil.SetShield(bUpdateTranslations, true);
+			bDownloadExternalPluginUpdates.Text = PluginTranslate.UpdateExternalInfoDownload;
 		}
 
 		private void bUpdateTranslations_Click(object sender, EventArgs e)
@@ -66,12 +69,18 @@ namespace EarlyUpdateCheck
 			tpEUC3rdParty.Text = KPRes.More;
 			lFile.Text = KPRes.File;
 			tbFile.Text = UpdateInfoExternParser.PluginInfoFile;
-			//AlignFields();
+			RefreshPluginList();
+		}
+
+		private void RefreshPluginList()
+		{
 			if (System.IO.File.Exists(UpdateInfoExternParser.PluginInfoFile))
 			{
 				lFile.Links.Add(0, lFile.Text.Length);
 				lFile.LinkClicked += LFile_LinkClicked;
 			}
+			else lFile.LinkArea = new LinkArea(0,0);
+			lv3rdPartyPlugins.Items.Clear();
 			foreach (var p in PluginUpdateHandler.Plugins)
 			{
 				string s = p.Title + (p is OtherPluginUpdate ? " - " + p.UpdateMode.ToString() : string.Empty);
@@ -83,6 +92,7 @@ namespace EarlyUpdateCheck
 				}
 				else lv3rdPartyPlugins.Items.Add(s);
 			}
+			bDownloadExternalPluginUpdates.Visible = UpdateInfoExternParser.VersionInstalled < 0;
 		}
 
 		private void OnShow3rdPartyTab(object sender, EventArgs e)
@@ -94,6 +104,12 @@ namespace EarlyUpdateCheck
         private void LFile_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			PluginTools.Tools.OpenUrl(UpdateInfoExternParser.PluginInfoFile);
+		}
+
+        private void bDownloadExternalPluginUpdates_Click(object sender, EventArgs e)
+        {
+			UpdateExternalPluginUpdates(EarlyUpdateCheckExt.UpdateFlags.ExternalUpdateInfo, true);
+			RefreshPluginList();
 		}
 	}
 }

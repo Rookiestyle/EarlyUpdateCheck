@@ -30,11 +30,6 @@
 		{
             this.tcEUC = new System.Windows.Forms.TabControl();
             this.tpEUCOptions = new System.Windows.Forms.TabPage();
-            this.tpEUC3rdParty = new System.Windows.Forms.TabPage();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.tbFile = new System.Windows.Forms.TextBox();
-            this.lFile = new System.Windows.Forms.LinkLabel();
-            this.lv3rdPartyPlugins = new System.Windows.Forms.ListView();
             this.gOneClickUpdate = new RookieUI.CheckedGroupBox();
             this.bUpdateTranslations = new System.Windows.Forms.Button();
             this.cbDownloadCurrentTranslation = new System.Windows.Forms.CheckBox();
@@ -42,12 +37,18 @@
             this.gCheckSync = new RookieUI.CheckedGroupBox();
             this.tbCheckSyncDesc = new System.Windows.Forms.TextBox();
             this.cbCheckSync = new System.Windows.Forms.CheckBox();
+            this.tpEUC3rdParty = new System.Windows.Forms.TabPage();
+            this.bDownloadExternalPluginUpdates = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.tbFile = new System.Windows.Forms.TextBox();
+            this.lFile = new System.Windows.Forms.LinkLabel();
+            this.lv3rdPartyPlugins = new System.Windows.Forms.ListView();
             this.tcEUC.SuspendLayout();
             this.tpEUCOptions.SuspendLayout();
-            this.tpEUC3rdParty.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.gOneClickUpdate.SuspendLayout();
             this.gCheckSync.SuspendLayout();
+            this.tpEUC3rdParty.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tcEUC
@@ -74,64 +75,6 @@
             this.tpEUCOptions.TabIndex = 0;
             this.tpEUCOptions.Text = "tabPage1";
             this.tpEUCOptions.UseVisualStyleBackColor = true;
-            // 
-            // tpEUC3rdParty
-            // 
-            this.tpEUC3rdParty.Controls.Add(this.panel1);
-            this.tpEUC3rdParty.Controls.Add(this.lv3rdPartyPlugins);
-            this.tpEUC3rdParty.Location = new System.Drawing.Point(10, 48);
-            this.tpEUC3rdParty.Margin = new System.Windows.Forms.Padding(5);
-            this.tpEUC3rdParty.Name = "tpEUC3rdParty";
-            this.tpEUC3rdParty.Padding = new System.Windows.Forms.Padding(18, 15, 18, 15);
-            this.tpEUC3rdParty.Size = new System.Drawing.Size(1319, 576);
-            this.tpEUC3rdParty.TabIndex = 1;
-            this.tpEUC3rdParty.Text = "tabPage2";
-            this.tpEUC3rdParty.UseVisualStyleBackColor = true;
-            this.tpEUC3rdParty.Resize += new System.EventHandler(this.OnShow3rdPartyTab);
-            // 
-            // panel1
-            // 
-            this.panel1.AutoSize = true;
-            this.panel1.Controls.Add(this.tbFile);
-            this.panel1.Controls.Add(this.lFile);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(18, 15);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1283, 57);
-            this.panel1.TabIndex = 3;
-            // 
-            // tbFile
-            // 
-            this.tbFile.Location = new System.Drawing.Point(65, 14);
-            this.tbFile.Margin = new System.Windows.Forms.Padding(5);
-            this.tbFile.Name = "tbFile";
-            this.tbFile.ReadOnly = true;
-            this.tbFile.Size = new System.Drawing.Size(1216, 38);
-            this.tbFile.TabIndex = 3;
-            // 
-            // lFile
-            // 
-            this.lFile.AutoSize = true;
-            this.lFile.Location = new System.Drawing.Point(1, 23);
-            this.lFile.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lFile.Name = "lFile";
-            this.lFile.Size = new System.Drawing.Size(69, 32);
-            this.lFile.TabIndex = 2;
-            this.lFile.TabStop = true;
-            this.lFile.Text = "lFile";
-            // 
-            // lv3rdPartyPlugins
-            // 
-            this.lv3rdPartyPlugins.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lv3rdPartyPlugins.FullRowSelect = true;
-            this.lv3rdPartyPlugins.HideSelection = false;
-            this.lv3rdPartyPlugins.Location = new System.Drawing.Point(18, 92);
-            this.lv3rdPartyPlugins.Margin = new System.Windows.Forms.Padding(5);
-            this.lv3rdPartyPlugins.Name = "lv3rdPartyPlugins";
-            this.lv3rdPartyPlugins.Size = new System.Drawing.Size(1283, 469);
-            this.lv3rdPartyPlugins.TabIndex = 2;
-            this.lv3rdPartyPlugins.UseCompatibleStateImageBehavior = false;
-            this.lv3rdPartyPlugins.View = System.Windows.Forms.View.List;
             // 
             // gOneClickUpdate
             // 
@@ -227,6 +170,76 @@
             this.cbCheckSync.Text = "CheckSync";
             this.cbCheckSync.UseVisualStyleBackColor = true;
             // 
+            // tpEUC3rdParty
+            // 
+            this.tpEUC3rdParty.Controls.Add(this.bDownloadExternalPluginUpdates);
+            this.tpEUC3rdParty.Controls.Add(this.panel1);
+            this.tpEUC3rdParty.Controls.Add(this.lv3rdPartyPlugins);
+            this.tpEUC3rdParty.Location = new System.Drawing.Point(10, 48);
+            this.tpEUC3rdParty.Margin = new System.Windows.Forms.Padding(5);
+            this.tpEUC3rdParty.Name = "tpEUC3rdParty";
+            this.tpEUC3rdParty.Padding = new System.Windows.Forms.Padding(18, 15, 18, 15);
+            this.tpEUC3rdParty.Size = new System.Drawing.Size(1319, 576);
+            this.tpEUC3rdParty.TabIndex = 1;
+            this.tpEUC3rdParty.Text = "tabPage2";
+            this.tpEUC3rdParty.UseVisualStyleBackColor = true;
+            this.tpEUC3rdParty.Resize += new System.EventHandler(this.OnShow3rdPartyTab);
+            // 
+            // bDownloadExternalPluginUpdates
+            // 
+            this.bDownloadExternalPluginUpdates.Dock = System.Windows.Forms.DockStyle.Top;
+            this.bDownloadExternalPluginUpdates.Location = new System.Drawing.Point(18, 72);
+            this.bDownloadExternalPluginUpdates.Name = "bDownloadExternalPluginUpdates";
+            this.bDownloadExternalPluginUpdates.Size = new System.Drawing.Size(1283, 50);
+            this.bDownloadExternalPluginUpdates.TabIndex = 4;
+            this.bDownloadExternalPluginUpdates.Text = "Download";
+            this.bDownloadExternalPluginUpdates.UseVisualStyleBackColor = true;
+            this.bDownloadExternalPluginUpdates.Click += new System.EventHandler(this.bDownloadExternalPluginUpdates_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.AutoSize = true;
+            this.panel1.Controls.Add(this.tbFile);
+            this.panel1.Controls.Add(this.lFile);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(18, 15);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1283, 57);
+            this.panel1.TabIndex = 3;
+            // 
+            // tbFile
+            // 
+            this.tbFile.Location = new System.Drawing.Point(65, 14);
+            this.tbFile.Margin = new System.Windows.Forms.Padding(5);
+            this.tbFile.Name = "tbFile";
+            this.tbFile.ReadOnly = true;
+            this.tbFile.Size = new System.Drawing.Size(1216, 38);
+            this.tbFile.TabIndex = 3;
+            // 
+            // lFile
+            // 
+            this.lFile.AutoSize = true;
+            this.lFile.Location = new System.Drawing.Point(1, 23);
+            this.lFile.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lFile.Name = "lFile";
+            this.lFile.Size = new System.Drawing.Size(69, 32);
+            this.lFile.TabIndex = 2;
+            this.lFile.TabStop = true;
+            this.lFile.Text = "lFile";
+            // 
+            // lv3rdPartyPlugins
+            // 
+            this.lv3rdPartyPlugins.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lv3rdPartyPlugins.FullRowSelect = true;
+            this.lv3rdPartyPlugins.HideSelection = false;
+            this.lv3rdPartyPlugins.Location = new System.Drawing.Point(18, 130);
+            this.lv3rdPartyPlugins.Margin = new System.Windows.Forms.Padding(5);
+            this.lv3rdPartyPlugins.Name = "lv3rdPartyPlugins";
+            this.lv3rdPartyPlugins.Size = new System.Drawing.Size(1283, 431);
+            this.lv3rdPartyPlugins.TabIndex = 2;
+            this.lv3rdPartyPlugins.UseCompatibleStateImageBehavior = false;
+            this.lv3rdPartyPlugins.View = System.Windows.Forms.View.List;
+            // 
             // Options
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
@@ -238,14 +251,14 @@
             this.Load += new System.EventHandler(this.Options_Load);
             this.tcEUC.ResumeLayout(false);
             this.tpEUCOptions.ResumeLayout(false);
-            this.tpEUC3rdParty.ResumeLayout(false);
-            this.tpEUC3rdParty.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.gOneClickUpdate.ResumeLayout(false);
             this.gOneClickUpdate.PerformLayout();
             this.gCheckSync.ResumeLayout(false);
             this.gCheckSync.PerformLayout();
+            this.tpEUC3rdParty.ResumeLayout(false);
+            this.tpEUC3rdParty.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -266,5 +279,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox tbFile;
         private System.Windows.Forms.LinkLabel lFile;
+        private System.Windows.Forms.Button bDownloadExternalPluginUpdates;
     }
 }

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Translation>
-  <TranslationVersion>6</TranslationVersion>
+  <!-- 
+    Increment the TranslationVersion every time the translation file is updated
+	Also update the version.info file
+  -->
+  <TranslationVersion>7</TranslationVersion>
   <item>
     <key>Active</key>
     <value>Aktiv</value>
@@ -96,5 +100,18 @@ Die Windows Benutzerkontensteuerung wird eventuell angezeigt und muss bestätigt
     <key>UpdateExternalInfo</key>
     <value>Eine neue Version von ExternalPluginUpdates.xml steht zur Verfügung.
 Herunterladen, um mehr Plugins automatisch aktualisieren zu können?</value>
+  </item>
+  <item>
+    <key>UpdateExternalInfoInitialDownload</key>
+    <value>EarlyUpdateCheck kann auch Plugins anderer Entwickler aktualisieren.
+Dazu ist die Datei ExternalPluginUpdates.xml erforderlich.
+Soll diese Datei jetzt geladen werden?
+
+Diese Frage wird nicht erneut gestellt.
+Wenn du diese Funktion jetzt nicht nutzen willst, dann kannst du die Datei auch später in den Option von EarlyUpdatecheck laden.</value>
+  </item>
+  <item>
+    <key>UpdateExternalInfoDownload</key>
+    <value>Download ExternalPluginUpdates.xml</value>
   </item>
 </Translation>

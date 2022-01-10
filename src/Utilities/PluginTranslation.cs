@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace PluginTranslation
 {
-	public class TranslationChangedEventArgs: EventArgs
+	public class TranslationChangedEventArgs : EventArgs
 	{
 		public string OldLanguageIso6391 = string.Empty;
 		public string NewLanguageIso6391 = string.Empty;
@@ -33,39 +33,132 @@ namespace PluginTranslation
 		private static string LanguageIso6391 = string.Empty;
 		#region Definitions of translated texts go here
 		public const string PluginName = "Early Update Check";
+		/// <summary>
+		/// Active
+		/// </summary>
 		public static readonly string Active = @"Active";
+		/// <summary>
+		/// Update check in foreground
+		/// </summary>
 		public static readonly string CheckSync = @"Update check in foreground";
+		/// <summary>
+		/// EarlyUpdateCheck will always start the update check at the earliest possible time.
+		/// 
+		/// If this option is active, EarlyUpdateCheck will additionally ensure the update check is finished BEFORE the 'Open Database' window is shown.
+		/// You may have the upgrade check continue in background if you don't want to wait for its completion.
+		/// </summary>
 		public static readonly string CheckSyncDesc = @"EarlyUpdateCheck will always start the update check at the earliest possible time.
 
 If this option is active, EarlyUpdateCheck will additionally ensure the update check is finished BEFORE the 'Open Database' window is shown.
 You may have the upgrade check continue in background if you don't want to wait for its completion.";
+		/// <summary>
+		/// Continue in background
+		/// </summary>
 		public static readonly string EnterBackgroundMode = @"Continue in background";
+		/// <summary>
+		/// One-Click plugin update
+		/// </summary>
 		public static readonly string PluginUpdateOneClick = @"One-Click plugin update";
+		/// <summary>
+		/// Install new versions of plugins by clicking the plugin in the 'Update Check' window.
+		/// This requires write access to KeePass' plugin folder.
+		/// KeePass needs to be restarted afterwards in order to use the new version.
+		/// 
+		/// Maintain file ExternalPluginUpdates.xml to include other authors' plugins, see the wiki for more details
+		/// </summary>
 		public static readonly string PluginUpdateOneClickDesc = @"Install new versions of plugins by clicking the plugin in the 'Update Check' window.
 This requires write access to KeePass' plugin folder.
 KeePass needs to be restarted afterwards in order to use the new version.
 
 Maintain file ExternalPluginUpdates.xml to include other authors' plugins, see the wiki for more details";
+		/// <summary>
+		/// Update
+		/// </summary>
 		public static readonly string PluginUpdate = @"Update";
+		/// <summary>
+		/// Start update
+		/// </summary>
 		public static readonly string PluginUpdateSelected = @"Start update";
+		/// <summary>
+		/// Early Update Check - Plugin Updater
+		/// </summary>
 		public static readonly string PluginUpdateCaption = @"Early Update Check - Plugin Updater";
+		/// <summary>
+		/// Updating {0}, please wait...
+		/// </summary>
 		public static readonly string PluginUpdating = @"Updating {0}, please wait...";
+		/// <summary>
+		/// The update was successful, the new version(s) will be active after a restart of KeePass.
+		/// Restart now?
+		/// </summary>
 		public static readonly string PluginUpdateSuccess = @"The update was successful, the new version(s) will be active after a restart of KeePass.
 Restart now?";
+		/// <summary>
+		/// Moving downloaded files failed. Open temporary folder instead?
+		/// </summary>
 		public static readonly string PluginUpdateFailed = @"Moving downloaded files failed. Open temporary folder instead?";
+		/// <summary>
+		/// Plugin: {0}
+		/// The update failed
+		/// </summary>
 		public static readonly string PluginUpdateFailedSpecific = @"Plugin: {0}
 The update failed";
+		/// <summary>
+		/// Plugin: {0}
+		/// Update of language file {1} failed
+		/// </summary>
 		public static readonly string PluginTranslationUpdateFailed = @"Plugin: {0}
 Update of language file {1} failed";
+		/// <summary>
+		/// Update could not be finished. Try alternative method?
+		/// This might show the UAC prompt.
+		/// </summary>
 		public static readonly string TryUAC = @"Update could not be finished. Try alternative method?
 This might show the UAC prompt.";
+		/// <summary>
+		/// Open temporary folder containing the updated files?
+		/// </summary>
 		public static readonly string OpenTempFolder = @"Open temporary folder containing the updated files?";
+		/// <summary>
+		/// Manually update translations
+		/// </summary>
 		public static readonly string TranslationDownload_Update = @"Manually update translations";
+		/// <summary>
+		/// Always download translations for active language: {0}
+		/// </summary>
 		public static readonly string TranslationDownload_DownloadCurrent = @"Always download translations for active language: {0}";
+		/// <summary>
+		/// Early Update Check - Update translations
+		/// </summary>
 		public static readonly string TranslationUpdateForm = @"Early Update Check - Update translations";
+		/// <summary>
+		/// Please select plugins for which translations shall be updated
+		/// </summary>
 		public static readonly string SelectPluginsForTranslationUpdate = @"Please select plugins for which translations shall be updated";
+		/// <summary>
+		/// A new version of ExternalPluginUpdates.xml is available.
+		/// Download to update more 3rd party plugins?
+		/// </summary>
 		public static readonly string UpdateExternalInfo = @"A new version of ExternalPluginUpdates.xml is available.
 Download to update more 3rd party plugins?";
+		/// <summary>
+		/// EarlyUpdateCheck can update selected 3rd party plugins as well.
+		/// This is facilitated by a file called ExternalPluginUpdates.xml.
+		/// Download this file now to allow updating those plugins?
+		/// 
+		/// This question will not be asked again.
+		/// If you decide to not use this feature now, you can download this file in EarlyUpdateCheck's options.
+		/// </summary>
+		public static readonly string UpdateExternalInfoInitialDownload = @"EarlyUpdateCheck can update selected 3rd party plugins as well.
+This is facilitated by a file called ExternalPluginUpdates.xml.
+Download this file now to allow updating those plugins?
+
+This question will not be asked again.
+If you decide to not use this feature now, you can download this file in EarlyUpdateCheck's options.";
+		/// <summary>
+		/// Download ExternalPluginUpdates.xml
+		/// </summary>
+		public static readonly string UpdateExternalInfoDownload = @"Download ExternalPluginUpdates.xml";
 		#endregion
 
 		#region NO changes in this area
@@ -167,8 +260,8 @@ Download to update more 3rd party plugins?";
 		private static string GetFilename(string plugin, string lang)
 		{
 			string filename = UrlUtil.GetFileDirectory(WinUtil.GetExecutable(), true, true);
-				filename += KeePass.App.AppDefs.PluginsDir + UrlUtil.LocalDirSepChar + "Translations" + UrlUtil.LocalDirSepChar;
-				filename += plugin + "." + lang + ".language.xml";
+			filename += KeePass.App.AppDefs.PluginsDir + UrlUtil.LocalDirSepChar + "Translations" + UrlUtil.LocalDirSepChar;
+			filename += plugin + "." + lang + ".language.xml";
 			return filename;
 		}
 		#endregion

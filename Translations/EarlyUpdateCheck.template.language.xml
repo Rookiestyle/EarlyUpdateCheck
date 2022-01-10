@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Translation>
+  <!-- 
+    Increment the TranslationVersion every time the translation file is updated
+	Also update the version.info file
+  -->
   <TranslationVersion>0</TranslationVersion>
   <item>
     <key>Active</key>
@@ -94,7 +98,20 @@ This might show the UAC prompt.</value>
   </item>
   <item>
     <key>UpdateExternalInfo</key>
-    <value>A new veraion of ExternalPluginUpdates.xml is available.
+    <value>A new version of ExternalPluginUpdates.xml is available.
 Download to update more 3rd party plugins?</value>
+  </item>
+  <item>
+    <key>UpdateExternalInfoInitialDownload</key>
+    <value>EarlyUpdateCheck can update selected 3rd party plugins as well.
+This is facilitated by a file called ExternalPluginUpdates.xml.
+Download this file now to allow updating those plugins?
+
+This question will not be asked again.
+If you decide to not use this feature now, you can download this file in EarlyUpdateCheck's options.</value>
+  </item>
+  <item>
+    <key>UpdateExternalInfoDownload</key>
+    <value>Download ExternalPluginUpdates.xml</value>
   </item>
 </Translation>

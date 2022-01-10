@@ -29,6 +29,19 @@ namespace EarlyUpdateCheck
 		internal static bool OneClickUpdate = true;
 		internal static bool DownloadActiveLanguage = true;
 
+		//Check for initial download of ExternPluginUpdates.xml
+		//
+		internal static bool ExternalUpdateFileAskedForInitialDownload
+        {
+			get
+            {
+				return Config.GetBool("EarlyUpdateCheck.ExternalUpdateFileAskedForInitialDownload", false);
+			}
+            set
+            {
+				Config.SetBool("EarlyUpdateCheck.ExternalUpdateFileAskedForInitialDownload", value);
+			}
+		}
 		internal static int RestoreMutexThreshold
 		{
 			get

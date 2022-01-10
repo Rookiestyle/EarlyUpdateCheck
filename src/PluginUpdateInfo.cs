@@ -689,9 +689,10 @@ namespace EarlyUpdateCheck
 			}
 		}
 
-		internal bool DownloadExternalPluginUpdates(string sTempFolder)
+		internal bool DownloadExternalPluginUpdates(string sTempFolder, bool bForceDownload)
 		{
-			if (UpdateInfoExternParser.VersionInstalled < 0 || UpdateInfoExternParser.VersionInstalled >= UpdateInfoExternParser.VersionAvailable) return true;
+			if (!bForceDownload 
+				&& (UpdateInfoExternParser.VersionInstalled < 0 || UpdateInfoExternParser.VersionInstalled >= UpdateInfoExternParser.VersionAvailable)) return true;
 			Directory.CreateDirectory(sTempFolder);
 			string sFile = URL.Replace("github.com", "raw.githubusercontent.com") + "../master/ExternalPluginUpdates/ExternalPluginUpdates.xml";
 			return DownloadFile(sFile, sTempFolder);
