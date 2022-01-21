@@ -52,7 +52,79 @@ namespace EarlyUpdateCheck
 			}
 		}
 
-		internal static void Read()
+		internal static bool KeePassUpdateActive
+		{
+			get
+			{
+				return Config.GetBool("EarlyUpdateCheck.KeePassUpdateActive", true);
+			}
+			set
+			{
+				Config.SetBool("EarlyUpdateCheck.KeePassUpdateActive", value);
+			}
+		}
+
+		public static bool KeePassInstallTypeConfigured
+        {
+			get { return Config.GetString("EarlyUpdateCheck.KeePassInstallType", "Unknown") != "Unknown"; }
+        }
+
+		public static KeePass_Update.KeePassInstallType KeePassInstallType
+		{
+			get
+			{
+				string sType = Config.GetString("EarlyUpdateCheck.KeePassInstallType", "Unknown");
+				KeePass_Update.KeePassInstallType kpit = KeePass_Update.KeePassInstallType.Portable;
+				try { kpit = (KeePass_Update.KeePassInstallType)Enum.Parse(kpit.GetType(), sType); }
+				catch { kpit = VerifyKeePassInstallType(); }
+				return kpit;
+			}
+			set
+			{
+				Config.SetString("EarlyUpdateCheck.KeePassInstallType", value.ToString());
+			}
+		}
+
+        public static KeePass_Update.KeePassInstallType VerifyKeePassInstallType()
+        {
+			//By default, KeePass-Setup.exe installs to Program Files\KeePass Password Safe 2 / Program Files (x86)\KeePass Password Safe 2
+			//By default, KeePass.msi installs to Program Files\KeePass2x / Program Files (x86)\KeePass2x
+			
+			var lSpecialFolders = new System.Collections.Generic.List<string>();
+			string sFolder = Environment.GetEnvironmentVariable("ProgramFiles(x86)");
+			if (!string.IsNullOrEmpty(sFolder)) lSpecialFolders.Add(sFolder);
+
+			try 
+			{
+				//Environment.SpecialFolder.ProgramFilesX86
+				sFolder = Environment.GetFolderPath((Environment.SpecialFolder)42);
+				if (!string.IsNullOrEmpty(sFolder)) lSpecialFolders.Add(sFolder);
+			}
+            catch { }
+
+			sFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+			if (!string.IsNullOrEmpty(sFolder)) lSpecialFolders.Add(sFolder);
+			
+			sFolder = KeePassLib.Utility.UrlUtil.GetFileDirectory(KeePass.Util.WinUtil.GetExecutable(), true, true);
+
+			var lMsg = new System.Collections.Generic.List<string>();
+			lMsg.AddRange(lSpecialFolders);
+			lMsg.Add("KeePass path: " + sFolder);
+			sFolder = sFolder.ToLowerInvariant();
+
+			var result = KeePass_Update.KeePassInstallType.Portable;
+			if (string.IsNullOrEmpty(lSpecialFolders.Find(x => sFolder.StartsWith(x.ToLowerInvariant())))) result = KeePass_Update.KeePassInstallType.Portable;
+			else if (sFolder.Contains("keepass password safe 2")) result = KeePass_Update.KeePassInstallType.Setup;
+			else if (sFolder.Contains("keepass2x")) result = KeePass_Update.KeePassInstallType.MSI;
+
+			lMsg.Add(result.ToString());
+
+			PluginDebug.AddInfo("Verify KeePass install type", 0, lMsg.ToArray());
+
+			return result;
+		}
+
+        internal static void Read()
 		{
 			PluginConfig.Active = Config.GetBool("EarlyUpdateCheck.Active", PluginConfig.Active);
 			PluginConfig.CheckSync = Config.GetBool("EarlyUpdateCheck.CheckSync", PluginConfig.CheckSync);

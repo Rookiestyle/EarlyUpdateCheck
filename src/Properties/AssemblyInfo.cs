@@ -8,11 +8,13 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Early update check")]
-[assembly: AssemblyDescription("Perform KeePass update check BEFORE opening a database")]
+[assembly: AssemblyDescription(@"Perform KeePass update check BEFORE opening a database
+
+One-click update for both KeePass and plugins")]
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("rookiestyle")]
 [assembly: AssemblyProduct ("KeePass Plugin")]
-[assembly: AssemblyCopyright("Copyright 2022")]
+[assembly: AssemblyCopyright("Copyright 2021-2022")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 // This sets the default COM visibility of types in the assembly to invisible.
@@ -24,6 +26,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can use the default the Revision and 
 // Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion("3.8")]
-[assembly: AssemblyFileVersion("3.8")]
+[assembly: AssemblyVersion("4.0.0.0")]
+[assembly: AssemblyFileVersion("4.0.0.0")]
 [assembly: Guid("672570AF-CC57-4980-86F9-D48FD1CC707D")]

@@ -30,6 +30,13 @@
 		{
             this.tcEUC = new System.Windows.Forms.TabControl();
             this.tpEUCOptions = new System.Windows.Forms.TabPage();
+            this.tpEUC3rdParty = new System.Windows.Forms.TabPage();
+            this.bDownloadExternalPluginUpdates = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.tbFile = new System.Windows.Forms.TextBox();
+            this.lFile = new System.Windows.Forms.LinkLabel();
+            this.lv3rdPartyPlugins = new System.Windows.Forms.ListView();
+            this.tpKeePass = new System.Windows.Forms.TabPage();
             this.gOneClickUpdate = new RookieUI.CheckedGroupBox();
             this.bUpdateTranslations = new System.Windows.Forms.Button();
             this.cbDownloadCurrentTranslation = new System.Windows.Forms.CheckBox();
@@ -37,24 +44,27 @@
             this.gCheckSync = new RookieUI.CheckedGroupBox();
             this.tbCheckSyncDesc = new System.Windows.Forms.TextBox();
             this.cbCheckSync = new System.Windows.Forms.CheckBox();
-            this.tpEUC3rdParty = new System.Windows.Forms.TabPage();
-            this.bDownloadExternalPluginUpdates = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.tbFile = new System.Windows.Forms.TextBox();
-            this.lFile = new System.Windows.Forms.LinkLabel();
-            this.lv3rdPartyPlugins = new System.Windows.Forms.ListView();
+            this.cgKeePassUpdate = new RookieUI.CheckedGroupBox();
+            this.cbKeePassInstallType = new System.Windows.Forms.ComboBox();
+            this.lKeePassInstallType = new System.Windows.Forms.Label();
+            this.tbKeePassFolder = new System.Windows.Forms.TextBox();
+            this.lKeePassFolder = new System.Windows.Forms.LinkLabel();
+            this.tbKeePassUpdateInfo = new System.Windows.Forms.TextBox();
             this.tcEUC.SuspendLayout();
             this.tpEUCOptions.SuspendLayout();
-            this.gOneClickUpdate.SuspendLayout();
-            this.gCheckSync.SuspendLayout();
             this.tpEUC3rdParty.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.tpKeePass.SuspendLayout();
+            this.gOneClickUpdate.SuspendLayout();
+            this.gCheckSync.SuspendLayout();
+            this.cgKeePassUpdate.SuspendLayout();
             this.SuspendLayout();
             // 
             // tcEUC
             // 
             this.tcEUC.Controls.Add(this.tpEUCOptions);
             this.tcEUC.Controls.Add(this.tpEUC3rdParty);
+            this.tcEUC.Controls.Add(this.tpKeePass);
             this.tcEUC.Dock = System.Windows.Forms.DockStyle.Top;
             this.tcEUC.Location = new System.Drawing.Point(0, 0);
             this.tcEUC.Margin = new System.Windows.Forms.Padding(5);
@@ -73,8 +83,90 @@
             this.tpEUCOptions.Padding = new System.Windows.Forms.Padding(5);
             this.tpEUCOptions.Size = new System.Drawing.Size(1319, 576);
             this.tpEUCOptions.TabIndex = 0;
-            this.tpEUCOptions.Text = "tabPage1";
+            this.tpEUCOptions.Text = "Options";
             this.tpEUCOptions.UseVisualStyleBackColor = true;
+            // 
+            // tpEUC3rdParty
+            // 
+            this.tpEUC3rdParty.Controls.Add(this.bDownloadExternalPluginUpdates);
+            this.tpEUC3rdParty.Controls.Add(this.panel1);
+            this.tpEUC3rdParty.Controls.Add(this.lv3rdPartyPlugins);
+            this.tpEUC3rdParty.Location = new System.Drawing.Point(10, 48);
+            this.tpEUC3rdParty.Margin = new System.Windows.Forms.Padding(5);
+            this.tpEUC3rdParty.Name = "tpEUC3rdParty";
+            this.tpEUC3rdParty.Padding = new System.Windows.Forms.Padding(18, 15, 18, 15);
+            this.tpEUC3rdParty.Size = new System.Drawing.Size(1319, 576);
+            this.tpEUC3rdParty.TabIndex = 1;
+            this.tpEUC3rdParty.Text = "3rdParty";
+            this.tpEUC3rdParty.UseVisualStyleBackColor = true;
+            this.tpEUC3rdParty.Resize += new System.EventHandler(this.OnShow3rdPartyTab);
+            // 
+            // bDownloadExternalPluginUpdates
+            // 
+            this.bDownloadExternalPluginUpdates.Dock = System.Windows.Forms.DockStyle.Top;
+            this.bDownloadExternalPluginUpdates.Location = new System.Drawing.Point(18, 72);
+            this.bDownloadExternalPluginUpdates.Name = "bDownloadExternalPluginUpdates";
+            this.bDownloadExternalPluginUpdates.Size = new System.Drawing.Size(1283, 50);
+            this.bDownloadExternalPluginUpdates.TabIndex = 4;
+            this.bDownloadExternalPluginUpdates.Text = "Download";
+            this.bDownloadExternalPluginUpdates.UseVisualStyleBackColor = true;
+            this.bDownloadExternalPluginUpdates.Click += new System.EventHandler(this.bDownloadExternalPluginUpdates_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.AutoSize = true;
+            this.panel1.Controls.Add(this.tbFile);
+            this.panel1.Controls.Add(this.lFile);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(18, 15);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1283, 57);
+            this.panel1.TabIndex = 3;
+            // 
+            // tbFile
+            // 
+            this.tbFile.Location = new System.Drawing.Point(65, 14);
+            this.tbFile.Margin = new System.Windows.Forms.Padding(5);
+            this.tbFile.Name = "tbFile";
+            this.tbFile.ReadOnly = true;
+            this.tbFile.Size = new System.Drawing.Size(1216, 38);
+            this.tbFile.TabIndex = 3;
+            // 
+            // lFile
+            // 
+            this.lFile.AutoSize = true;
+            this.lFile.Location = new System.Drawing.Point(1, 23);
+            this.lFile.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lFile.Name = "lFile";
+            this.lFile.Size = new System.Drawing.Size(69, 32);
+            this.lFile.TabIndex = 2;
+            this.lFile.TabStop = true;
+            this.lFile.Text = "lFile";
+            // 
+            // lv3rdPartyPlugins
+            // 
+            this.lv3rdPartyPlugins.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lv3rdPartyPlugins.FullRowSelect = true;
+            this.lv3rdPartyPlugins.HideSelection = false;
+            this.lv3rdPartyPlugins.Location = new System.Drawing.Point(18, 130);
+            this.lv3rdPartyPlugins.Margin = new System.Windows.Forms.Padding(5);
+            this.lv3rdPartyPlugins.Name = "lv3rdPartyPlugins";
+            this.lv3rdPartyPlugins.Size = new System.Drawing.Size(1283, 431);
+            this.lv3rdPartyPlugins.TabIndex = 2;
+            this.lv3rdPartyPlugins.UseCompatibleStateImageBehavior = false;
+            this.lv3rdPartyPlugins.View = System.Windows.Forms.View.List;
+            // 
+            // tpKeePass
+            // 
+            this.tpKeePass.Controls.Add(this.cgKeePassUpdate);
+            this.tpKeePass.Location = new System.Drawing.Point(10, 48);
+            this.tpKeePass.Name = "tpKeePass";
+            this.tpKeePass.Padding = new System.Windows.Forms.Padding(18, 15, 18, 15);
+            this.tpKeePass.Size = new System.Drawing.Size(1319, 576);
+            this.tpKeePass.TabIndex = 2;
+            this.tpKeePass.Text = "KeePass";
+            this.tpKeePass.UseVisualStyleBackColor = true;
+            this.tpKeePass.ClientSizeChanged += new System.EventHandler(this.AdjustControls);
             // 
             // gOneClickUpdate
             // 
@@ -170,75 +262,70 @@
             this.cbCheckSync.Text = "CheckSync";
             this.cbCheckSync.UseVisualStyleBackColor = true;
             // 
-            // tpEUC3rdParty
+            // cgKeePassUpdate
             // 
-            this.tpEUC3rdParty.Controls.Add(this.bDownloadExternalPluginUpdates);
-            this.tpEUC3rdParty.Controls.Add(this.panel1);
-            this.tpEUC3rdParty.Controls.Add(this.lv3rdPartyPlugins);
-            this.tpEUC3rdParty.Location = new System.Drawing.Point(10, 48);
-            this.tpEUC3rdParty.Margin = new System.Windows.Forms.Padding(5);
-            this.tpEUC3rdParty.Name = "tpEUC3rdParty";
-            this.tpEUC3rdParty.Padding = new System.Windows.Forms.Padding(18, 15, 18, 15);
-            this.tpEUC3rdParty.Size = new System.Drawing.Size(1319, 576);
-            this.tpEUC3rdParty.TabIndex = 1;
-            this.tpEUC3rdParty.Text = "tabPage2";
-            this.tpEUC3rdParty.UseVisualStyleBackColor = true;
-            this.tpEUC3rdParty.Resize += new System.EventHandler(this.OnShow3rdPartyTab);
+            this.cgKeePassUpdate.CheckboxOffset = new System.Drawing.Point(5, 0);
+            this.cgKeePassUpdate.Checked = true;
+            this.cgKeePassUpdate.Controls.Add(this.cbKeePassInstallType);
+            this.cgKeePassUpdate.Controls.Add(this.lKeePassInstallType);
+            this.cgKeePassUpdate.Controls.Add(this.tbKeePassFolder);
+            this.cgKeePassUpdate.Controls.Add(this.lKeePassFolder);
+            this.cgKeePassUpdate.Controls.Add(this.tbKeePassUpdateInfo);
+            this.cgKeePassUpdate.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cgKeePassUpdate.Location = new System.Drawing.Point(18, 15);
+            this.cgKeePassUpdate.Name = "cgKeePassUpdate";
+            this.cgKeePassUpdate.Padding = new System.Windows.Forms.Padding(27, 8, 27, 8);
+            this.cgKeePassUpdate.Size = new System.Drawing.Size(1283, 508);
+            this.cgKeePassUpdate.TabIndex = 0;
+            this.cgKeePassUpdate.Text = "cgKeePassUpdate";
             // 
-            // bDownloadExternalPluginUpdates
+            // cbKeePassInstallType
             // 
-            this.bDownloadExternalPluginUpdates.Dock = System.Windows.Forms.DockStyle.Top;
-            this.bDownloadExternalPluginUpdates.Location = new System.Drawing.Point(18, 72);
-            this.bDownloadExternalPluginUpdates.Name = "bDownloadExternalPluginUpdates";
-            this.bDownloadExternalPluginUpdates.Size = new System.Drawing.Size(1283, 50);
-            this.bDownloadExternalPluginUpdates.TabIndex = 4;
-            this.bDownloadExternalPluginUpdates.Text = "Download";
-            this.bDownloadExternalPluginUpdates.UseVisualStyleBackColor = true;
-            this.bDownloadExternalPluginUpdates.Click += new System.EventHandler(this.bDownloadExternalPluginUpdates_Click);
+            this.cbKeePassInstallType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbKeePassInstallType.FormattingEnabled = true;
+            this.cbKeePassInstallType.Location = new System.Drawing.Point(130, 410);
+            this.cbKeePassInstallType.Name = "cbKeePassInstallType";
+            this.cbKeePassInstallType.Size = new System.Drawing.Size(463, 39);
+            this.cbKeePassInstallType.TabIndex = 5;
             // 
-            // panel1
+            // lKeePassInstallType
             // 
-            this.panel1.AutoSize = true;
-            this.panel1.Controls.Add(this.tbFile);
-            this.panel1.Controls.Add(this.lFile);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(18, 15);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1283, 57);
-            this.panel1.TabIndex = 3;
+            this.lKeePassInstallType.AutoSize = true;
+            this.lKeePassInstallType.Location = new System.Drawing.Point(27, 418);
+            this.lKeePassInstallType.Name = "lKeePassInstallType";
+            this.lKeePassInstallType.Size = new System.Drawing.Size(93, 32);
+            this.lKeePassInstallType.TabIndex = 4;
+            this.lKeePassInstallType.Text = "label2";
             // 
-            // tbFile
+            // tbKeePassFolder
             // 
-            this.tbFile.Location = new System.Drawing.Point(65, 14);
-            this.tbFile.Margin = new System.Windows.Forms.Padding(5);
-            this.tbFile.Name = "tbFile";
-            this.tbFile.ReadOnly = true;
-            this.tbFile.Size = new System.Drawing.Size(1216, 38);
-            this.tbFile.TabIndex = 3;
+            this.tbKeePassFolder.Location = new System.Drawing.Point(130, 345);
+            this.tbKeePassFolder.Name = "tbKeePassFolder";
+            this.tbKeePassFolder.ReadOnly = true;
+            this.tbKeePassFolder.Size = new System.Drawing.Size(463, 38);
+            this.tbKeePassFolder.TabIndex = 3;
             // 
-            // lFile
+            // lKeePassFolder
             // 
-            this.lFile.AutoSize = true;
-            this.lFile.Location = new System.Drawing.Point(1, 23);
-            this.lFile.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lFile.Name = "lFile";
-            this.lFile.Size = new System.Drawing.Size(69, 32);
-            this.lFile.TabIndex = 2;
-            this.lFile.TabStop = true;
-            this.lFile.Text = "lFile";
+            this.lKeePassFolder.AutoSize = true;
+            this.lKeePassFolder.Location = new System.Drawing.Point(27, 351);
+            this.lKeePassFolder.Name = "lKeePassFolder";
+            this.lKeePassFolder.Size = new System.Drawing.Size(93, 32);
+            this.lKeePassFolder.TabIndex = 2;
+            this.lKeePassFolder.TabStop = true;
+            this.lKeePassFolder.Text = "label1";
+            this.lKeePassFolder.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lKeePassFolder_LinkClicked);
             // 
-            // lv3rdPartyPlugins
+            // tbKeePassUpdateInfo
             // 
-            this.lv3rdPartyPlugins.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lv3rdPartyPlugins.FullRowSelect = true;
-            this.lv3rdPartyPlugins.HideSelection = false;
-            this.lv3rdPartyPlugins.Location = new System.Drawing.Point(18, 130);
-            this.lv3rdPartyPlugins.Margin = new System.Windows.Forms.Padding(5);
-            this.lv3rdPartyPlugins.Name = "lv3rdPartyPlugins";
-            this.lv3rdPartyPlugins.Size = new System.Drawing.Size(1283, 431);
-            this.lv3rdPartyPlugins.TabIndex = 2;
-            this.lv3rdPartyPlugins.UseCompatibleStateImageBehavior = false;
-            this.lv3rdPartyPlugins.View = System.Windows.Forms.View.List;
+            this.tbKeePassUpdateInfo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tbKeePassUpdateInfo.Location = new System.Drawing.Point(27, 39);
+            this.tbKeePassUpdateInfo.Margin = new System.Windows.Forms.Padding(5);
+            this.tbKeePassUpdateInfo.Multiline = true;
+            this.tbKeePassUpdateInfo.Name = "tbKeePassUpdateInfo";
+            this.tbKeePassUpdateInfo.ReadOnly = true;
+            this.tbKeePassUpdateInfo.Size = new System.Drawing.Size(1229, 281);
+            this.tbKeePassUpdateInfo.TabIndex = 1;
             // 
             // Options
             // 
@@ -251,14 +338,17 @@
             this.Load += new System.EventHandler(this.Options_Load);
             this.tcEUC.ResumeLayout(false);
             this.tpEUCOptions.ResumeLayout(false);
-            this.gOneClickUpdate.ResumeLayout(false);
-            this.gOneClickUpdate.PerformLayout();
-            this.gCheckSync.ResumeLayout(false);
-            this.gCheckSync.PerformLayout();
             this.tpEUC3rdParty.ResumeLayout(false);
             this.tpEUC3rdParty.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.tpKeePass.ResumeLayout(false);
+            this.gOneClickUpdate.ResumeLayout(false);
+            this.gOneClickUpdate.PerformLayout();
+            this.gCheckSync.ResumeLayout(false);
+            this.gCheckSync.PerformLayout();
+            this.cgKeePassUpdate.ResumeLayout(false);
+            this.cgKeePassUpdate.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -280,5 +370,12 @@
         private System.Windows.Forms.TextBox tbFile;
         private System.Windows.Forms.LinkLabel lFile;
         private System.Windows.Forms.Button bDownloadExternalPluginUpdates;
+        private System.Windows.Forms.TabPage tpKeePass;
+        internal RookieUI.CheckedGroupBox cgKeePassUpdate;
+        internal System.Windows.Forms.ComboBox cbKeePassInstallType;
+        private System.Windows.Forms.Label lKeePassInstallType;
+        internal System.Windows.Forms.TextBox tbKeePassFolder;
+        private System.Windows.Forms.LinkLabel lKeePassFolder;
+        private System.Windows.Forms.TextBox tbKeePassUpdateInfo;
     }
 }

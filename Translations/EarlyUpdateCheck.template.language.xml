@@ -41,8 +41,12 @@ Maintain file ExternalPluginUpdates.xml to include other authors' plugins, see t
     <value>Update</value>
   </item>
   <item>
+    <key>PluginUpdateKeePass</key>
+    <value>Update KeePass</value>
+  </item>
+  <item>
     <key>PluginUpdateSelected</key>
-    <value>Start update</value>
+    <value>Update plugins</value>
   </item>
   <item>
     <key>PluginUpdateCaption</key>
@@ -113,5 +117,30 @@ If you decide to not use this feature now, you can download this file in EarlyUp
   <item>
     <key>UpdateExternalInfoDownload</key>
     <value>Download ExternalPluginUpdates.xml</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_InstallZip</key>
+    <value>EarlyUpdateCheck downloaded the newest portable version of KeePass.
+
+The downloaded files will open in a new window.
+To perform the update, close KeePass and copy these files to your current KeePass location.</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_InstallSetupOrMsi</key>
+    <value>EarlyUpdateCheck downloaded the newest version of KeePass.
+To perform the update, you need to close KeePass.
+
+Click {0} to run the update now.
+Click {1} to open the folder containing the downloaded file instead.</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_RequestInstallType</key>
+    <value>EarlyUpdateCheck can help in updating KeePass as well.
+Since KeePass can be installed in different ways, please confirm your installation type.
+
+Different installation types offered:
+- Setup: KeePass-&lt;Version&gt;-Setup.exe is used to install KeePass
+- MSI: KeePass-&lt;Version&gt;.msi is used to install KeePass
+- Portable: KeePass-&lt;Version&gt;.zip is used to download and extract KeePass</value>
   </item>
 </Translation>

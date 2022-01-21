@@ -76,9 +76,13 @@ Maintain file ExternalPluginUpdates.xml to include other authors' plugins, see t
 		/// </summary>
 		public static readonly string PluginUpdate = @"Update";
 		/// <summary>
-		/// Start update
+		/// Update KeePass
 		/// </summary>
-		public static readonly string PluginUpdateSelected = @"Start update";
+		public static readonly string PluginUpdateKeePass = @"Update KeePass";
+		/// <summary>
+		/// Update plugins
+		/// </summary>
+		public static readonly string PluginUpdateSelected = @"Update plugins";
 		/// <summary>
 		/// Early Update Check - Plugin Updater
 		/// </summary>
@@ -159,6 +163,44 @@ If you decide to not use this feature now, you can download this file in EarlyUp
 		/// Download ExternalPluginUpdates.xml
 		/// </summary>
 		public static readonly string UpdateExternalInfoDownload = @"Download ExternalPluginUpdates.xml";
+		/// <summary>
+		/// EarlyUpdateCheck downloaded the newest portable version of KeePass.
+		/// 
+		/// The downloaded files will open in a new window.
+		/// To perform the update, close KeePass and copy these files to your current KeePass location.
+		/// </summary>
+		public static readonly string KeePassUpdate_InstallZip = @"EarlyUpdateCheck downloaded the newest portable version of KeePass.
+
+The downloaded files will open in a new window.
+To perform the update, close KeePass and copy these files to your current KeePass location.";
+		/// <summary>
+		/// EarlyUpdateCheck downloaded the newest version of KeePass.
+		/// To perform the update, you need to close KeePass.
+		/// 
+		/// Click {0} to run the update now.
+		/// Click {1} to open the folder containing the downloaded file instead.
+		/// </summary>
+		public static readonly string KeePassUpdate_InstallSetupOrMsi = @"EarlyUpdateCheck downloaded the newest version of KeePass.
+To perform the update, you need to close KeePass.
+
+Click {0} to run the update now.
+Click {1} to open the folder containing the downloaded file instead.";
+		/// <summary>
+		/// EarlyUpdateCheck can help in updating KeePass as well.
+		/// Since KeePass can be installed in different ways, please confirm your installation type.
+		/// 
+		/// Different installation types offered:
+		/// - Setup: KeePass-<Version>-Setup.exe is used to install KeePass
+		/// - MSI: KeePass-<Version>.msi is used to install KeePass
+		/// - Portable: KeePass-<Version>.zip is used to download and extract KeePass
+		/// </summary>
+		public static readonly string KeePassUpdate_RequestInstallType = @"EarlyUpdateCheck can help in updating KeePass as well.
+Since KeePass can be installed in different ways, please confirm your installation type.
+
+Different installation types offered:
+- Setup: KeePass-<Version>-Setup.exe is used to install KeePass
+- MSI: KeePass-<Version>.msi is used to install KeePass
+- Portable: KeePass-<Version>.zip is used to download and extract KeePass";
 		#endregion
 
 		#region NO changes in this area

@@ -308,7 +308,9 @@ namespace EarlyUpdateCheck
 		}
 		private static Dictionary<string, PluginUpdateInfo> m_Plugins = new Dictionary<string, PluginUpdateInfo>();
 		internal string Name { get; private set; }
-		internal string Title { get; private set; }
+
+		protected string _title;
+		internal string Title { get { return _title; } private set { SetTitle(value); } }
 		internal Version VersionInstalled { get; private set; }
 		internal Version VersionAvailable { get; set; }
 		internal List<TranslationVersionCheck> Translations { get; private set; }
@@ -335,6 +337,11 @@ namespace EarlyUpdateCheck
 		internal bool UpdatePossible { get { return !Ignore && !string.IsNullOrEmpty(PluginUpdateURL) && UpdateMode != UpdateOtherPluginMode.Unknown; } }
 
 		protected List<string> m_lDownloaded = new List<string>();
+
+		protected virtual void SetTitle(string sTitle)
+        {
+			_title = sTitle;
+        }
 
 		internal PluginUpdate(string PluginName)
 		{
@@ -518,6 +525,85 @@ namespace EarlyUpdateCheck
 			//Added for plugin specific file cleanups (future)
 		}
 	}
+
+	internal class KeePass_Update: PluginUpdate
+    {
+		internal enum KeePassInstallType
+        {
+			Setup,
+			MSI,
+			Portable
+        }
+
+		private KeePassInstallType _kpit;
+		internal KeePass_Update(Version vAvailable, KeePassInstallType kpit) : base("EarlyUpdateCheck")
+        {
+			SetVersionInstalled(Tools.KeePassVersion);
+			VersionAvailable = vAvailable;
+			AllowVersionStripping = true;
+			_kpit = kpit;
+			PluginUpdateURL = "https://sourceforge.net/projects/keepass/files/KeePass%202.x/{MAJOR}{.MINOR}{.BUILD}/KeePass-{MAJOR}{.MINOR}{.BUILD}";
+			if (_kpit == KeePassInstallType.Setup) PluginUpdateURL += "-Setup.exe";
+			else if (_kpit == KeePassInstallType.MSI) PluginUpdateURL += ".msi";
+			else PluginUpdateURL += ".zip";
+			UpdateMode = UpdateOtherPluginMode.ZipExtractAll;
+		}
+
+        protected override void SetTitle(string sTitle)
+        {
+            base.SetTitle(sTitle);
+			_title = "KeePass";
+        }
+
+        private string sDownloaded = string.Empty;
+		internal override bool ProcessDownload(string sTargetFolder)
+		{
+			if (!base.ProcessDownload(sTargetFolder)) return false;
+
+			if (_kpit != KeePassInstallType.Portable)
+			{
+				sDownloaded = m_lDownloaded[0];
+				return true;
+			}
+			string sSourceZip = m_lDownloaded[0];
+			byte[] pbZip = File.ReadAllBytes(sSourceZip);
+			File.Delete(sSourceZip);
+			using (MemoryStream ms = new MemoryStream())
+			{
+				ms.Write(pbZip, 0, pbZip.Length);
+				ms.Position = 0;
+				sDownloaded = UrlUtil.GetFileDirectory(sSourceZip, true, true);
+				using (Ionic.Zip.ZipFile z = Ionic.Zip.ZipFile.Read(ms))
+				{
+					z.ExtractAll(sDownloaded);
+					PluginDebug.AddInfo("Extracted zip file", 0, UrlUtil.GetFileName(sSourceZip), sDownloaded);
+				}
+				return true;
+			}
+		}
+
+		private bool DoUpdate()
+        {
+			if (_kpit == KeePassInstallType.Portable)
+            {
+				Tools.ShowInfo(PluginTranslate.KeePassUpdate_InstallZip);
+				return true;
+            }
+			return Tools.AskYesNo(string.Format(PluginTranslate.KeePassUpdate_InstallSetupOrMsi, KeePass.Resources.KPRes.Yes, KeePass.Resources.KPRes.No)) == DialogResult.Yes;
+        }
+
+		internal bool Execute()
+        {
+			try
+			{
+				string sURL = sDownloaded;
+				if (!DoUpdate()) sURL = UrlUtil.GetFileDirectory(sDownloaded, true, true);
+				Tools.OpenUrl(sURL);
+				return true;
+			}
+			catch { return false; }
+		}
+    }
 
 	internal class OwnPluginUpdate : PluginUpdate
 	{

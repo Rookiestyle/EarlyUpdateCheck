@@ -4,7 +4,7 @@
     Increment the TranslationVersion every time the translation file is updated
 	Also update the version.info file
   -->
-  <TranslationVersion>7</TranslationVersion>
+  <TranslationVersion>8</TranslationVersion>
   <item>
     <key>Active</key>
     <value>Aktiv</value>
@@ -40,8 +40,12 @@ Pflege Datei ExternalPluginUpdates.xml um Plugins anderer Autoren automatisch zu
     <value>Update</value>
   </item>
   <item>
+    <key>PluginUpdateKeePass</key>
+    <value>Aktualisiere KeePass</value>
+  </item>
+  <item>
     <key>PluginUpdateSelected</key>
-    <value>Update starten</value>
+    <value>Aktualisiere Plugins</value>
   </item>
   <item>
     <key>PluginUpdateCaption</key>
@@ -113,5 +117,31 @@ Wenn du diese Funktion jetzt nicht nutzen willst, dann kannst du die Datei auch 
   <item>
     <key>UpdateExternalInfoDownload</key>
     <value>Download ExternalPluginUpdates.xml</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_InstallZip</key>
+    <value>EarlyUpdateCheck hat die aktuellste portable Version von KeePass heruntergeladen.
+
+Die heruntergeladenen Dateien werden in einem neuen Fenster geöffnet.
+Zum Aktualisieren bitte KeePass schließen und die heruntergeladenen Dateien in deinen KeePass-Ordner kopieren.</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_InstallSetupOrMsi</key>
+    <value>EarlyUpdateCheck hat die aktuellste Version von KeePass geladen.
+
+Zum Aktualisieren muss KeePass geschlossen werden.
+
+Klicke {0}, um das Update jetzt zu starten.
+Klicke {1}, um statt dessen den Ordner mit der heruntergeladenen Installationsdatei zu öffnen.</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_RequestInstallType</key>
+    <value>EarlyUpdateCheck kann beim Aktualisieren von KeePass unterstützen.
+Bitte gib die aktuelle Installationsmethode an.
+
+KeePass bietet folgende Installationsmethoden:
+- Setup: KeePass-&lt;Version&gt;-Setup.exe
+- MSI: KeePass-&lt;Version&gt;.msi
+- Portabel: KeePass-&lt;Version&gt;.zip</value>
   </item>
 </Translation>

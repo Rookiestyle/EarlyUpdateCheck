@@ -14,7 +14,24 @@ namespace EarlyUpdateCheck
 	{
 		public EarlyUpdateCheckExt Plugin = null;
 
-		internal KeePassLib.Delegates.GAction<EarlyUpdateCheckExt.UpdateFlags, bool> UpdateExternalPluginUpdates;
+		internal KeePassLib.Delegates.GAction<EarlyUpdateCheckExt.UpdateFlags, bool, KeePass_Update> UpdateExternalPluginUpdates;
+
+		internal KeePass_Update.KeePassInstallType kpit
+		{
+			get 
+			{
+				if (cbKeePassInstallType.SelectedIndex == 0) return KeePass_Update.KeePassInstallType.Setup;
+				if (cbKeePassInstallType.SelectedIndex == 1) return KeePass_Update.KeePassInstallType.MSI;
+				return KeePass_Update.KeePassInstallType.Portable;
+			}
+            set
+            {
+				if (value == KeePass_Update.KeePassInstallType.Setup) cbKeePassInstallType.SelectedIndex = 0;
+				else if (value == KeePass_Update.KeePassInstallType.MSI) cbKeePassInstallType.SelectedIndex = 1;
+				else cbKeePassInstallType.SelectedIndex = 2;
+			}
+		}
+
 		public Options()
 		{
 			InitializeComponent();
@@ -30,6 +47,16 @@ namespace EarlyUpdateCheck
 			bUpdateTranslations.Text = PluginTranslate.TranslationDownload_Update;
 			if (PluginUpdateHandler.Shieldify) KeePass.UI.UIUtil.SetShield(bUpdateTranslations, true);
 			bDownloadExternalPluginUpdates.Text = PluginTranslate.UpdateExternalInfoDownload;
+
+			tpKeePass.Text = PluginTranslate.PluginUpdateKeePass;
+			cgKeePassUpdate.Text = PluginTranslate.Active;
+			tbKeePassUpdateInfo.Lines = PluginTranslate.KeePassUpdate_RequestInstallType.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+			tbKeePassFolder.Text = KeePassLib.Utility.UrlUtil.GetFileDirectory(KeePass.Util.WinUtil.GetExecutable(), true, true);
+			cbKeePassInstallType.Items.Add(KeePass_Update.KeePassInstallType.Setup);
+			cbKeePassInstallType.Items.Add(KeePass_Update.KeePassInstallType.MSI);
+			cbKeePassInstallType.Items.Add(KeePass_Update.KeePassInstallType.Portable);
+			lKeePassFolder.Text = KPRes.Folder + ":";
+			lKeePassInstallType.Text = KPRes.Type + ":";
 		}
 
 		private void bUpdateTranslations_Click(object sender, EventArgs e)
@@ -108,8 +135,23 @@ namespace EarlyUpdateCheck
 
         private void bDownloadExternalPluginUpdates_Click(object sender, EventArgs e)
         {
-			UpdateExternalPluginUpdates(EarlyUpdateCheckExt.UpdateFlags.ExternalUpdateInfo, true);
+			UpdateExternalPluginUpdates(EarlyUpdateCheckExt.UpdateFlags.ExternalUpdateInfo, true, null);
 			RefreshPluginList();
 		}
-	}
+
+        internal void AdjustControls(object sender, EventArgs e)
+        {
+			int iDelta = lKeePassFolder.Width;
+			if (lKeePassInstallType.Width > iDelta) iDelta = lKeePassInstallType.Width;
+			iDelta += lKeePassFolder.Left + 10;
+			tbKeePassFolder.Left = cbKeePassInstallType.Left = iDelta;
+			tbKeePassFolder.Width = tbKeePassUpdateInfo.Width - iDelta + 20;
+			cbKeePassInstallType.Width = tbKeePassFolder.Width;
+        }
+
+        private void lKeePassFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+			PluginTools.Tools.OpenUrl(tbKeePassFolder.Text);
+        }
+    }
 }
