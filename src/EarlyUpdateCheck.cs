@@ -545,6 +545,12 @@ namespace EarlyUpdateCheck
 					lvsiUpdate.Tag = upd;
 					item.SubItems.Add(lvsiUpdate);
 					upd.Selected = true;
+					OwnPluginUpdate opu = upd as OwnPluginUpdate;
+					if (opu != null && opu.IsRenamed)
+					{
+						item.SubItems[0].Text += "*";
+						item.ToolTipText = opu.Name + " -> " + opu.NewName;
+					}
 					try
 					{
 						upd.VersionAvailable = new Version(item.SubItems[3].Text);
@@ -768,6 +774,7 @@ namespace EarlyUpdateCheck
 
 			if (e.ColumnIndex + 1 != lvPlugins.Items[0].SubItems.Count) return;
 			PluginUpdate upd = PluginUpdateHandler.Plugins.Find(x => x.Title == e.Item.SubItems[0].Text);
+			if (upd == null) upd = PluginUpdateHandler.Plugins.Find(x => x.Title + "*" == e.Item.SubItems[0].Text); //* is used to indicate a rename 
 			if (upd == null && e.Item.Index == 0 && e.Item.SubItems[e.ColumnIndex].Tag is KeePass_Update) upd = e.Item.SubItems[e.ColumnIndex].Tag as KeePass_Update;
 			if (upd == null) return;
 			e.DrawDefault = false;

@@ -101,9 +101,7 @@ namespace EarlyUpdateCheck
 						bool bOwnPlugin = string.Compare("rookiestyle", comp[0].Company, StringComparison.InvariantCultureIgnoreCase) == 0;
 
 						PluginUpdate pu = null;
-						if (p.GetType().Namespace == "EarlyUpdateCheck")
-							pu = new EarlyUpdateCheckUpdate();
-						else if (bOwnPlugin) pu = new OwnPluginUpdate(p.GetType().Namespace);
+						if (bOwnPlugin) pu = OwnPluginUpdate.Factory(p.GetType().Namespace);
 						else
 						{
 							try { pu = OtherPluginUpdate.Factory(p.GetType().Namespace); /* new OtherPluginUpdate(p.GetType().Namespace); */ } catch { }
@@ -248,9 +246,14 @@ namespace EarlyUpdateCheck
 
 		internal static void DeleteSpecialFile(string sFile)
 		{
+			DeleteSpecialFile(sFile, true);
+		}
+
+		internal static void DeleteSpecialFile(string sFile, bool bAddDebugInfo)
+		{
 			if (m_lFilesDelete.Contains(sFile)) return;
 			m_lFilesDelete.Add(sFile);
-			PluginDebug.AddInfo("Remove old plugin file :" + sFile, 0);
+			if (bAddDebugInfo) PluginDebug.AddInfo("Remove old plugin file :" + sFile, 0);
 		}
 
 		private static Dictionary<string, Version> m_Plugins = new Dictionary<string, Version>();
@@ -607,8 +610,21 @@ namespace EarlyUpdateCheck
 
 	internal class OwnPluginUpdate : PluginUpdate
 	{
-		internal OwnPluginUpdate(string PluginName) : base(PluginName)
+		internal bool IsRenamed { get; private set; }
+		internal string NewName { get; private set; }
+		internal static PluginUpdate Factory(string sPluginNamespace)
 		{
+			switch (sPluginNamespace.ToLowerInvariant())
+			{
+				case "earlyupdatecheck": return new EarlyUpdateCheckUpdate();
+				default: return new OwnPluginUpdate(sPluginNamespace);
+			}
+			throw new NotImplementedException();
+		}
+
+		protected OwnPluginUpdate(string PluginName) : base(PluginName)
+		{
+			NewName = string.Empty;
 			GetOwnPluginURL();
 			AllowVersionStripping = false;
 			UpdateMode = UpdateOtherPluginMode.PlgxDirect;
@@ -699,11 +715,12 @@ namespace EarlyUpdateCheck
 				PluginDebug.AddError("Could not read plugin update url", 0);
 				return;
 			}
-			
+
 			m_dUpdateInfo = mi.Invoke(null, new object[] { new List<string>() { VersionURL }, null }) as Dictionary<string, List<UpdateComponentInfo>>;
 
 			List<string> lTranslationsNew = new List<string>();
 			string[] cSplit = new string[] { "!", "!!!" };
+			CheckRenamed(m_dUpdateInfo, cSplit);
 			foreach (KeyValuePair<string, List<UpdateComponentInfo>> kvp in m_dUpdateInfo)
 			{
 				if (kvp.Value == null) continue;
@@ -712,13 +729,13 @@ namespace EarlyUpdateCheck
 				{
 					//Github: <Plugin>!<language identifier>
 					string[] sParts = uci.Name.Split(cSplit, StringSplitOptions.RemoveEmptyEntries);
-					if (sParts.Length == 1)
+					if (sParts.Length == 1 && Name == sParts[0])
 					{
 						vCheck = new Version(StrUtil.VersionToString(uci.VerAvailable, 2));
 						if (VersionAvailableIsUnknown()) VersionAvailable = vCheck;
 					}
-					if (!PluginUpdateHandler.VersionsEqual(VersionInstalled, vCheck)) return; //Different version might require different translation files
-					if (sParts.Length != 2) continue;
+					if (!IsRenamed && !PluginUpdateHandler.VersionsEqual(VersionInstalled, vCheck)) return; //Different version might require different translation files
+					if (sParts.Length != 2 || sParts[0] != Name) continue;
 					long lVer = 0;
 					if (!long.TryParse(StrUtil.VersionToString(uci.VerAvailable), out lVer)) continue;
 					string sLang = Name + "." + sParts[1].ToLowerInvariant() + ".language.xml";
@@ -730,7 +747,56 @@ namespace EarlyUpdateCheck
 					}
 					tvc.Available = lVer;
 				}
+				if (IsRenamed) ProcessRename();
 			}
+		}
+
+		private void CheckRenamed(Dictionary<string, List<UpdateComponentInfo>> m_dUpdateInfo, string[] cSplit)
+		{
+			if (IsRenamed) return;
+			if (m_dUpdateInfo == null) return;
+			foreach (var v in m_dUpdateInfo)
+			{
+				//Check for renaming
+				if (v.Value == null) continue;
+				var uciRename = v.Value.Find(x => x.Name.StartsWith("RenamedTo!"));
+				if (uciRename == null) continue;
+				string[] sParts = uciRename.Name.Split(cSplit, StringSplitOptions.RemoveEmptyEntries);
+				if (sParts.Length != 2) continue;
+				IsRenamed = true;
+				NewName = sParts[1];
+				PluginDebug.DebugMode = true;
+				PluginDebug.AddInfo("New plugin name detected", 0, "Old: " + Name, "New: " + NewName);
+				return;
+			}
+		}
+
+		private void ProcessRename()
+		{
+			List<string> lMsg = new List<string>();
+			
+			lMsg.Add("Plugin update URL - old: " + PluginUpdateURL);
+			PluginUpdateURL = PluginUpdateURL.Replace(Name.ToLowerInvariant() + "/", NewName.ToLowerInvariant() + "/");
+			PluginUpdateURL = PluginUpdateURL.Replace(Name, NewName);
+			lMsg.Add("Plugin update URL - new: " + PluginUpdateURL);
+
+			lMsg.Add("Plugin URL - old: " + URL);
+			URL = URL.Replace(Name.ToLowerInvariant(), NewName.ToLowerInvariant());
+			lMsg.Add("Plugin URL - new: " + URL);
+
+			foreach (var t in Translations)
+			{
+				lMsg.Add("Translation file - old: " + t.LangugageFile);
+				PluginUpdateHandler.DeleteSpecialFile(PluginUpdateHandler.PluginsTranslationsFolder + t.LangugageFile, false);
+				t.LangugageFile = t.LangugageFile.Replace(Name, NewName);
+				lMsg.Add("Translation file - new: " + t.LangugageFile);
+
+				//Decrease installed version to ensure the new file is downloaded
+				t.Installed--;
+			}
+			PluginUpdateHandler.DeleteSpecialFile(PluginFile, false);
+
+			PluginDebug.AddInfo("Process new plugin name", 0, lMsg.ToArray());
 		}
 
 		private bool VersionAvailableIsUnknown()
@@ -787,7 +853,7 @@ namespace EarlyUpdateCheck
 
 	internal class OtherPluginUpdate : PluginUpdate
 	{
-		internal OtherPluginUpdate(string PluginName) : base(PluginName)
+		protected OtherPluginUpdate(string PluginName) : base(PluginName)
 		{
 			UpdateInfoExtern uie;
 			if (!UpdateInfoExternParser.Get(Title, out uie) && !UpdateInfoExternParser.Get(Name, out uie)) throw new ArgumentException("No update information available for " + PluginName);
