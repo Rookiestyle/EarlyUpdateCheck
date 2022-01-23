@@ -587,14 +587,16 @@ namespace EarlyUpdateCheck
 			}
 		}
 
+		private bool m_bActivateKeePassUpdateTab = false;
         private void CheckKeePassInstallType(bool bShowOptions)
         {
 			if (PluginConfig.KeePassInstallTypeConfigured) return;
+			m_bActivateKeePassUpdateTab = true;
 			if (!bShowOptions) Tools.ShowInfo(PluginTranslate.KeePassUpdate_RequestInstallType);
 			if (bShowOptions) Tools.ShowOptions();
-        }
+		}
 
-        private void LvPlugins_KeyPress(object sender, KeyPressEventArgs e)
+		private void LvPlugins_KeyPress(object sender, KeyPressEventArgs e)
         {
 			if (e.KeyChar != (char)Keys.Space) return;
 			var lv = sender as ListView;
@@ -772,7 +774,12 @@ namespace EarlyUpdateCheck
 			ListView lvPlugins = sender as ListView;
 			e.DrawDefault = true;
 
-			if (e.ColumnIndex + 1 != lvPlugins.Items[0].SubItems.Count) return;
+			int iMaxColumns = -1;
+			foreach (ListViewItem lvi in lvPlugins.Items)
+            {
+				if (iMaxColumns < lvi.SubItems.Count) iMaxColumns = lvi.SubItems.Count;
+            }
+			if (e.ColumnIndex + 1 != iMaxColumns) return;
 			PluginUpdate upd = PluginUpdateHandler.Plugins.Find(x => x.Title == e.Item.SubItems[0].Text);
 			if (upd == null) upd = PluginUpdateHandler.Plugins.Find(x => x.Title + "*" == e.Item.SubItems[0].Text); //* is used to indicate a rename 
 			if (upd == null && e.Item.Index == 0 && e.Item.SubItems[e.ColumnIndex].Tag is KeePass_Update) upd = e.Item.SubItems[e.ColumnIndex].Tag as KeePass_Update;
@@ -1134,12 +1141,13 @@ namespace EarlyUpdateCheck
 			options.cgKeePassUpdate.Checked = PluginConfig.KeePassUpdateActive;
 			options.kpit = PluginConfig.KeePassInstallType;
 			options.Plugin = this;
-			//e.form.Resize += options.AdjustControls;
+			if (m_bActivateKeePassUpdateTab) e.form.Shown += options.ActivateKeePassUpdateTab;
 			Tools.AddPluginToOptionsForm(this, options);
 		}
 
 		private void OptionsFormClosed(object sender, Tools.OptionsFormsEventArgs e)
 		{
+			m_bActivateKeePassUpdateTab = false;
 			if (e.form.DialogResult != DialogResult.OK) return;
 			bool shown = false;
 			Options options = (Options)Tools.GetPluginFromOptions(this, out shown);

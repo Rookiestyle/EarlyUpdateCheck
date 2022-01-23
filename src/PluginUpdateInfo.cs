@@ -765,7 +765,6 @@ namespace EarlyUpdateCheck
 				if (sParts.Length != 2) continue;
 				IsRenamed = true;
 				NewName = sParts[1];
-				PluginDebug.DebugMode = true;
 				PluginDebug.AddInfo("New plugin name detected", 0, "Old: " + Name, "New: " + NewName);
 				return;
 			}

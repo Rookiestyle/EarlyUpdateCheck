@@ -149,7 +149,33 @@ namespace EarlyUpdateCheck
 			cbKeePassInstallType.Width = tbKeePassFolder.Width;
         }
 
-        private void lKeePassFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		internal void ActivateKeePassUpdateTab(object sender, EventArgs e)
+		{
+			TabControl tcMain = null;
+			TabControl tcPluginOptions = null;
+			TabPage tpEUC = null;
+			TabPage tpOptions = null;
+			Control c = tcEUC.Parent;
+			while (c != null)
+            {
+				if (c is TabPage)
+				{
+					if (tpEUC == null) tpEUC = c as TabPage;
+					else if (tpOptions == null) tpOptions = c as TabPage;
+				}
+				else if (c is TabControl)
+				{
+					if (tcPluginOptions == null) tcPluginOptions = c as TabControl;
+					else if (tcMain == null) tcMain = c as TabControl;
+				}
+				c = c.Parent;
+            }
+			if (tcMain != null && tpOptions != null) tcMain.SelectedTab = tpOptions;
+			if (tcPluginOptions != null && tpEUC != null) tcPluginOptions.SelectedTab = tpEUC;
+			tcEUC.SelectedTab = tpKeePass;
+		}
+
+		private void lKeePassFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
 			PluginTools.Tools.OpenUrl(tbKeePassFolder.Text);
         }
