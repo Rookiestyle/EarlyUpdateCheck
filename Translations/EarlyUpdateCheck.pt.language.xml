@@ -35,14 +35,18 @@ Mantenha o arquivo ExternalPluginUpdates.xml para incluir plug-ins de outros aut
   <item>
     <key>PluginUpdate</key>
     <value>Atualizar</value>
+      </item>
+  <item>
+    <key>PluginUpdateKeePass</key>
+    <value>Atualizar KeePass</value>
   </item>
   <item>
     <key>PluginUpdateSelected</key>
-    <value>Iniciar atualização</value>
+    <value>Atualizar plugins</value>
   </item>
   <item>
     <key>PluginUpdateCaption</key>
-    <value>Verificação de atualização antecipada - atualizador de plug-in</value>
+    <value>Verificação de atualização antecipada - atualizador de plugin</value>
   </item>
   <item>
     <key>PluginUpdating</key>
@@ -51,11 +55,11 @@ Mantenha o arquivo ExternalPluginUpdates.xml para incluir plug-ins de outros aut
   <item>
     <key>PluginUpdateSuccess</key>
     <value>A atualização foi bem-sucedida, a(s) nova(s) versão(ões) estarão ativas após a reinicialização do KeePass.
-Reinicie agora?</value>
+Reiniciar agora?</value>
   </item>
   <item>
     <key>PluginUpdateFailed</key>
-    <value>Falha ao mover os arquivos baixados. Pretende abrir a pasta temporária?</value>
+    <value>Falha ao mover os arquivos baixados. Abrir pasta temporária ao invés?</value>
   </item>
   <item>
     <key>PluginUpdateFailedSpecific</key>
@@ -96,4 +100,42 @@ Isso pode mostrar o prompt do UAC.</value>
     <value>Uma nova versão de ExternalPluginUpdates.xml está disponível.
 Baixar para atualizar mais plugins de terceiros?</value>
   </item>
-</Translation>
+  <item>
+    <key>UpdateExternalInfoInitialDownload</key>
+    <value>EarlyUpdateCheck pode atualizar plugins de terceiros também.
+Isso facilitado por um arquivo chamado ExternalPluginUpdates.xml.
+Baixar esse arquivo agora para permitir a atualização desses plugins?
+
+Esta questão não irá ser perguntada novamente.
+Se você decidir não usar este recurso agora, você pode baixar esse arquivo nas opções EarlyUpdateCheck's.</value>
+  </item>
+  <item>
+    <key>UpdateExternalInfoDownload</key>
+    <value>Baixar ExternalPluginUpdates.xml</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_InstallZip</key>
+    <value>EarlyUpdateCheck baixou a mais nova versão portátil do KeePass.
+
+Os arquivos baixados irão ser abertos em uma nova janela.
+Para executar a atualização, feche o KeePass e copiar esses arquivos no local atual do KeePass.</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_InstallSetupOrMsi</key>
+    <value>EarlyUpdateCheck baixou a mais nova versão do KeePass.
+Para executar a atualização, você precisa fechar o KeePass.
+
+Clique {0} para executar a atualização agora.
+Clique {1} para abrir a pasta contendo o arquivo baixado ao invés.</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_RequestInstallType</key>
+    <value>EarlyUpdateCheck pode ajudar na atualização do KeePass também.
+Desde que o KeePass pode ser instalado de diferentes formas, por favor, confirme o tipo da sua instalação.
+
+Diferentes tipos de instalação oferecidas:
+- Instalador: KeePass-&lt;Versão&gt;-Setup.exe é usado para instalar o KeePass
+- MSI: KeePass-&lt;Versão&gt;.msi é usado para instalar o KeePass
+- Portátil: KeePass-&lt;Versão&gt;.zip é usado para baixar e extrair o KeePass</value>
+  </item>
+</Translation>                                                
