@@ -7,7 +7,7 @@
 Keepass performs its update check only after all initialization is done and - if configured - the most recently used database has been opened.
 
 EarlyUpdateCheck checks for updates of KeePass and installed plugins BEFORE a database will be opened.  
-Additionally, it offers a handy one click update mode for all of my plugins integrated in KeePass' update check. 
+Additionally, it offers a handy one click update mode for all of my plugins integrated in KeePass' update check and also supports updating KeePass itself. 
 This will invoke Windows UAC if required to copy the downloaded files into KeePass' plugin folder. 
 Details can be found in the configuration settings.
 
@@ -24,6 +24,7 @@ The update check triggered by EarlyUpdateCheck will be performed only if all of 
 # Table of Contents
 - [Configuration](#configuration)
 - [One-click plugin update](#one-click-plugin-update)
+- [KeePass update](#keepass-update)
 - [Translations](#translations)
 - [Download & updates](#download--updates)
 - [Requirements](#requirements)
@@ -48,6 +49,24 @@ Select all plugins you wish to update and click *Start Update*.\
 
 Once the plugins have been updated, you need to restart KeePass.\
 ![Restart](images/EarlyUpdateCheck%20One%20Click%20Update%202.png)
+
+# KeePass update
+EarlyUpdateCheck can also update KeePass itself.  
+KeePass is shipped in different variants and each of them requires a specific way of updating.  
+- You can install KeePass using a KeePass-*Version*-Setup.exe - This is the default and linked at https://keepass.info/download.html as *Installer for Windows*
+- You can run KeePass using a portable version - This is also linked at https://keepass.info/download.html  as *Portable*
+- You can install KeePass using a KeePass-*Version*.msi file which is not linked at https://keepass.info/download.html but on Sourceforge only
+
+EarlyUpdateCheck can detect the used installation variant and if it's correct, you only need to confirm and you're ready to go.  
+![KeePass update](images/EarlyUpdateCheck%20KeePass%20Update.png)
+
+When using the portable version, EarlyUpdateCheck will download the new zip package, extract it to a temporary folder and open this folder in explorer.  
+To finish the update, you need to close KeePass and copy the downloaded files to your current KeePass folder.
+
+For the other two cases, EarlyUpdateCheck will download the required file. You can decide to open the folder containing the downloaded file or you can  start the installation immediately.  
+Don't forget to close KeePass in the latter case.
+
+Anytime, please ensure to have a working backup strategy.
 
 # Translations
 My plugins are provided with English language built-in and allow usage of translation files.
