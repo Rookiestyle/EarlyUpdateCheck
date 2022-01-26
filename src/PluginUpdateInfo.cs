@@ -729,13 +729,13 @@ namespace EarlyUpdateCheck
 				{
 					//Github: <Plugin>!<language identifier>
 					string[] sParts = uci.Name.Split(cSplit, StringSplitOptions.RemoveEmptyEntries);
-					if (sParts.Length == 1 && Name == sParts[0])
+					if (sParts.Length == 1 && Title == sParts[0])
 					{
 						vCheck = new Version(StrUtil.VersionToString(uci.VerAvailable, 2));
 						if (VersionAvailableIsUnknown()) VersionAvailable = vCheck;
 					}
-					if (!IsRenamed && !PluginUpdateHandler.VersionsEqual(VersionInstalled, vCheck)) return; //Different version might require different translation files
-					if (sParts.Length != 2 || sParts[0] != Name) continue;
+					if (!IsRenamed && vCheck != null && !PluginUpdateHandler.VersionsEqual(VersionInstalled, vCheck)) return; //Different version might require different translation files
+					if (sParts.Length != 2 || sParts[0] != Title) continue;
 					long lVer = 0;
 					if (!long.TryParse(StrUtil.VersionToString(uci.VerAvailable), out lVer)) continue;
 					string sLang = Name + "." + sParts[1].ToLowerInvariant() + ".language.xml";
@@ -763,6 +763,7 @@ namespace EarlyUpdateCheck
 				if (uciRename == null) continue;
 				string[] sParts = uciRename.Name.Split(cSplit, StringSplitOptions.RemoveEmptyEntries);
 				if (sParts.Length != 2) continue;
+				if (Title == sParts[1]) return;
 				IsRenamed = true;
 				NewName = sParts[1];
 				PluginDebug.AddInfo("New plugin name detected", 0, "Old: " + Name, "New: " + NewName);
