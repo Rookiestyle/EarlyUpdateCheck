@@ -776,8 +776,10 @@ namespace EarlyUpdateCheck
 			List<string> lMsg = new List<string>();
 			
 			lMsg.Add("Plugin update URL - old: " + PluginUpdateURL);
-			PluginUpdateURL = PluginUpdateURL.Replace(Name.ToLowerInvariant() + "/", NewName.ToLowerInvariant() + "/");
-			PluginUpdateURL = PluginUpdateURL.Replace(Name, NewName);
+			Regex reg = new Regex(@"\W");
+			string sNewNameCleaned = reg.Replace(NewName, string.Empty);
+			PluginUpdateURL = PluginUpdateURL.Replace(sNewNameCleaned.ToLowerInvariant() + "/", sNewNameCleaned.ToLowerInvariant() + "/");
+			PluginUpdateURL = PluginUpdateURL.Replace(Name, sNewNameCleaned);
 			lMsg.Add("Plugin update URL - new: " + PluginUpdateURL);
 
 			lMsg.Add("Plugin URL - old: " + URL);
@@ -788,7 +790,7 @@ namespace EarlyUpdateCheck
 			{
 				lMsg.Add("Translation file - old: " + t.LangugageFile);
 				PluginUpdateHandler.DeleteSpecialFile(PluginUpdateHandler.PluginsTranslationsFolder + t.LangugageFile, false);
-				t.LangugageFile = t.LangugageFile.Replace(Name, NewName);
+				t.LangugageFile = t.LangugageFile.Replace(Name, sNewNameCleaned);
 				lMsg.Add("Translation file - new: " + t.LangugageFile);
 
 				//Decrease installed version to ensure the new file is downloaded
