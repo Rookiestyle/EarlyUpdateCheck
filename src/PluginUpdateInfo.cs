@@ -771,6 +771,11 @@ namespace EarlyUpdateCheck
 			}
 		}
 
+		/// <summary>
+		/// All files related to the previous version of the plugin
+		/// Only filled if plugin was renamed
+		/// </summary>
+		private List<string> m_lOldPluginFiles = new List<string>();
 		private void ProcessRename()
 		{
 			List<string> lMsg = new List<string>();
@@ -783,25 +788,35 @@ namespace EarlyUpdateCheck
 			lMsg.Add("Plugin update URL - new: " + PluginUpdateURL);
 
 			lMsg.Add("Plugin URL - old: " + URL);
-			URL = URL.Replace(Name.ToLowerInvariant(), NewName.ToLowerInvariant());
+			URL = URL.Replace(Name.ToLowerInvariant(), sNewNameCleaned.ToLowerInvariant());
 			lMsg.Add("Plugin URL - new: " + URL);
 
 			foreach (var t in Translations)
 			{
 				lMsg.Add("Translation file - old: " + t.LangugageFile);
-				PluginUpdateHandler.DeleteSpecialFile(PluginUpdateHandler.PluginsTranslationsFolder + t.LangugageFile, false);
+				m_lOldPluginFiles.Add(PluginUpdateHandler.PluginsTranslationsFolder + t.LangugageFile);
+				//PluginUpdateHandler.DeleteSpecialFile(PluginUpdateHandler.PluginsTranslationsFolder + t.LangugageFile, false);
 				t.LangugageFile = t.LangugageFile.Replace(Name, sNewNameCleaned);
 				lMsg.Add("Translation file - new: " + t.LangugageFile);
 
 				//Decrease installed version to ensure the new file is downloaded
 				t.Installed--;
 			}
-			PluginUpdateHandler.DeleteSpecialFile(PluginFile, false);
+			m_lOldPluginFiles.Add(PluginFile);
+			//PluginUpdateHandler.DeleteSpecialFile(PluginFile, false);
 
 			PluginDebug.AddInfo("Process new plugin name", 0, lMsg.ToArray());
 		}
 
-		private bool VersionAvailableIsUnknown()
+        internal override bool ProcessDownload(string sTargetFolder)
+        {
+			if (!IsRenamed) return true;
+			foreach (var f in m_lOldPluginFiles)
+				PluginUpdateHandler.DeleteSpecialFile(f);
+			return true;
+        }
+
+        private bool VersionAvailableIsUnknown()
 		{
 			if (VersionAvailable.Major > 0) return false;
 			if (VersionAvailable.Minor > 0) return false;
