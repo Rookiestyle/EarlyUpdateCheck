@@ -56,7 +56,10 @@ namespace EarlyUpdateCheck
 			cbKeePassInstallType.Items.Add(KeePass_Update.KeePassInstallType.MSI);
 			cbKeePassInstallType.Items.Add(KeePass_Update.KeePassInstallType.Portable);
 			lKeePassFolder.Text = KPRes.Folder + ":";
-			lKeePassInstallType.Text = KPRes.Type + ":";
+
+			var t = typeof(KPRes).GetProperty("Type");
+			if (t != null) lKeePassInstallType.Text = t.GetValue(null, null) + ":";
+			else lKeePassInstallType.Text = "Type:";
 		}
 
 		private void bUpdateTranslations_Click(object sender, EventArgs e)
