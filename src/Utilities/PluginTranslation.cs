@@ -201,6 +201,16 @@ Different installation types offered:
 - Setup: KeePass-<Version>-Setup.exe is used to install KeePass
 - MSI: KeePass-<Version>.msi is used to install KeePass
 - Portable: KeePass-<Version>.zip is used to download and extract KeePass";
+		/// <summary>
+		/// EarlyUpdateCheck detected available updates of plugins and/or KeePass.
+		/// 
+		/// As option '{0}' is active, the update form cannot be displayed now.
+		/// It will be shown AFTER you close the '{1}' form.
+		/// </summary>
+		public static readonly string SecureDesktopMode = @"EarlyUpdateCheck detected available updates of plugins and/or KeePass.
+
+As option '{0}' is active, the update form cannot be displayed now.
+It will be shown AFTER you close the '{1}' form.";
 		#endregion
 
 		#region NO changes in this area

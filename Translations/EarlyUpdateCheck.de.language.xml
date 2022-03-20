@@ -4,7 +4,7 @@
     Increment the TranslationVersion every time the translation file is updated
 	Also update the version.info file
   -->
-  <TranslationVersion>8</TranslationVersion>
+  <TranslationVersion>9</TranslationVersion>
   <item>
     <key>Active</key>
     <value>Aktiv</value>
@@ -143,5 +143,12 @@ KeePass bietet folgende Installationsmethoden:
 - Setup: KeePass-&lt;Version&gt;-Setup.exe
 - MSI: KeePass-&lt;Version&gt;.msi
 - Portabel: KeePass-&lt;Version&gt;.zip</value>
+  </item>
+  <item>
+    <key>SecureDesktopMode</key>
+    <value>EarlyUpdateCheck hat verfügbare Updates von Plugins und/oder KeePass erkannt.
+
+Da die Option '{0}' aktiv ist, kann das Updatefenster jetzt nicht angezeigt werden.
+Es wird angezeigt NACHDEM das '{1}' Fenster geschlossen wurde.</value>
   </item>
 </Translation>

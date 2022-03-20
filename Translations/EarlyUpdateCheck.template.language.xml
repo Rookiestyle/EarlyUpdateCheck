@@ -143,4 +143,11 @@ Different installation types offered:
 - MSI: KeePass-&lt;Version&gt;.msi is used to install KeePass
 - Portable: KeePass-&lt;Version&gt;.zip is used to download and extract KeePass</value>
   </item>
+  <item>
+    <key>SecureDesktopMode</key>
+    <value>EarlyUpdateCheck detected available updates of plugins and/or KeePass.
+
+As option '{0}' is active, the update form cannot be displayed now.
+It will be shown AFTER you close the '{1}' form.</value>
+  </item>
 </Translation>

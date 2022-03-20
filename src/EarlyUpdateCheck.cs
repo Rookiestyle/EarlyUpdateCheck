@@ -39,7 +39,7 @@ namespace EarlyUpdateCheck
 		{
 			m_host = host;
 
-			PluginTranslate.TranslationChanged += delegate (object sender, TranslationChangedEventArgs e) 
+			PluginTranslate.TranslationChanged += delegate (object sender, TranslationChangedEventArgs e)
 			{
 				if (!string.IsNullOrEmpty(KeePass.Program.Translation.Properties.Iso6391Code))
 					PluginUpdateHandler.LanguageIso = KeePass.Program.Translation.Properties.Iso6391Code;
@@ -123,8 +123,8 @@ namespace EarlyUpdateCheck
 			else if (!m_bRestartTriggered)
 			{
 				//Only load plugins, do NOT check for new translations
-				ThreadPool.QueueUserWorkItem(new WaitCallback((object o) => 
-				{ 
+				ThreadPool.QueueUserWorkItem(new WaitCallback((object o) =>
+				{
 					PluginUpdateHandler.LoadPlugins(false);
 					CheckExternalPluginUpdate();
 				}));
@@ -180,7 +180,7 @@ namespace EarlyUpdateCheck
 
 		private void WindowRemoved(object sender, GwmWindowEventArgs e)
 		{
-			if ((m_kpf != null) && (e.Form is KeyPromptForm))	m_kpf = null;
+			if ((m_kpf != null) && (e.Form is KeyPromptForm)) m_kpf = null;
 		}
 
 		#region Check for updates
@@ -281,7 +281,8 @@ namespace EarlyUpdateCheck
 
 						if (m_slUpdateCheck != null)
 						{
-							m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() => { m_slUpdateCheck.EndLogging(); }));
+							if (bUpdAvail) UpdateStatusLogger();
+							EndLogging();
 							m_slUpdateCheck = null;
 						}
 
@@ -313,8 +314,8 @@ namespace EarlyUpdateCheck
 					}
 					finally
 					{
-						try { if (m_slUpdateCheck != null) m_slUpdateCheck.EndLogging(); }
-						catch (Exception) { }
+						try { if (m_slUpdateCheck != null) EndLogging(); }
+						catch (Exception ex) { lMsg.Add(ex.Message); }
 						if (bOK)
 							lock (m_lock) { m_UpdateCheckStatus = UpdateCheckStatus.Checked; }
 						else
@@ -336,14 +337,14 @@ namespace EarlyUpdateCheck
 				}
 				while (true)
 				{
-					if ((m_slUpdateCheck != null) && !m_slUpdateCheck.ContinueWork()) break;
+					if ((m_slUpdateCheck != null) && !ContinueWork()) break;
 					lock (m_lock)
 					{
 						if (m_UpdateCheckStatus == UpdateCheckStatus.Checked) break;
 						if (m_UpdateCheckStatus == UpdateCheckStatus.Error) break;
 					}
 				}
-				if (m_slUpdateCheck != null) m_slUpdateCheck.EndLogging();
+				if (m_slUpdateCheck != null) EndLogging();
 				if (bOK) return;
 			}
 			catch (Exception ex)
@@ -357,6 +358,61 @@ namespace EarlyUpdateCheck
 				if (bOK) PluginDebug.AddSuccess("Run updatecheck in background", 0, lMsg.ToArray());
 				else PluginDebug.AddError("Run updatecheck in background", 0, lMsg.ToArray());
 			}
+		}
+
+		private bool ContinueWork()
+		{
+			try
+			{
+				var c = UIThread(() => 
+				{
+					bool cw = false;
+					lock (m_slUpdateCheck)
+					{
+						if (m_slUpdateCheck == null) cw = false;
+						else cw = m_slUpdateCheck.ContinueWork();
+					}
+					return cw;
+				});
+				if (c != null) return (bool)c;
+			}
+			catch { }
+			return true;
+		}
+
+		private void EndLogging()
+		{
+			UIThread(() => 
+			{
+				lock (m_slUpdateCheck)
+				{
+					if (m_slUpdateCheck != null) m_slUpdateCheck.EndLogging();
+					m_slUpdateCheck = null;
+				}
+				return null; 
+			});
+		}
+
+		private object UIThread(KeePassLib.Delegates.GFunc<object> a)
+		{
+			try
+			{
+				return m_bCancel.Invoke(a);
+			}
+			catch (Exception ex)
+			{
+				PluginDebug.AddError("Show SecureDesktopHint", 0, ex.Message);
+			}
+			return null;
+		}
+
+		private void UpdateStatusLogger()
+		{
+			if (!m_kpf.SecureDesktopMode) return;
+			UIThread(() => {
+				Tools.ShowInfo(string.Format(PluginTranslate.SecureDesktopMode, KeePass.Resources.KPRes.MasterKeyOnSecureDesktop, KeePass.Resources.KPRes.OpenDatabase));
+				return null;
+			});
 		}
 
 		/// <summary>
@@ -383,17 +439,18 @@ namespace EarlyUpdateCheck
 			return UpdateCheckType.Required;
 		}
 
+		private Button m_bCancel = null;
 		private IStatusLogger CreateUpdateCheckLogger()
 		{
 			IStatusLogger sl = StatusUtil.CreateStatusDialog(null, out m_CheckProgress,
 				KeePass.Resources.KPRes.UpdateCheck, KeePass.Resources.KPRes.CheckingForUpd + "...", true, true);
-			Button btnCancel = (Button)Tools.GetControl("m_btnCancel", m_CheckProgress);
-			if (btnCancel != null)
+			m_bCancel = (Button)Tools.GetControl("m_btnCancel", m_CheckProgress);
+			if (m_bCancel != null)
 			{
-				int x = btnCancel.Right;
-				btnCancel.AutoSize = true;
-				btnCancel.Text = PluginTranslate.EnterBackgroundMode;
-				btnCancel.Left = x - btnCancel.Width;
+				int x = m_bCancel.Right;
+				m_bCancel.AutoSize = true;
+				m_bCancel.Text = PluginTranslate.EnterBackgroundMode;
+				m_bCancel.Left = x - m_bCancel.Width;
 			}
 			return sl;
 		}
@@ -496,14 +553,14 @@ namespace EarlyUpdateCheck
 			}
 			//https://github.com/mono/mono/issues/17747
 			//Do NOT use ListView.SmallImageList
-			if (m_ImgApply == null)	m_ImgApply = (Image)KeePass.Program.Resources.GetObject("B16x16_Apply");
+			if (m_ImgApply == null) m_ImgApply = (Image)KeePass.Program.Resources.GetObject("B16x16_Apply");
 			if (m_ImgUnselected == null) m_ImgUnselected = m_ImgApply == null ? null : UIUtil.CreateGrayImage(m_ImgApply);
 			PluginDebug.AddInfo("Installed updatable plugins", 0, PluginUpdateHandler.Plugins.ConvertAll(x => x.Name + " / " + x.Title + " / " + x.UpdateMode.ToString() + " / " + x.UpdatePossible.ToString()).ToArray());
 			KeePass_Update kpu = null;
 			foreach (ListViewItem item in lvPlugins.Items)
 			{
 				PluginDebug.AddInfo("Check plugin update status", 0, item.SubItems[0].Text, item.SubItems[1].Text);
-				string sHelp = "-"+item.SubItems[0].Text+"-"+item.SubItems[1].Text + "- " + (!item.SubItems[1].Text.Contains(KeePass.Resources.KPRes.NewVersionAvailable)).ToString();
+				string sHelp = "-" + item.SubItems[0].Text + "-" + item.SubItems[1].Text + "- " + (!item.SubItems[1].Text.Contains(KeePass.Resources.KPRes.NewVersionAvailable)).ToString();
 				if (!item.SubItems[1].Text.Contains(KeePass.Resources.KPRes.NewVersionAvailable)) continue;
 				if (item.Index == 0 && item.Text == "KeePass")
 				{
@@ -537,7 +594,7 @@ namespace EarlyUpdateCheck
 					if (!bColumnAdded)
 					{
 						lvPlugins.Columns.Add(PluginTranslate.PluginUpdate);
-                        lvPlugins.KeyPress += LvPlugins_KeyPress;
+						lvPlugins.KeyPress += LvPlugins_KeyPress;
 						bColumnAdded = true;
 					}
 					ListViewItem.ListViewSubItem lvsiUpdate = new ListViewItem.ListViewSubItem(item, PluginTranslate.PluginUpdate);
@@ -562,7 +619,7 @@ namespace EarlyUpdateCheck
 					break;
 				}
 			}
-			if (bColumnAdded) 
+			if (bColumnAdded)
 			{
 				UIUtil.ResizeColumns(lvPlugins, new int[] { 3, 3, 2, 2, 1 }, true);
 				lvPlugins.MouseClick += OnUpdateCheckFormPluginMouseClick;
@@ -571,7 +628,7 @@ namespace EarlyUpdateCheck
 				lvPlugins.DrawColumnHeader += LvPlugins_DrawColumnHeader;
 				ShowUpdateButton(sender as Form, true, kpu);
 			}
-			
+
 			if (m_lEventHandlerItemActivate.Count == 0)
 			{
 				if (lvPlugins.ContextMenuStrip == null)
@@ -588,8 +645,8 @@ namespace EarlyUpdateCheck
 		}
 
 		private bool m_bActivateKeePassUpdateTab = false;
-        private void CheckKeePassInstallType(bool bShowOptions)
-        {
+		private void CheckKeePassInstallType(bool bShowOptions)
+		{
 			if (PluginConfig.KeePassInstallTypeConfigured) return;
 			m_bActivateKeePassUpdateTab = true;
 			if (!bShowOptions) Tools.ShowInfo(PluginTranslate.KeePassUpdate_RequestInstallType);
@@ -597,7 +654,7 @@ namespace EarlyUpdateCheck
 		}
 
 		private void LvPlugins_KeyPress(object sender, KeyPressEventArgs e)
-        {
+		{
 			if (e.KeyChar != (char)Keys.Space) return;
 			var lv = sender as ListView;
 			if (lv == null || lv.SelectedItems.Count < 0) return;
@@ -663,17 +720,17 @@ namespace EarlyUpdateCheck
 			ToggleUpdateFlag(sender as ListView, info.SubItem.Tag as PluginUpdate);
 		}
 
-        private void ToggleUpdateFlag(ListView lv, PluginUpdate upd)
-        {
+		private void ToggleUpdateFlag(ListView lv, PluginUpdate upd)
+		{
 			if (lv == null || upd == null) return;
 			upd.Selected = !upd.Selected;
 			bool bAtLeast1Selected = PluginUpdateHandler.Plugins.Find(x => x.Selected == true) != null;
 			if (!bAtLeast1Selected)
-            {
+			{
 				//Check whether KeePass itself is selected for update
 				bAtLeast1Selected = lv.Items[0].SubItems[lv.Items[0].SubItems.Count - 1].Tag is KeePass_Update;
 				if (bAtLeast1Selected) bAtLeast1Selected = (lv.Items[0].SubItems[lv.Items[0].SubItems.Count - 1].Tag as KeePass_Update).Selected;
-            }
+			}
 			if (!ShowUpdateButton(lv.FindForm(), bAtLeast1Selected, lv.Items[0].SubItems[lv.Items[0].SubItems.Count - 1].Tag))
 			{
 				upd.Selected = !upd.Selected;
@@ -736,13 +793,13 @@ namespace EarlyUpdateCheck
 			}
 			bUpdate.Tag = oKeePassUpdate;
 			bUpdate.Enabled = enable;
-		
+
 			SetUpdateButtonText(bUpdate, oKeePassUpdate);
 			return true;
 		}
 
-        private void SetUpdateButtonText(Button bUpdate, object oKeePassUpdate)
-        {
+		private void SetUpdateButtonText(Button bUpdate, object oKeePassUpdate)
+		{
 			bool bAtLeast1PluginSelected = PluginUpdateHandler.Plugins.FindAll(x => x.Selected).Count > 0;
 			if (!bUpdate.Enabled)
 			{
@@ -758,7 +815,7 @@ namespace EarlyUpdateCheck
 			else if (bAtLeast1PluginSelected) bUpdate.Text = PluginTranslate.PluginUpdateSelected;
 			else if (kpu != null & kpu.Selected) bUpdate.Text = PluginTranslate.PluginUpdateKeePass;
 			else
-            {
+			{
 				bUpdate.Enabled = false;
 				bUpdate.Text = PluginTranslate.PluginUpdate;
 			}
@@ -776,9 +833,9 @@ namespace EarlyUpdateCheck
 
 			int iMaxColumns = -1;
 			foreach (ListViewItem lvi in lvPlugins.Items)
-            {
+			{
 				if (iMaxColumns < lvi.SubItems.Count) iMaxColumns = lvi.SubItems.Count;
-            }
+			}
 			if (e.ColumnIndex + 1 != iMaxColumns) return;
 			PluginUpdate upd = PluginUpdateHandler.Plugins.Find(x => x.Title == e.Item.SubItems[0].Text);
 			if (upd == null) upd = PluginUpdateHandler.Plugins.Find(x => x.Title + "*" == e.Item.SubItems[0].Text); //* is used to indicate a rename 
@@ -886,34 +943,34 @@ namespace EarlyUpdateCheck
 
 			//Start installation of update or open download folder (zip / portable)
 			success &= kpu.Execute();
-			
+
 			//Restart KeePass to use new plugin versions
 			PluginDebug.AddInfo("KeePass update/download finished", "Succes: " + success.ToString(), DebugPrint);
 		}
 
 		private void bUpdatePlugins_Click(object sender, EventArgs e)
 		{
-			KeePass_Update kpu = null; 
+			KeePass_Update kpu = null;
 			Button bUpdate = sender as Button;
 			if (bUpdate != null && bUpdate.Tag is KeePass_Update) kpu = bUpdate.Tag as KeePass_Update;
 			UpdatePlugins(UpdateFlags.All, kpu);
 		}
 
 		private void UpdatePlugins(UpdateFlags uf, KeePass_Update kpu)
-        {
+		{
 			UpdatePlugins(uf, false, kpu);
-        }
+		}
 		private void UpdatePlugins(UpdateFlags uf, bool bForceExternalPluginUpdatesDownload, KeePass_Update kpu)
 		{
 			if (kpu != null) DoUpdateKeePass(kpu);
 
 			//Check whether anything needs to be done
 			if (uf != UpdateFlags.ExternalUpdateInfo && PluginUpdateHandler.Plugins.FindAll(x => x.Selected).Count == 0) return;
-			
+
 			PluginDebug.AddInfo("UpdatePlugins start ", DebugPrint);
 			Form fUpdateLog = null;
 			m_slUpdatePlugins = StatusUtil.CreateStatusDialog(GlobalWindowManager.TopWindow, out fUpdateLog, PluginTranslate.PluginUpdateCaption, string.Empty, true, true);
-			
+
 			bool success = false;
 			string sTempPluginsFolder = PluginUpdateHandler.GetTempFolder();
 
@@ -1036,7 +1093,7 @@ namespace EarlyUpdateCheck
 			if (m_slUpdateCheck != null)
 			{
 				PluginDebug.AddInfo("Closing update check progress form", 0, DebugPrint);
-				m_slUpdateCheck.EndLogging();
+				EndLogging();
 			}
 
 			if (MonoWorkarounds.IsRequired(620618))
@@ -1109,11 +1166,11 @@ namespace EarlyUpdateCheck
 				lStrings.Add("Success: See next entry");
 				PluginDebug.AddInfo("Handle global mutex", 0, lStrings.ToArray());
 				Thread t = new Thread(new ThreadStart(() =>
-				  {
-					  Thread.Sleep(PluginConfig.RestoreMutexThreshold);
-					  bool bSuccess = GlobalMutexPool.CreateMutex(KeePass.App.AppDefs.MutexName, true);
-					  PluginDebug.AddInfo("Handle global mutex", 0, "Recreate mutex sucessful: " + bSuccess.ToString());
-				  }));
+				{
+					Thread.Sleep(PluginConfig.RestoreMutexThreshold);
+					bool bSuccess = GlobalMutexPool.CreateMutex(KeePass.App.AppDefs.MutexName, true);
+					PluginDebug.AddInfo("Handle global mutex", 0, "Recreate mutex sucessful: " + bSuccess.ToString());
+				}));
 				t.IsBackground = true;
 				t.Start();
 				return;
@@ -1195,7 +1252,7 @@ namespace EarlyUpdateCheck
 			get
 			{
 				string result = "DifferentThread: {0}, Check status: {1}, UI interaction blocked: {2}";
-				lock(m_lock)
+				lock (m_lock)
 				{
 					result = string.Format(result, m_bRestartInvoke.ToString(), m_UpdateCheckStatus.ToString(), KeePass.Program.MainForm.UIIsInteractionBlocked().ToString());
 				}
