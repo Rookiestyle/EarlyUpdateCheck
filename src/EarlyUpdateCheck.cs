@@ -516,7 +516,7 @@ namespace EarlyUpdateCheck
 			if (UpdateInfoExternParser.VersionInstalled >= UpdateInfoExternParser.VersionAvailable) return;
 			var pu = PluginUpdateHandler.Plugins.Find(x => x is EarlyUpdateCheckUpdate) as OwnPluginUpdate;
 			if (pu == null) return;
-			if (!bDownloadFile) bDownloadFile = Tools.AskYesNo(PluginTranslate.UpdateExternalInfo) != DialogResult.Yes;
+			if (!bDownloadFile) bDownloadFile = Tools.AskYesNo(PluginTranslate.UpdateExternalInfo) == DialogResult.Yes;
 			if (!bDownloadFile) return;
 			m_host.MainWindow.Invoke(new KeePassLib.Delegates.GAction(() => { UpdatePlugins(UpdateFlags.ExternalUpdateInfo, null); }), null);
 		}
