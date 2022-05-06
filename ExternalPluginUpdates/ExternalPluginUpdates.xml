@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>11</Version>
+	<Version>12</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -152,4 +152,11 @@ from one-click update
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
+  <UpdateInfoExtern>
+    <PluginName>KeeSetPriority</PluginName>
+    <PluginURL>https://github.com/jalorodri/KeeSetPriority/</PluginURL>
+    <PluginUpdateURL>https://github.com/jalorodri/KeeSetPriority/releases/latest/download/KeeSetPriority.plgx</PluginUpdateURL>
+    <UpdateMode>PlgxDirect</UpdateMode>
+    <AllowVersionStripping>False</AllowVersionStripping>
+  </UpdateInfoExtern>
 </UpdateInfoExternList>
