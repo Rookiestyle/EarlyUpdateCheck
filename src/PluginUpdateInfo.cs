@@ -440,12 +440,17 @@ namespace EarlyUpdateCheck
 			Regex r = new Regex(@"\{([^}]*)REVISION\}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			if (bStripping) sResult = r.Replace(sResult, string.Empty);
 			else sResult = r.Replace(sResult, "$1\n" + v.Revision.ToString());
-			
 
 			bStripping &= v.Build < 1;
 			r = new Regex(@"\{([^}]*)BUILD\}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			if (bStripping) sResult = r.Replace(sResult, string.Empty);
-			else sResult = r.Replace(sResult, "$1\n" + v.Build.ToString());
+			else
+			{
+				sResult = r.Replace(sResult, "$1\n" + v.Build.ToString());
+				//Special handling for plugins that ALWAYS include the build
+				r = new Regex(@"\{([^}]*)BUILD!\}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+				sResult = r.Replace(sResult, "$1\n0");
+			}
 
 			bStripping &= v.Minor < 1;
 			r = new Regex(@"\{([^}]*)MINOR\}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
@@ -1038,16 +1043,16 @@ namespace EarlyUpdateCheck
         {
 			switch (sPluginNamespace.ToLowerInvariant())
             {
-				case "kpsyncfordrive": return new OPU_KPSyncForDrive(sPluginNamespace);
+				//case "kpsyncfordrive": return new OPU_EnforceBuild(sPluginNamespace);
 				default: return new OtherPluginUpdate(sPluginNamespace);
 			}
             throw new NotImplementedException();
         }
     }
 
-	internal class OPU_KPSyncForDrive : OtherPluginUpdate
+	internal class OPU_EnforceBuild : OtherPluginUpdate
     {
-		internal OPU_KPSyncForDrive(string PluginName) : base(PluginName) { }
+		internal OPU_EnforceBuild(string PluginName) : base(PluginName) { }
         protected override string MergeInVersion(bool bUseAvailableVersion)
         {
 			//KPSyn for Drive always uses major, minor and revision

@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>12</Version>
+	<Version>13</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -85,7 +85,7 @@ from one-click update
 	<UpdateInfoExtern>
 		<PluginName>KPSync For Google Drive</PluginName>
 		<PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
-		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/KPSyncForDrive-{major}.{minor}.{build}.plgx</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/KPSyncForDrive-{major}.{minor}.{build!}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -159,4 +159,28 @@ from one-click update
     <UpdateMode>PlgxDirect</UpdateMode>
     <AllowVersionStripping>False</AllowVersionStripping>
   </UpdateInfoExtern>
+	<!--  KPEntry Templates by Mitch Capper -->
+	<UpdateInfoExtern>
+		<PluginName>Entry Templates for KeePass</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#kpentrytemplates</PluginURL>
+		<PluginUpdateURL>https://github.com/mitchcapper/KPEntryTemplates/releases/latest/download/KPEntryTemplates.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<!-- KeePass Windows Hello by sirAndros -->
+	<UpdateInfoExtern>
+		<PluginName>KeePassWinHello</PluginName>
+		<PluginURL>https://github.com/sirAndros/KeePassWinHello/</PluginURL>
+		<PluginUpdateURL>https://github.com/sirAndros/KeePassWinHello/releases/latest/download/KeePassWinHelloPlugin.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<!--  KPSimple Backup by Marvin Weber  -->
+	<UpdateInfoExtern>
+		<PluginName>KPSimpleBackup</PluginName>
+		<PluginURL>https://github.com/marvinweber/KPSimpleBackup/</PluginURL>
+		<PluginUpdateURL>https://github.com/marvinweber/KPSimpleBackup/releases/latest/download/KPSimpleBackup-v{major}.{minor}.{build!}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
 </UpdateInfoExternList>
