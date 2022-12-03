@@ -45,7 +45,7 @@ namespace EarlyUpdateCheck
 			else
 				cbDownloadCurrentTranslation.Text = string.Format(PluginTranslate.TranslationDownload_DownloadCurrent, KeePass.Program.Translation.Properties.NameNative);
 			bUpdateTranslations.Text = PluginTranslate.TranslationDownload_Update;
-			if (PluginUpdateHandler.Shieldify) KeePass.UI.UIUtil.SetShield(bUpdateTranslations, true);
+			if (PluginUpdateHandler.MustShieldify) KeePass.UI.UIUtil.SetShield(bUpdateTranslations, true);
 			bDownloadExternalPluginUpdates.Text = PluginTranslate.UpdateExternalInfoDownload;
 
 			tpKeePass.Text = PluginTranslate.PluginUpdateKeePass;

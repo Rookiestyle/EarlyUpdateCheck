@@ -29,15 +29,17 @@ namespace EarlyUpdateCheck
 		}
 		internal static string LanguageIso = string.Empty;
 
-		internal static bool Shieldify
+		internal static bool MustShieldify
 		{
 			get
 			{
-				if (m_bShieldify.HasValue) return m_bShieldify.Value;
-				CheckShieldify();
-				return m_bShieldify.Value;
+				if (m_bMustShieldify.HasValue) return m_bMustShieldify.Value;
+				CheckMustShieldify();
+				return m_bMustShieldify.Value;
 			}
 		}
+
+		internal static bool CanShieldify { get { return m_bCanShieldify; } }
 
 		internal static string PluginsFolder { get; private set; }
 		internal static string PluginsTranslationsFolder { get; private set; }
@@ -67,7 +69,7 @@ namespace EarlyUpdateCheck
 			List<string> lMsg = new List<string>();
 			lMsg.Add("Plugins folder: " + PluginsFolder);
 			lMsg.Add("Plugins translation folder: " + PluginsTranslationsFolder);
-			lMsg.Add("Shieldify: " + Shieldify.ToString());
+			lMsg.Add("Shieldify: " + MustShieldify.ToString());
 			lMsg.Add("Last update check: " + m_sLastUpdateCheck);
 			PluginDebug.AddInfo("PluginUpdateHandler initialized", 0, lMsg.ToArray());
 		}
@@ -137,11 +139,11 @@ namespace EarlyUpdateCheck
 		internal static bool MoveAll(string sTempFolder)
 		{
 			string sTargetFolder = PluginUpdateHandler.PluginsFolder;
-			if (Shieldify) return MoveAllShieldified(sTempFolder, sTargetFolder, false);
-			else return MoveAllNonShieldified(sTempFolder, sTargetFolder);
+			if (MustShieldify) return MoveAllShieldified(sTempFolder, sTargetFolder, false);
+			else return MoveAllNonShieldified(sTempFolder, sTargetFolder, false);
 		}
 
-		private static bool MoveAllNonShieldified(string sTempFolder, string sTargetFolder)
+		private static bool MoveAllNonShieldified(string sTempFolder, string sTargetFolder, bool bShieldifyTriedAndFailed)
 		{
 			bool bSuccess = true;
 			List<string> lFiles = UrlUtil.GetFilePaths(sTempFolder, "*", SearchOption.AllDirectories);
@@ -188,8 +190,9 @@ namespace EarlyUpdateCheck
 			}
 			if (!bSuccess)
 			{
+				if (bShieldifyTriedAndFailed) lMsg.Insert(0, "UAC not possible, secure desktop was shown at least once");
 				PluginDebug.AddError("Error moving files", 0, lMsg.ToArray());
-				if (WinUtil.IsAtLeastWindowsVista) return MoveAllShieldified(sTempFolder, sTargetFolder, true);
+				if (WinUtil.IsAtLeastWindowsVista && !bShieldifyTriedAndFailed) return MoveAllShieldified(sTempFolder, sTargetFolder, true);
 				if (Tools.AskYesNo(PluginTranslate.PluginUpdateFailed, PluginTranslate.PluginUpdateCaption) == DialogResult.Yes)
 				{
 					System.Diagnostics.Process.Start(sTempFolder);
@@ -203,6 +206,7 @@ namespace EarlyUpdateCheck
 
 		private static bool MoveAllShieldified(string sTempFolder, string sTargetFolder, bool bOnlyTryShieldify)
 		{
+			if (!CanShieldify) return MoveAllNonShieldified(sTempFolder, sTargetFolder, true);
 			bool bSuccess = false;
 			bool bOpenTempFolder = false;
 			GFunc<DialogResult> f = new GFunc<DialogResult>(() =>
@@ -258,19 +262,37 @@ namespace EarlyUpdateCheck
 
 		private static Dictionary<string, Version> m_Plugins = new Dictionary<string, Version>();
 		private static string m_sLastUpdateCheck = string.Empty;
-		private static bool? m_bShieldify;
+		private static bool? m_bMustShieldify;
+		private static bool m_bCanShieldify = true; //https://github.com/Rookiestyle/EarlyUpdateCheck/issues/52
 		private static string EnsureNonNull(string v)
 		{
 			if (v == null) return string.Empty;
 			return v;
 		}
 
-		private static void CheckShieldify()
+		//KeePass secure desktop does not play nicely with SHFileOperation
+		//cf. https://github.com/Rookiestyle/EarlyUpdateCheck/issues/52
+		//
+		//SHFileOperation cannot be used if KeePass secure desktop has been shown before
+		public static void CheckCanShieldify(Form f)
+		{
+			if (!MustShieldify)
+			{
+				m_bCanShieldify = true;
+				return;
+			}
+
+			if (!(f is KeePass.Forms.KeyPromptForm || f is KeePass.Forms.KeyCreationForm)) return;
+
+			if (m_bCanShieldify) m_bCanShieldify = !KeePass.Program.Config.Security.MasterKeyOnSecureDesktop;
+		}
+
+		private static void CheckMustShieldify()
 		{
 			List<string> lShieldify = new List<string>();
 			try
 			{
-				m_bShieldify = false;
+				m_bMustShieldify = false;
 				if (KeePassLib.Native.NativeLib.IsUnix())
 				{
 					lShieldify.Add("Detected Unix");
@@ -287,7 +309,7 @@ namespace EarlyUpdateCheck
 				catch { sPF86_2 = sPF86; }
 				string sPF = EnsureNonNull(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
 				string sKP = EnsureNonNull(UrlUtil.GetFileDirectory(WinUtil.GetExecutable(), true, false));
-				m_bShieldify = sKP.StartsWith(sPF86) || sKP.StartsWith(sPF) || sKP.StartsWith(sPF86_2);
+				m_bMustShieldify = sKP.StartsWith(sPF86) || sKP.StartsWith(sPF) || sKP.StartsWith(sPF86_2);
 				lShieldify.Add("KeePass folder inside ProgramFiles(x86): " + sKP.StartsWith(sPF86));
 				lShieldify.Add("KeePass folder inside Environment.SpecialFolder.ProgramFilesX86: " + sKP.StartsWith(sPF86_2));
 				lShieldify.Add("KeePass folder inside Environment.SpecialFolder.ProgramFiles: " + sKP.StartsWith(sPF));
@@ -296,7 +318,7 @@ namespace EarlyUpdateCheck
 			catch (Exception ex) { lShieldify.Add("Exception: " + ex.Message); return; }
 			finally
 			{
-				lShieldify.Insert(0, "Shieldify: " + m_bShieldify.ToString());
+				lShieldify.Insert(0, "Shieldify: " + m_bMustShieldify.ToString());
 				PluginDebug.AddInfo("Check Shieldify", 0, lShieldify.ToArray());
 			}
 		}

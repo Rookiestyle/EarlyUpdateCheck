@@ -136,6 +136,7 @@ namespace EarlyUpdateCheck
 
 		private void WindowAdded(object sender, GwmWindowEventArgs e)
 		{
+			PluginUpdateHandler.CheckCanShieldify(e.Form);
 			if (!PluginConfig.Active) return;
 			PluginDebug.AddInfo("Form added", 0, e.Form.Name, e.Form.GetType().FullName, DebugPrint);
 			if (e.Form is UpdateCheckForm)
@@ -766,7 +767,7 @@ namespace EarlyUpdateCheck
 					bUpdate.Name = "EUCUpdateButton";
 					bUpdate.Click += bUpdatePlugins_Click;
 					bClose.Parent.Controls.Add(bUpdate);
-					if (PluginUpdateHandler.Shieldify)
+					if (PluginUpdateHandler.MustShieldify)
 					{
 						bUpdate.Width += DpiUtil.ScaleIntX(16);
 						UIUtil.SetShield(bUpdate, true);
@@ -912,7 +913,7 @@ namespace EarlyUpdateCheck
 			{
 				m_slUpdatePlugins.StartLogging(PluginTranslate.PluginUpdateCaption, false);
 
-				PluginDebug.AddInfo("Use temp folder", PluginUpdateHandler.Shieldify.ToString(), sTempPluginsFolder, DebugPrint);
+				PluginDebug.AddInfo("Use temp folder", PluginUpdateHandler.MustShieldify.ToString(), sTempPluginsFolder, DebugPrint);
 
 				bool bOK = true;
 				if (m_slUpdatePlugins != null)
@@ -978,7 +979,7 @@ namespace EarlyUpdateCheck
 			{
 				m_slUpdatePlugins.StartLogging(PluginTranslate.PluginUpdateCaption, false);
 
-				PluginDebug.AddInfo("Use temp folder", PluginUpdateHandler.Shieldify.ToString(), sTempPluginsFolder, DebugPrint);
+				PluginDebug.AddInfo("Use temp folder", PluginUpdateHandler.MustShieldify.ToString(), sTempPluginsFolder, DebugPrint);
 
 				//Download files
 				foreach (PluginUpdate upd in PluginUpdateHandler.Plugins)
