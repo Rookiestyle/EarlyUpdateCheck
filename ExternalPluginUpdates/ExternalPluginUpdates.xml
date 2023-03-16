@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>13</Version>
+	<Version>14</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -141,8 +141,8 @@ from one-click update
 	<UpdateInfoExtern>
 		<PluginName>KeePassNatMsg</PluginName>
 		<PluginURL>https://keepass.info/plugins.html#keepassnatmsg</PluginURL>
-		<PluginUpdateURL>https://github.com/smorks/keepassnatmsg/releases/latest/download/KeePassNatMsg-v{MAJOR}.{MINOR}.{BUILD}-binaries.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractAll</UpdateMode>
+		<PluginUpdateURL>https://github.com/smorks/keepassnatmsg/releases/latest/download/KeePassNatMsg.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
