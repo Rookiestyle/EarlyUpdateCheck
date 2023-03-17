@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>14</Version>
+	<Version>15</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -183,4 +183,36 @@ from one-click update
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
+	<!--  DataBaseBackup Backup by Marc Elser  -->
+	<UpdateInfoExtern>
+		<PluginName>DataBaseBackup</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#databasebackup</PluginURL>
+		<PluginUpdateURL>https://keepass.info/extensions/v2/databasebackup/DataBaseBackup-{major}.{minor}.{build}.{revision}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<!--  Have I Been Pwned Plugin Backup by Marc Elser  -->
+	<UpdateInfoExtern>
+		<PluginName>Have I Been Pwned Plugin</PluginName>
+		<PluginURL>https://github.com/kapsiR/HaveIBeenPwnedKeePassPlugin</PluginURL>
+		<PluginUpdateURL>https://github.com/kapsiR/HaveIBeenPwnedKeePassPlugin/releases/download/v{major}.{minor}.{build}/HaveIBeenPwnedPlugin.dll</PluginUpdateURL>
+		<UpdateMode>DllDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<!--  ITanMaster by Marc Elser  -->
+	<UpdateInfoExtern>
+		<PluginName>ITanMaster</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#itanmaster</PluginURL>
+		<PluginUpdateURL>https://keepass.info/extensions/v2/itanmaster/iTanMaster-{major}.{minor}.{build}.{revision}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<!--  KeePassHIBP Backup by Marc Elser  -->
+	<UpdateInfoExtern>
+		<PluginName>KeePassHIBP</PluginName>
+		<PluginURL>https://github.com/JanisEst/KeePassHIBP</PluginURL>
+		<PluginUpdateURL>https://github.com/JanisEst/KeePassHIBP/releases/download/v{major}.{minor}/KeePassHIBP.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>	
 </UpdateInfoExternList>
