@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>15</Version>
+	<Version>16</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -214,5 +214,12 @@ from one-click update
 		<PluginUpdateURL>https://github.com/JanisEst/KeePassHIBP/releases/download/v{major}.{minor}/KeePassHIBP.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>	
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>Title Display</PluginName>
+		<PluginURL>http://gogogadgetscott.info/keepass/titledisplay/</PluginURL>
+		<PluginUpdateURL>http://gogogadgetscott.info/keepass/titledisplay/TitleDisplay-{major}.{minor}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
 </UpdateInfoExternList>
