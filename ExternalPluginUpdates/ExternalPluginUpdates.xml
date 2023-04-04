@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>16</Version>
+	<Version>17</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -219,6 +219,13 @@ from one-click update
 		<PluginName>Title Display</PluginName>
 		<PluginURL>http://gogogadgetscott.info/keepass/titledisplay/</PluginURL>
 		<PluginUpdateURL>http://gogogadgetscott.info/keepass/titledisplay/TitleDisplay-{major}.{minor}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeAgent</PluginName>
+		<PluginURL>https://github.com/dlech/KeeAgent/</PluginURL>
+		<PluginUpdateURL>https://github.com/dlech/KeeAgent/releases/latest/download/KeeAgent_v{MAJOR}.{MINOR}.{BUILD}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
