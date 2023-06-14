@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>17</Version>
+	<Version>18</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -59,7 +59,7 @@ from one-click update
 		<PluginUpdateURL>https://github.com/tiuub/KeeOtp2/releases/latest/download/KeeOtp2.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>	
+	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>KeeTheme</PluginName>
 		<PluginURL>https://keepass.info/plugins.html#keetheme</PluginURL>
@@ -227,6 +227,14 @@ from one-click update
 		<PluginURL>https://github.com/dlech/KeeAgent/</PluginURL>
 		<PluginUpdateURL>https://github.com/dlech/KeeAgent/releases/latest/download/KeeAgent_v{MAJOR}.{MINOR}.{BUILD}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<!--  KeePassDiceware by Chris Dailey  -->
+	<UpdateInfoExtern>
+		<PluginName>KeePassDiceware</PluginName>
+		<PluginURL>https://github.com/cmdwtf/KeePassDiceware/</PluginURL>
+		<PluginUpdateURL>https://github.com/cmdwtf/KeePassDiceware/releases/latest/download/KeePassDiceware.dll</PluginUpdateURL>
+		<UpdateMode>DllDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 </UpdateInfoExternList>
