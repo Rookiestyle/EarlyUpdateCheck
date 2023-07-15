@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Translation>
-  <TranslationVersion>1</TranslationVersion>
+  <TranslationVersion>2</TranslationVersion>
   <item>
     <key>Active</key>
     <value>活动</value>
@@ -35,6 +35,10 @@
   <item>
     <key>PluginUpdate</key>
     <value>更新</value>
+  </item>
+  <item>
+    <key>PluginUpdateKeePass</key>
+    <value>更新 KeePass</value>
   </item>
   <item>
     <key>PluginUpdateSelected</key>
@@ -96,5 +100,51 @@
     <key>UpdateExternalInfo</key>
     <value>可以使用新版本的外部插件Updates.xml。
 下载以更新更多的第三方插件？</value>
-  </item>
+    </item>
+    <item>
+    <key>UpdateExternalInfoInitialDownload</key>
+    <value>EarlyUpdateCheck可以更新其他开发者的插件。
+为此，需要加载ExternalPluginUpdates.xml文件。
+现在要加载这个文件吗？
+
+这个问题不会再次提问。
+如果你现在不想使用这个功能，你也可以稍后在EarlyUpdateCheck的选项中加载该文件。</value>
+    </item>
+    <item>
+      <key>UpdateExternalInfoDownload</key>
+      <value>下载 ExternalPluginUpdates.xml</value>
+    </item>
+    <item>
+      <key>KeePassUpdate_InstallZip</key>
+      <value>EarlyUpdateCheck已经下载了最新的KeePass便携版。
+
+下载的文件将在一个新窗口中打开。
+要进行更新，请关闭KeePass并将下载的文件复制到你的KeePass文件夹中。</value>
+    </item>
+    <item>
+      <key>KeePassUpdate_InstallSetupOrMsi</key>
+      <value>EarlyUpdateCheck已经成功加载了最新版本的KeePass。
+
+为了进行更新，请先关闭KeePass。
+
+点击{0}开始进行更新。
+点击{1}打开包含已下载安装文件的文件夹。</value>
+    </item>
+    <item>
+      <key>KeePassUpdate_RequestInstallType</key>
+      <value>EarlyUpdateCheck可以帮助你进行KeePass的更新。
+请提供当前的安装方式。
+
+KeePass提供以下安装方式：
+- 安装程序：KeePass-&lt;Version&gt;-Setup.exe
+- MSI安装包： KeePass-&lt;Version&gt;.msi
+- 便携版： KeePass-&lt;Version&gt;.zip</value>
+    </item>
+    <item>
+      <key>SecureDesktopMode</key>
+      <value>EarlyUpdateCheck检测到插件和/或KeePass的可用更新。
+
+由于选项“{0}”已激活，更新窗口现在无法显示。
+它将在关闭“{1}”窗口后显示。</value>
+    </item>
 </Translation>
