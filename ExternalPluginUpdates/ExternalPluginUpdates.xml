@@ -243,6 +243,6 @@ from one-click update
 		<PluginURL>https://github.com/drventure/Disambiguator</PluginURL>
 		<PluginUpdateURL>https://github.com/drventure/Disambiguator/releases/download/v{MAJOR}.{MINOR}.{BUILD}.{REVISION}/Disambiguator-v{MAJOR}.{MINOR}.{BUILD}.{REVISION}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>False</AllowVersionStripping>
+		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
 </UpdateInfoExternList>
