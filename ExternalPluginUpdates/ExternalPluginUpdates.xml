@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>18</Version>
+	<Version>19</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -244,5 +244,47 @@ from one-click update
 		<PluginUpdateURL>https://github.com/drventure/Disambiguator/releases/download/v{MAJOR}.{MINOR}.{BUILD}.{REVISION}/Disambiguator-v{MAJOR}.{MINOR}.{BUILD}.{REVISION}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>AutoTypeSearch</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#atsearch</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/autotypesearch/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>AutoTypeSplitter</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#atsplit</PluginURL>
+		<PluginUpdateURL>https://github.com/xatupal/AutoTypeSplitter/releases/latest/download/AutoTypeSplitter.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>CheckPasswordBox</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#chkpwbox</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/checkpasswordbox/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>Custom Icon Dashboarder</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#icondashb</PluginURL>
+		<PluginUpdateURL>https://github.com/incognito1234/KeePass-Custom-Icon-Dashboarder/releases/latest/download/CustomIconDashboarder.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>Fields Admin Console</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#kpfieldsadmin</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/kpfieldsadminconsole/files/latest/download</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>PasswordAgeColumn</PluginName>
+		<PluginURL>https://github.com/tiuub/PasswordAgeColumn</PluginURL>
+		<PluginUpdateURL>https://github.com/tiuub/PasswordAgeColumn/releases/latest/download/PasswordAgeColumn.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 </UpdateInfoExternList>
