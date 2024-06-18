@@ -446,7 +446,7 @@ namespace EarlyUpdateCheck
       if (bOK) return bOK;
       if (VersionAvailable.Revision > 0) return bOK; //false, but revision is defined
       var vVersionAvailableBackup = VersionAvailable;
-      VersionAvailable = new Version(VersionAvailable.Major, VersionAvailable.Minor, VersionAvailable.Build, 0);
+      VersionAvailable = new Version(VersionAvailable.Major, VersionAvailable.Minor, VersionAvailable.Build >= 0 ? VersionAvailable.Build : 0, 0);
       var bAllowVersionStripping = AllowVersionStripping;
       AllowVersionStripping = false;
       sFile = MergeInVersion(true);
