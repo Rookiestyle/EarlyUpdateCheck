@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>19</Version>
+	<Version>20</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -286,5 +286,47 @@ from one-click update
 		<PluginUpdateURL>https://github.com/tiuub/PasswordAgeColumn/releases/latest/download/PasswordAgeColumn.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>AutoTypeShow</PluginName>
+		<PluginURL>https://sourceforge.net/projects/autotypeshow/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/autotypeshow/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>EditEntryGroup</PluginName>
+		<PluginURL>https://sourceforge.net/projects/editentrygroup/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/editentrygroup/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeModifiedBy</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#keemodifiedby</PluginURL>
+		<PluginUpdateURL>https://keepass.info/extensions/v2/keemodifiedby/KeeModifiedBy-{major}{.minor}{.build}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>OtpKeyProv</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#otpkeyprov</PluginURL>
+		<PluginUpdateURL>https://keepass.info/extensions/v2/otpkeyprov/OtpKeyProv-{major}{.minor}{.build}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>TwoFactorQRCodeReader</PluginName>
+		<PluginURL>https://sourceforge.net/projects/twofactorqrcodereader/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/twofactorqrcodereader/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeResize</PluginName>
+		<PluginURL>https://keepass.info/extensions/v2/keeresize/</PluginURL>
+		<PluginUpdateURL>https://keepass.info/extensions/v2/keeresize/KeeResize-{major}{.minor}{.build}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractAll</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
 </UpdateInfoExternList>
