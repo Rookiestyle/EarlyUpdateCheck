@@ -479,7 +479,10 @@ namespace EarlyUpdateCheck
       if (bStripping) sResult = r.Replace(sResult, string.Empty);
       else
       {
-        sResult = r.Replace(sResult, "$1\n" + v.Build.ToString());
+        if (v.Build >= 0)
+          sResult = r.Replace(sResult, "$1\n" + v.Build.ToString());
+        else
+          sResult = r.Replace(sResult, "$1\n0");
         //Special handling for plugins that ALWAYS include the build
         r = new Regex(@"\{([^}]*)BUILD!\}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
         sResult = r.Replace(sResult, "$1\n0");
