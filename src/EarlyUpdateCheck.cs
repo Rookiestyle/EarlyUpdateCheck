@@ -153,6 +153,52 @@ namespace EarlyUpdateCheck
       }
       if (e.Form is KeyPromptForm) KeyPromptFormAdded();
       if (e.Form is LanguageForm) e.Form.Shown += LanguageFormAdded;
+      if (e.Form is PluginsForm) e.Form.Shown += PluginsFormShown;
+    }
+
+    private void PluginsFormShown(object sender, EventArgs e)
+    {
+      PluginsForm fPluginsForm = sender as PluginsForm;
+      if (fPluginsForm == null) return;
+      ListView lvPlugins = Tools.GetControl("m_lvPlugins", fPluginsForm) as ListView;
+      if (lvPlugins == null) return;
+      var bAddedUrl = false;
+      var lKnownPlugins = PluginConfig.KnownPluginVersions;
+      foreach (ListViewItem lvItem in lvPlugins.Items)
+      {
+        var pu = lKnownPlugins.Find(x => x.Title == lvItem.Text);
+        if (pu == null) continue;
+        if (!string.IsNullOrEmpty((string)pu.URL))
+        {
+          var lvsiUrl = lvItem.SubItems.Add(new ListViewItem.ListViewSubItem(lvItem, (string) pu.URL));
+          lvsiUrl.Name = "EUC_URLColumn_" + lvItem.Index.ToString();
+          bAddedUrl = true;
+        }
+        if ((Version)pu.VersionInstalled < (Version)pu.VersionAvailable)
+        {
+          lvItem.SubItems[1].Text += " (" + pu.VersionAvailable.ToString() + ")";
+          lvItem.ForeColor = Color.Red; 
+          lvItem.SubItems[1].Tag = pu;
+        }
+      }
+      if (!bAddedUrl) return;
+      lvPlugins.MouseDoubleClick += OnLvPlugins_MouseDoubleClick;
+    }
+
+    private void OnLvPlugins_MouseDoubleClick(object sender, MouseEventArgs e)
+    {
+      ListViewHitTestInfo info = (sender as ListView).HitTest(e.X, e.Y);
+      string sUrl = string.Empty;
+      if (info.SubItem.Text == info.Item.SubItems[4].Text) sUrl = System.IO.Path.GetDirectoryName(info.SubItem.Text);
+      else
+      {
+        int iLVSI = info.Item.SubItems.IndexOfKey("EUC_URLColumn_" + info.Item.Index.ToString());
+        if (iLVSI >= 0) sUrl = info.Item.SubItems[iLVSI].Text;
+      }
+      if (!string.IsNullOrEmpty(sUrl))
+      {
+        Tools.OpenUrl(sUrl);
+      }
     }
 
     private void LanguageFormAdded(object sender, EventArgs e)
@@ -272,12 +318,22 @@ namespace EarlyUpdateCheck
             bool bUpdAvail = false;
             foreach (UpdateComponentInfo uc in lInst)
             {
-              if (uc.Status == UpdateComponentStatus.NewVerAvailable)
+              var mypu = PluginUpdateHandler.Plugins.Find(xyz => xyz.Title == uc.Name);
+              if (uc.Status == UpdateComponentStatus.NewVerAvailable && mypu != null)
               {
+                mypu.VersionAvailable = new Version(StrUtil.VersionToString(uc.VerAvailable, 2));
                 bUpdAvail = true;
-                break;
+                //break; No break, we want to know details for all plugins to shjow them in the plugins form
+              }
+              else if  (uc.Status == UpdateComponentStatus.NewVerAvailable)
+              {
+                var opns = new OtherPluginNotSupported(uc.Name);
+                opns.SetData(uc);
+                PluginUpdateHandler.Plugins.RemoveAll(x => x.Title == uc.Name);
+                PluginUpdateHandler.Plugins.Add(opns);
               }
             }
+            PluginConfig.SetKnownPluginVersions(PluginUpdateHandler.Plugins);
 
             if (m_slUpdateCheck != null)
             {
@@ -587,6 +643,7 @@ namespace EarlyUpdateCheck
               kpu.Selected = true;
             }
           }
+          continue;
         }
         foreach (PluginUpdate upd in PluginUpdateHandler.Plugins)
         {
@@ -619,7 +676,12 @@ namespace EarlyUpdateCheck
           }
           break;
         }
+        var opns = new OtherPluginNotSupported(item.SubItems[0].Text);
+        opns.SetData(item.SubItems[2].Text, item.SubItems[3].Text);
+        PluginUpdateHandler.Plugins.RemoveAll(x => x.Title == opns.Title);
+        PluginUpdateHandler.Plugins.Add(opns);
       }
+      PluginConfig.SetKnownPluginVersions(PluginUpdateHandler.Plugins);
       if (bColumnAdded)
       {
         UIUtil.ResizeColumns(lvPlugins, new int[] { 3, 3, 2, 2, 1 }, true);

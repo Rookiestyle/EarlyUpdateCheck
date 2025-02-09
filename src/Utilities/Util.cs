@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using PluginTools;
 
 namespace EarlyUpdateCheck
@@ -28,6 +31,53 @@ namespace EarlyUpdateCheck
     internal static bool CheckSync = true;
     internal static bool OneClickUpdate = true;
     internal static bool DownloadActiveLanguage = true;
+
+    private static List<PluginUpdateSerialized> m_lKnownPlugins = new List<PluginUpdateSerialized>();
+    internal static List<PluginUpdateSerialized> KnownPluginVersions
+    {
+      get
+      {
+        if (m_lKnownPlugins.Count > 0) return m_lKnownPlugins;
+        string sPluginsXML = Config.GetString("EarlyUpdateCheck.KnownPluginVersions", string.Empty);
+        if (string.IsNullOrEmpty(sPluginsXML)) return m_lKnownPlugins;
+        var bPluginsXML = Convert.FromBase64String(sPluginsXML);
+        XmlSerializer serializer = new XmlSerializer(m_lKnownPlugins.GetType());
+        using (var msPlugins = new MemoryStream(bPluginsXML))
+        {
+          XmlSerializer stream = new XmlSerializer(m_lKnownPlugins.GetType());
+          try
+          {
+            m_lKnownPlugins = (List<PluginUpdateSerialized>)stream.Deserialize(msPlugins);
+          }
+          catch { }
+        }
+        return m_lKnownPlugins;
+      }
+    }
+    internal static void SetKnownPluginVersions(List<PluginUpdate> lKnownPlugins)
+    {
+      m_lKnownPlugins.Clear();
+      foreach (var pu in lKnownPlugins)
+      {
+        var dPlugin = new PluginUpdateSerialized();
+        dPlugin.Title = pu.Title;
+        dPlugin.VersionInstalledString = pu.VersionInstalled.ToString();
+        dPlugin.VersionAvailableString = pu.VersionAvailable.ToString();
+        dPlugin.URL = pu.URL;
+        m_lKnownPlugins.Add(dPlugin);
+      }
+      try
+      {
+        XmlSerializer serializer = new XmlSerializer(m_lKnownPlugins.GetType());
+        using (var writer = new MemoryStream())
+        {
+          serializer.Serialize(writer, m_lKnownPlugins);
+          string sPluginsXML = Convert.ToBase64String(writer.ToArray());
+          Config.SetString("EarlyUpdateCheck.KnownPluginVersions", sPluginsXML);
+        }
+      }
+      catch (Exception ex) { }
+    }
 
     //Check for initial download of ExternPluginUpdates.xml
     //

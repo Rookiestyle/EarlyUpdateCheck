@@ -346,6 +346,7 @@ namespace EarlyUpdateCheck
     internal bool AllowVersionStripping { get; set; }
     internal string PluginFile { get; private set; }
     internal bool Selected;
+    internal bool Supported = true;
 
     internal bool Ignore = false;
 
@@ -370,6 +371,7 @@ namespace EarlyUpdateCheck
 
     internal PluginUpdate(string PluginName)
     {
+      if (PluginName == null) return;
       if (m_Plugins.Count == 0) m_Plugins = GetLoadedPluginsName();
       PluginName = PluginName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)[0];
       Plugin p = (Plugin)Tools.GetPluginInstance(PluginName);
@@ -568,6 +570,22 @@ namespace EarlyUpdateCheck
       m_lDownloaded.Clear();
       //Added for plugin specific file cleanups (future)
     }
+  }
+
+  public class PluginUpdateSerialized
+  {
+    public string Title;
+    public string VersionInstalledString;
+    public string VersionAvailableString; 
+    public Version VersionInstalled
+    {
+      get { return new Version(VersionInstalledString); }
+    }
+    public Version VersionAvailable
+    {
+      get { return new Version(VersionAvailableString); }
+    }
+    public string URL;
   }
 
   internal class KeePass_Update : PluginUpdate
@@ -1083,6 +1101,31 @@ namespace EarlyUpdateCheck
         default: return new OtherPluginUpdate(sPluginNamespace);
       }
       throw new NotImplementedException();
+    }
+  }
+
+  internal class OtherPluginNotSupported : PluginUpdate
+  {
+    internal OtherPluginNotSupported(string sPluginName) : base(null)
+    { 
+      Ignore = true;
+      SetTitle(sPluginName);
+    }
+
+    private void SetData(Version vInstalled, Version vAvailable)
+    {
+      SetVersionInstalled(vInstalled);
+      VersionAvailable = vAvailable;
+    }
+
+    internal void SetData(UpdateComponentInfo uc)
+    {
+      SetData(StrUtil.VersionToString(uc.VerInstalled), StrUtil.VersionToString(uc.VerAvailable));
+    }
+
+    internal void SetData(string sIinstalled, string sAvailable)
+    {
+      SetData(new Version(sIinstalled), new Version(sAvailable));
     }
   }
 
