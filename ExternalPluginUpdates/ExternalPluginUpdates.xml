@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>21</Version>
+	<Version>22</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -335,5 +335,12 @@ from one-click update
 		<PluginUpdateURL>https://github.com/ligos/readablepassphrasegenerator/releases/download/release-{major}.{minor}.{build}/ReadablePassphrase.{major}.{minor}.{build}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeUIExt</PluginName>
+		<PluginURL>https://keepass.info/plugins.html#keeuiext</PluginURL>
+		<PluginUpdateURL>https://keepass.info/extensions/v2/keeuiext/KeeUIExt-{major}{.minor}{.build}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
 </UpdateInfoExternList>
