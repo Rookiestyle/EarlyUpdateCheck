@@ -166,7 +166,7 @@ from one-click update
 	<UpdateInfoExtern>
 		<PluginName>Have I Been Pwned Plugin</PluginName>
 		<PluginURL>https://github.com/kapsiR/HaveIBeenPwnedKeePassPlugin</PluginURL>
-		<PluginUpdateURL>https://github.com/kapsiR/HaveIBeenPwnedKeePassPlugin/releases/download/v{major}.{minor}.{build}/HaveIBeenPwnedPlugin.dll</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/kapsiR/HaveIBeenPwnedKeePassPlugin/releases/latest/download/HaveIBeenPwnedPlugin.dll</PluginUpdateURL>
 		<UpdateMode>DllDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -174,7 +174,7 @@ from one-click update
 	<UpdateInfoExtern>
 		<PluginName>KeePassHIBP</PluginName>
 		<PluginURL>https://github.com/JanisEst/KeePassHIBP</PluginURL>
-		<PluginUpdateURL>https://github.com/JanisEst/KeePassHIBP/releases/download/v{major}.{minor}/KeePassHIBP.plgx</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/JanisEst/KeePassHIBP/releases/latest/download/KeePassHIBP.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -204,7 +204,7 @@ from one-click update
 	<UpdateInfoExtern>
 		<PluginName>The Disambiguator</PluginName>
 		<PluginURL>https://github.com/drventure/Disambiguator</PluginURL>
-		<PluginUpdateURL>https://github.com/drventure/Disambiguator/releases/download/v{MAJOR}.{MINOR}.{BUILD}.{REVISION}/Disambiguator-v{MAJOR}.{MINOR}.{BUILD}.{REVISION}.zip</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/drventure/Disambiguator/releases/latest/download/Disambiguator-v{MAJOR}.{MINOR}.{BUILD}.{REVISION}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -274,7 +274,7 @@ from one-click update
 	<UpdateInfoExtern>
 		<PluginName>Readable Passphrase Plugin</PluginName>
 		<PluginURL>https://github.com/ligos/readablepassphrasegenerator</PluginURL>
-		<PluginUpdateURL>https://github.com/ligos/readablepassphrasegenerator/releases/download/release-{major}.{minor}.{build}/ReadablePassphrase.{major}.{minor}.{build}.plgx</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/ligos/readablepassphrasegenerator/releases/latest/download/ReadablePassphrase.{major}.{minor}.{build}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
