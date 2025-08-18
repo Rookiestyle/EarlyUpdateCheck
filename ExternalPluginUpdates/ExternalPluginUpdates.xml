@@ -10,18 +10,11 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>22</Version>
+	<Version>23</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
 		<PluginUpdateURL>https://sourceforge.net/projects/webautotype/files/latest/download</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>HotKeyEnabler</PluginName>
-		<PluginURL>https://sourceforge.net/projects/hotkeyenabler/</PluginURL>
-		<PluginUpdateURL>https://sourceforge.net/projects/hotkeyenabler/files/latest/download</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -43,13 +36,6 @@ from one-click update
 		<PluginName>KeeParanoia</PluginName>
 		<PluginURL>https://sourceforge.net/projects/keeparanoia/</PluginURL>
 		<PluginUpdateURL>https://sourceforge.net/projects/keeparanoia/files/latest/download</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>KeePass Pronounceable Password Generator</PluginName>
-		<PluginURL>https://sourceforge.net/projects/pronouncepwgen/</PluginURL>
-		<PluginUpdateURL>https://sourceforge.net/projects/pronouncepwgen/files/latest/download</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -88,13 +74,6 @@ from one-click update
 		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/KPSyncForDrive-{major}.{minor}.{build!}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>KeeAutoExec</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#keeautoexec</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/keeautoexec/KeeAutoExec-{major}{.minor}{.build}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>HIBPOfflineCheck</PluginName>
@@ -183,28 +162,12 @@ from one-click update
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
-	<!--  DataBaseBackup Backup by Marc Elser  -->
-	<UpdateInfoExtern>
-		<PluginName>DataBaseBackup</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#databasebackup</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/databasebackup/DataBaseBackup-{major}.{minor}.{build}.{revision}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>
 	<!--  Have I Been Pwned Plugin Backup by Marc Elser  -->
 	<UpdateInfoExtern>
 		<PluginName>Have I Been Pwned Plugin</PluginName>
 		<PluginURL>https://github.com/kapsiR/HaveIBeenPwnedKeePassPlugin</PluginURL>
 		<PluginUpdateURL>https://github.com/kapsiR/HaveIBeenPwnedKeePassPlugin/releases/download/v{major}.{minor}.{build}/HaveIBeenPwnedPlugin.dll</PluginUpdateURL>
 		<UpdateMode>DllDirect</UpdateMode>
-		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<!--  ITanMaster by Marc Elser  -->
-	<UpdateInfoExtern>
-		<PluginName>ITanMaster</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#itanmaster</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/itanmaster/iTanMaster-{major}.{minor}.{build}.{revision}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<!--  KeePassHIBP Backup by Marc Elser  -->
@@ -302,20 +265,6 @@ from one-click update
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
-		<PluginName>KeeModifiedBy</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#keemodifiedby</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/keemodifiedby/KeeModifiedBy-{major}{.minor}{.build}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>OtpKeyProv</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#otpkeyprov</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/otpkeyprov/OtpKeyProv-{major}{.minor}{.build}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
 		<PluginName>TwoFactorQRCodeReader</PluginName>
 		<PluginURL>https://sourceforge.net/projects/twofactorqrcodereader/</PluginURL>
 		<PluginUpdateURL>https://sourceforge.net/projects/twofactorqrcodereader/files/latest/download</PluginUpdateURL>
@@ -323,24 +272,10 @@ from one-click update
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
-		<PluginName>KeeResize</PluginName>
-		<PluginURL>https://keepass.info/extensions/v2/keeresize/</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/keeresize/KeeResize-{major}{.minor}{.build}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractAll</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
 		<PluginName>Readable Passphrase Plugin</PluginName>
 		<PluginURL>https://github.com/ligos/readablepassphrasegenerator</PluginURL>
 		<PluginUpdateURL>https://github.com/ligos/readablepassphrasegenerator/releases/download/release-{major}.{minor}.{build}/ReadablePassphrase.{major}.{minor}.{build}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>KeeUIExt</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#keeuiext</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/keeuiext/KeeUIExt-{major}{.minor}{.build}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
 </UpdateInfoExternList>
