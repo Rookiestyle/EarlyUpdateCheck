@@ -70,7 +70,7 @@ from one-click update
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>KPSync For Google Drive</PluginName>
-		<PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
+		<PluginURL>https://www.kpsync.org/</PluginURL>
 		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/KPSyncForDrive-{major}.{minor}.{build!}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
@@ -112,7 +112,7 @@ from one-click update
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>KeeAnywhere</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#keeanywhere</PluginURL>
+		<PluginURL>https://keeanywhere.de/</PluginURL>
 		<PluginUpdateURL>https://github.com/Kyrodan/KeeAnywhere/releases/latest/download/KeeAnywhere-{major}.{minor}.{build}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
@@ -187,7 +187,7 @@ from one-click update
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>KeeAgent</PluginName>
-		<PluginURL>https://github.com/dlech/KeeAgent/</PluginURL>
+		<PluginURL>https://lechnology.com/software/keeagent/</PluginURL>
 		<PluginUpdateURL>https://github.com/dlech/KeeAgent/releases/latest/download/KeeAgent_v{MAJOR}.{MINOR}.{BUILD}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
@@ -195,7 +195,7 @@ from one-click update
 	<!--  KeePassDiceware by Chris Dailey  -->
 	<UpdateInfoExtern>
 		<PluginName>KeePassDiceware</PluginName>
-		<PluginURL>https://github.com/cmdwtf/KeePassDiceware/</PluginURL>
+		<PluginURL>https://cmd.wtf/projects#diceware</PluginURL>
 		<PluginUpdateURL>https://github.com/cmdwtf/KeePassDiceware/releases/latest/download/KeePassDiceware.dll</PluginUpdateURL>
 		<UpdateMode>DllDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
