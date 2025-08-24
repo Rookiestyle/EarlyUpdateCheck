@@ -10,18 +10,11 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>22</Version>
+	<Version>23</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
 		<PluginUpdateURL>https://sourceforge.net/projects/webautotype/files/latest/download</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>HotKeyEnabler</PluginName>
-		<PluginURL>https://sourceforge.net/projects/hotkeyenabler/</PluginURL>
-		<PluginUpdateURL>https://sourceforge.net/projects/hotkeyenabler/files/latest/download</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -43,13 +36,6 @@ from one-click update
 		<PluginName>KeeParanoia</PluginName>
 		<PluginURL>https://sourceforge.net/projects/keeparanoia/</PluginURL>
 		<PluginUpdateURL>https://sourceforge.net/projects/keeparanoia/files/latest/download</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>KeePass Pronounceable Password Generator</PluginName>
-		<PluginURL>https://sourceforge.net/projects/pronouncepwgen/</PluginURL>
-		<PluginUpdateURL>https://sourceforge.net/projects/pronouncepwgen/files/latest/download</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -84,17 +70,10 @@ from one-click update
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>KPSync For Google Drive</PluginName>
-		<PluginURL>https://github.com/walterpg/google-drive-sync/releases</PluginURL>
+		<PluginURL>https://www.kpsync.org/</PluginURL>
 		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/KPSyncForDrive-{major}.{minor}.{build!}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>KeeAutoExec</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#keeautoexec</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/keeautoexec/KeeAutoExec-{major}{.minor}{.build}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>HIBPOfflineCheck</PluginName>
@@ -133,7 +112,7 @@ from one-click update
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>KeeAnywhere</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#keeanywhere</PluginURL>
+		<PluginURL>https://keeanywhere.de/</PluginURL>
 		<PluginUpdateURL>https://github.com/Kyrodan/KeeAnywhere/releases/latest/download/KeeAnywhere-{major}.{minor}.{build}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
@@ -152,13 +131,13 @@ from one-click update
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
-  <UpdateInfoExtern>
-    <PluginName>KeeSetPriority</PluginName>
-    <PluginURL>https://github.com/jalorodri/KeeSetPriority/</PluginURL>
-    <PluginUpdateURL>https://github.com/jalorodri/KeeSetPriority/releases/latest/download/KeeSetPriority.plgx</PluginUpdateURL>
-    <UpdateMode>PlgxDirect</UpdateMode>
-    <AllowVersionStripping>False</AllowVersionStripping>
-  </UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeSetPriority</PluginName>
+		<PluginURL>https://github.com/jalorodri/KeeSetPriority/</PluginURL>
+		<PluginUpdateURL>https://github.com/jalorodri/KeeSetPriority/releases/latest/download/KeeSetPriority.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
 	<!--  KPEntry Templates by Mitch Capper -->
 	<UpdateInfoExtern>
 		<PluginName>Entry Templates for KeePass</PluginName>
@@ -183,35 +162,19 @@ from one-click update
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
-	<!--  DataBaseBackup Backup by Marc Elser  -->
-	<UpdateInfoExtern>
-		<PluginName>DataBaseBackup</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#databasebackup</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/databasebackup/DataBaseBackup-{major}.{minor}.{build}.{revision}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>
 	<!--  Have I Been Pwned Plugin Backup by Marc Elser  -->
 	<UpdateInfoExtern>
 		<PluginName>Have I Been Pwned Plugin</PluginName>
 		<PluginURL>https://github.com/kapsiR/HaveIBeenPwnedKeePassPlugin</PluginURL>
-		<PluginUpdateURL>https://github.com/kapsiR/HaveIBeenPwnedKeePassPlugin/releases/download/v{major}.{minor}.{build}/HaveIBeenPwnedPlugin.dll</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/kapsiR/HaveIBeenPwnedKeePassPlugin/releases/latest/download/HaveIBeenPwnedPlugin.dll</PluginUpdateURL>
 		<UpdateMode>DllDirect</UpdateMode>
-		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<!--  ITanMaster by Marc Elser  -->
-	<UpdateInfoExtern>
-		<PluginName>ITanMaster</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#itanmaster</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/itanmaster/iTanMaster-{major}.{minor}.{build}.{revision}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<!--  KeePassHIBP Backup by Marc Elser  -->
 	<UpdateInfoExtern>
 		<PluginName>KeePassHIBP</PluginName>
 		<PluginURL>https://github.com/JanisEst/KeePassHIBP</PluginURL>
-		<PluginUpdateURL>https://github.com/JanisEst/KeePassHIBP/releases/download/v{major}.{minor}/KeePassHIBP.plgx</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/JanisEst/KeePassHIBP/releases/latest/download/KeePassHIBP.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -224,7 +187,7 @@ from one-click update
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>KeeAgent</PluginName>
-		<PluginURL>https://github.com/dlech/KeeAgent/</PluginURL>
+		<PluginURL>https://lechnology.com/software/keeagent/</PluginURL>
 		<PluginUpdateURL>https://github.com/dlech/KeeAgent/releases/latest/download/KeeAgent_v{MAJOR}.{MINOR}.{BUILD}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
@@ -232,7 +195,7 @@ from one-click update
 	<!--  KeePassDiceware by Chris Dailey  -->
 	<UpdateInfoExtern>
 		<PluginName>KeePassDiceware</PluginName>
-		<PluginURL>https://github.com/cmdwtf/KeePassDiceware/</PluginURL>
+		<PluginURL>https://cmd.wtf/projects#diceware</PluginURL>
 		<PluginUpdateURL>https://github.com/cmdwtf/KeePassDiceware/releases/latest/download/KeePassDiceware.dll</PluginUpdateURL>
 		<UpdateMode>DllDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
@@ -241,7 +204,7 @@ from one-click update
 	<UpdateInfoExtern>
 		<PluginName>The Disambiguator</PluginName>
 		<PluginURL>https://github.com/drventure/Disambiguator</PluginURL>
-		<PluginUpdateURL>https://github.com/drventure/Disambiguator/releases/download/v{MAJOR}.{MINOR}.{BUILD}.{REVISION}/Disambiguator-v{MAJOR}.{MINOR}.{BUILD}.{REVISION}.zip</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/drventure/Disambiguator/releases/latest/download/Disambiguator-v{MAJOR}.{MINOR}.{BUILD}.{REVISION}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>True</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -302,20 +265,6 @@ from one-click update
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
-		<PluginName>KeeModifiedBy</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#keemodifiedby</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/keemodifiedby/KeeModifiedBy-{major}{.minor}{.build}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>OtpKeyProv</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#otpkeyprov</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/otpkeyprov/OtpKeyProv-{major}{.minor}{.build}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractPlgx</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
 		<PluginName>TwoFactorQRCodeReader</PluginName>
 		<PluginURL>https://sourceforge.net/projects/twofactorqrcodereader/</PluginURL>
 		<PluginUpdateURL>https://sourceforge.net/projects/twofactorqrcodereader/files/latest/download</PluginUpdateURL>
@@ -323,24 +272,465 @@ from one-click update
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
-		<PluginName>KeeResize</PluginName>
-		<PluginURL>https://keepass.info/extensions/v2/keeresize/</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/keeresize/KeeResize-{major}{.minor}{.build}.zip</PluginUpdateURL>
-		<UpdateMode>ZipExtractAll</UpdateMode>
-		<AllowVersionStripping>True</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
 		<PluginName>Readable Passphrase Plugin</PluginName>
 		<PluginURL>https://github.com/ligos/readablepassphrasegenerator</PluginURL>
-		<PluginUpdateURL>https://github.com/ligos/readablepassphrasegenerator/releases/download/release-{major}.{minor}.{build}/ReadablePassphrase.{major}.{minor}.{build}.plgx</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/ligos/readablepassphrasegenerator/releases/latest/download/ReadablePassphrase.{major}.{minor}.{build}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
-		<PluginName>KeeUIExt</PluginName>
-		<PluginURL>https://keepass.info/plugins.html#keeuiext</PluginURL>
-		<PluginUpdateURL>https://keepass.info/extensions/v2/keeuiext/KeeUIExt-{major}{.minor}{.build}.zip</PluginUpdateURL>
+		<PluginName>AdvancedAutoType</PluginName>
+		<PluginURL>https://github.com/Rookiestyle/AdvancedAutoType</PluginURL>
+		<PluginUpdateURL>https://github.com/Rookiestyle/AdvancedAutoType/releases/latest/download/AdvancedAutoType.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>AdvancedConnect</PluginName>
+		<PluginURL>https://github.com/aalbng/AdvancedConnectPlugin</PluginURL>
+		<PluginUpdateURL>https://github.com/aalbng/AdvancedConnectPlugin/releases/latest/download/AdvancedConnectPlugin.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>CardFileKPPlugin</PluginName>
+		<PluginURL>https://github.com/antboy/CardFileKPPlugin</PluginURL>
+		<PluginUpdateURL>https://github.com/antboy/CardFileKPPlugin/releases/latest/download/CardFileKPPlugin.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>ColoredPassword</PluginName>
+		<PluginURL>https://github.com/Rookiestyle/ColoredPassword</PluginURL>
+		<PluginUpdateURL>https://github.com/Rookiestyle/ColoredPassword/releases/latest/download/ColoredPassword.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>ExtendSelection</PluginName>
+		<PluginURL>https://github.com/georgoswonkos/ExtendSelectionPlugin</PluginURL>
+		<PluginUpdateURL>https://github.com/georgoswonkos/ExtendSelectionPlugin/releases/latest/download/ExtendSelectionPlugin-{major}.{minor}.{patch}.{revision}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractDll</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>GlobalSearch</PluginName>
+		<PluginURL>https://github.com/Rookiestyle/GlobalSearch</PluginURL>
+		<PluginUpdateURL>https://github.com/Rookiestyle/GlobalSearch/releases/latest/download/GlobalSearch.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>GroupColumn</PluginName>
+		<PluginURL>https://github.com/jnash67/KeePassGroupColumn</PluginURL>
+		<PluginUpdateURL>https://raw.githubusercontent.com/jnash67/KeePassGroupColumn/master/GroupColumn.dll</PluginUpdateURL>
+		<UpdateMode>DllDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KP Floating Panel</PluginName>
+		<PluginURL>https://github.com/mitchcapper/KPFloatingPanel</PluginURL>
+		<PluginUpdateURL>https://github.com/mitchcapper/KPFloatingPanel/releases/latest/download/KPFloatingPanel.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KP2faChecker</PluginName>
+		<PluginURL>https://github.com/tiuub/KP2faChecker</PluginURL>
+		<PluginUpdateURL>https://github.com/tiuub/KP2faChecker/releases/latest/download/KP2faChecker.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KPEnhancedListView</PluginName>
+		<PluginURL>https://github.com/betonme/kpenhancedlistview</PluginURL>
+		<PluginUpdateURL>https://raw.githubusercontent.com/betonme/kpenhancedlistview/master/KPEnhancedListview/Build/Release/KPEnhancedListview.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KPSAPLaunch</PluginName>
+		<PluginURL>https://github.com/arteeecz/KeePass-plugins</PluginURL>
+		<PluginUpdateURL>https://github.com/arteeecz/KeePass-plugins/releases/latest/download/KPSAPLunch.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KPSync for Google Drive</PluginName>
+		<PluginURL>https://www.kpsync.org/</PluginURL>
+		<PluginUpdateURL>https://github.com/walterpg/google-drive-sync/releases/latest/download/KPSyncForDrive-{major}.{minor}.{patch}.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeChallenge</PluginName>
+		<PluginURL>https://brush701.github.io/keechallenge/</PluginURL>
+		<PluginUpdateURL>https://github.com/brush701/keechallenge/releases/latest/download/KeeChallenge_{major}.{minor}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractAll</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeLocker</PluginName>
+		<PluginURL>https://github.com/Gugli/KeeLocker</PluginURL>
+		<PluginUpdateURL>https://github.com/Gugli/KeeLocker/releases/latest/download/KeeLocker.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePass Commander</PluginName>
+		<PluginURL>https://github.com/MircoBabin/KeePassCommander</PluginURL>
+		<PluginUpdateURL>https://github.com/MircoBabin/KeePassCommander/releases/latest/download/KeePassCommander-{major}.{minor}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractAll</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePass Google Sync Plugin</PluginName>
+		<PluginURL>https://sourceforge.net/projects/kp-googlesync/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/kp-googlesync/files/latest/download</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePass MSWifiPlugin</PluginName>
+		<PluginURL>https://elgesl.github.io/keepass-mswifiimport/</PluginURL>
+		<PluginUpdateURL>https://raw.githubusercontent.com/elgesl/keepass-mswifiimport/master/MSWifiImportPlugin.dll</PluginUpdateURL>
+		<UpdateMode>DllDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePass Password Counter</PluginName>
+		<PluginURL>https://sourceforge.net/projects/keepasspasswordcounter/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/keepasspasswordcounter/files/latest/download</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePass Rule Builder</PluginName>
+		<PluginURL>https://github.com/ihanson/KeePass-Rule-Builder</PluginURL>
+		<PluginUpdateURL>https://github.com/ihanson/KeePass-Rule-Builder/releases/latest/download/RuleBuilder.dll</PluginUpdateURL>
+		<UpdateMode>DllDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePass Smart Certificate Key Provider</PluginName>
+		<PluginURL>https://github.com/BodnarSoft/KeePass-Smart-Certificate-Key-Provider</PluginURL>
+		<PluginUpdateURL>https://github.com/BodnarSoft/KeePass-Smart-Certificate-Key-Provider/releases/latest/download/SmartCertificateKeyProviderPlugin.dll</PluginUpdateURL>
+		<UpdateMode>DllDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePass-KeyManager</PluginName>
+		<PluginURL>https://github.com/sbidy/KeePass-KeyManager</PluginURL>
+		<PluginUpdateURL>https://github.com/sbidy/KeePass-KeyManager/releases/latest/download/KeyManagerUI.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePass-SalsaCipher</PluginName>
+		<PluginURL>https://github.com/sbennett1990/KeePass-SalsaCipher</PluginURL>
+		<PluginUpdateURL>https://raw.githubusercontent.com/sbennett1990/KeePass-SalsaCipher/master/Salsa20Cipher.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePass2Trezor</PluginName>
+		<PluginURL>https://github.com/vnau/KeePass2Trezor</PluginURL>
+		<PluginUpdateURL>https://github.com/elebree/KeePass2Trezor/releases/latest/download/KeePass2Trezor.zip</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassAutoUnlock</PluginName>
+		<PluginURL>https://github.com/jeremy-bourgin/KeePassAutoUnlock</PluginURL>
+		<PluginUpdateURL>https://github.com/jeremy-bourgin/KeePassAutoUnlock/releases/latest/download/KeePassAutoUnlock.plgx</PluginUpdateURL>
+		<UpdateMode>ZipExtractDll</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassBrowserImporter</PluginName>
+		<PluginURL>https://github.com/JanisEst/KeePassBrowserImporter</PluginURL>
+		<PluginUpdateURL>https://github.com/JanisEst/KeePassBrowserImporter/releases/latest/download/KeePassBrowserImporter.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassCPEO</PluginName>
+		<PluginURL>https://github.com/quinterojose/KeePassCPEO</PluginURL>
+		<PluginUpdateURL>https://github.com/quinterojose/KeePassCPEO/releases/latest/download/KeePassCPEO.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassDPG</PluginName>
+		<PluginURL>https://github.com/quinterojose/KeePassDPG</PluginURL>
+		<PluginUpdateURL>https://github.com/quinterojose/KeePassDPG/releases/latest/download/KeePassDPG.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassHttp</PluginName>
+		<PluginURL>https://github.com/pfn/keepasshttp/</PluginURL>
+		<PluginUpdateURL>https://raw.githubusercontent.com/pfn/keepasshttp/master/KeePassHttp.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassMasterSlaveSync</PluginName>
+		<PluginURL>https://github.com/Angelelz/KeePassMasterSlaveSync</PluginURL>
+		<PluginUpdateURL>https://github.com/Angelelz/KeePassMasterSlaveSync/releases/latest/download/KeePassMasterSlaveSync.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassNatMsg</PluginName>
+		<PluginURL>https://github.com/smorks/keepassnatmsg</PluginURL>
+		<PluginUpdateURL>https://github.com/smorks/keepassnatmsg/releases/latest/download/KeePassNatMsg.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassNewKeyExport</PluginName>
+		<PluginURL>https://github.com/JanisEst/KeePassNewKeyExport</PluginURL>
+		<PluginUpdateURL>https://github.com/JanisEst/KeePassNewKeyExport/releases/latest/download/KeePassNewKeyExport.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassOTP</PluginName>
+		<PluginURL>https://github.com/Rookiestyle/KeePassOTP</PluginURL>
+		<PluginUpdateURL>https://github.com/Rookiestyle/KeePassOTP/releases/latest/download/KeePassOTP.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassOpenId</PluginName>
+		<PluginURL>https://github.com/khelmar/KeePassOpenId</PluginURL>
+		<PluginUpdateURL>https://github.com/khelmar/KeePassOpenId/releases/latest/download/KeePassOpenId.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractAll</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassProtectedKeyStore</PluginName>
+		<PluginURL>https://github.com/CSquared167/KeePassProtectedKeyStore</PluginURL>
+		<PluginUpdateURL>https://github.com/CSquared167/KeePassProtectedKeyStore/releases/latest/download/KeePassProtectedKeyStore.zip</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassQuickUnlock</PluginName>
+		<PluginURL>https://github.com/JanisEst/KeePassQuickUnlock</PluginURL>
+		<PluginUpdateURL>https://github.com/JanisEst/KeePassQuickUnlock/releases/latest/download/KeePassQuickUnlock.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassRDP</PluginName>
+		<PluginURL>https://github.com/iSnackyCracky/KeePassRDP</PluginURL>
+		<PluginUpdateURL>https://github.com/iSnackyCracky/KeePassRDP/releases/latest/download/KeePassRDP_v{major}.{minor}{.patch}.zip</PluginUpdateURL>
 		<UpdateMode>ZipExtractPlgx</UpdateMode>
 		<AllowVersionStripping>True</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassRFID</PluginName>
+		<PluginURL>https://github.com/leosac/keepassrfid</PluginURL>
+		<PluginUpdateURL>https://github.com/leosac/keepassrfid/releases/latest/download/keepassrfid.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassSubsetExport</PluginName>
+		<PluginURL>https://github.com/lukeIam/KeePassSubsetExport</PluginURL>
+		<PluginUpdateURL>https://github.com/lukeIam/KeePassSubsetExport/releases/latest/download/KeePassSubsetExport.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassSync</PluginName>
+		<PluginURL>https://github.com/mitchcapper/KeePassSync</PluginURL>
+		<PluginUpdateURL>https://github.com/mitchcapper/KeePassSync/releases/latest/download/KeePassSync.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassTimestampChanger</PluginName>
+		<PluginURL>https://github.com/JanisEst/KeePassTimestampChanger</PluginURL>
+		<PluginUpdateURL>https://github.com/JanisEst/KeePassTimestampChanger/releases/latest/download/KeePassTimestampChanger.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassTrayRecentFiles</PluginName>
+		<PluginURL>https://github.com/fdbeirao/KeePassTrayRecentFiles</PluginURL>
+		<PluginUpdateURL>https://github.com/fdbeirao/KeePassTrayRecentFiles/releases/latest/download/TrayRecentFiles.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeSAPLogon</PluginName>
+		<PluginURL>https://sourceforge.net/projects/keesaplogon/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/keesaplogon/files/latest/download</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeToReady</PluginName>
+		<PluginURL>https://github.com/mridentity/KeeToReady</PluginURL>
+		<PluginUpdateURL>https://github.com/mridentity/KeeToReady/releases/latest/download/KeeToReady.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeeTrayTOTP</PluginName>
+		<PluginURL>https://github.com/KeeTrayTOTP/KeeTrayTOTP</PluginURL>
+		<PluginUpdateURL>https://github.com/KeeTrayTOTP/KeeTrayTOTP/releases/latest/download/KeeTrayTOTP.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeepassPfpConverter</PluginName>
+		<PluginURL>https://github.com/adrium/KeepassPfpConverter</PluginURL>
+		<PluginUpdateURL>https://github.com/adrium/KeepassPfpConverter/releases/latest/download/PfpConverter.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>LockAssist</PluginName>
+		<PluginURL>https://github.com/Rookiestyle/LockAssist</PluginURL>
+		<PluginUpdateURL>https://github.com/Rookiestyle/LockAssist/releases/latest/download/LockAssist.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>NotesFontSelector</PluginName>
+		<PluginURL>https://github.com/Rookiestyle/NotesFontSelector</PluginURL>
+		<PluginUpdateURL>https://github.com/Rookiestyle/NotesFontSelector/releases/latest/download/NotesFontSelector.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>PEDCalc</PluginName>
+		<PluginURL>https://github.com/Rookiestyle/PEDCalc</PluginURL>
+		<PluginUpdateURL>https://github.com/Rookiestyle/PEDCalc/releases/latest/download/PEDCalc.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>PasswordChangeAssistant</PluginName>
+		<PluginURL>https://github.com/Rookiestyle/PasswordChangeAssistant</PluginURL>
+		<PluginUpdateURL>https://github.com/Rookiestyle/PasswordChangeAssistant/releases/latest/download/PasswordChangeAssistant.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>PasswordChangeReminder</PluginName>
+		<PluginURL>https://github.com/tiuub/PasswordChangeReminder</PluginURL>
+		<PluginUpdateURL>https://github.com/tiuub/PasswordChangeReminder/releases/latest/download/PasswordChangeReminder.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>PatternPass</PluginName>
+		<PluginURL>https://github.com/zedseven/PatternPass</PluginURL>
+		<PluginUpdateURL>https://github.com/zedseven/PatternPass/releases/latest/download/PatternPass.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>PickCharsDeferred</PluginName>
+		<PluginURL>https://github.com/xatupal/PickCharsDeferred</PluginURL>
+		<PluginUpdateURL>https://github.com/xatupal/PickCharsDeferred/releases/latest/download/PickCharsDeferred.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>ProtonDriveSync</PluginName>
+		<PluginURL>https://github.com/dhaven/ProtonDriveSync</PluginURL>
+		<PluginUpdateURL>https://github.com/dhaven/ProtonDriveSync/releases/latest/download/ProtonDriveSync-{major}.{minor}.{patch}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractAll</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>QualityHighlighter</PluginName>
+		<PluginURL>https://github.com/sdrichter/QualityHighlighter</PluginURL>
+		<PluginUpdateURL>https://github.com/sdrichter/QualityHighlighter/releases/latest/download/QualityHighlighter.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>QuickConnect Plugin</PluginName>
+		<PluginURL>https://github.com/cristianst85/QuickConnectPlugin</PluginURL>
+		<PluginUpdateURL>https://github.com/cristianst85/QuickConnectPlugin/releases/latest/download/QuickConnectPlugin-{major}.{minor}.{patch}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>QuickSearch</PluginName>
+		<PluginURL>https://github.com/CennoxX/KeePass-QuickSearch/</PluginURL>
+		<PluginUpdateURL>https://github.com/CennoxX/KeePass-QuickSearch/releases/latest/download/QuickSearch.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>ReferenceCheck</PluginName>
+		<PluginURL>https://github.com/Rookiestyle/ReferenceCheck</PluginURL>
+		<PluginUpdateURL>https://github.com/Rookiestyle/ReferenceCheck/releases/latest/download/ReferenceCheck.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>SIC2KeePass</PluginName>
+		<PluginURL>https://github.com/Alezy80/SIC2KeePass</PluginURL>
+		<PluginUpdateURL>https://github.com/Alezy80/SIC2KeePass/releases/latest/download/SafeInCloudImp.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>SimpleDatabaseBackup</PluginName>
+		<PluginURL>https://github.com/jnko/SimpleDatabaseBackup</PluginURL>
+		<PluginUpdateURL>https://raw.githubusercontent.com/jnko/SimpleDatabaseBackup/master/SimpleDatabaseBackup.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>TAN Placeholder</PluginName>
+		<PluginURL>http://niki.hammler.net/wiki/KeePass#TAN_Placeholder</PluginURL>
+		<PluginUpdateURL>http://niki.hammler.net/w/images/9/90/TAN_Placeholder-v{major}.{minor}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>TCATO Placeholder</PluginName>
+		<PluginURL>http://niki.hammler.net/wiki/KeePass#TCATO_Placeholder</PluginURL>
+		<PluginUpdateURL>http://niki.hammler.net/w/images/d/de/TCATO_Placeholder_v{major}.{minor}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractPlgx</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>TrueCrypt AutoDismount</PluginName>
+		<PluginURL>https://sourceforge.net/projects/tcad-kp2/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/tcad-kp2/files/latest/download</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>Twofish Cipher</PluginName>
+		<PluginURL>http://gogogadgetscott.info/keepass/twofishcipher/</PluginURL>
+		<PluginUpdateURL>http://gogogadgetscott.info/keepass/twofishcipher/TwofishCipher-{major}.{minor}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractDll</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>WinHelloUnlock</PluginName>
+		<PluginURL>https://github.com/Angelelz/WinHelloUnlock</PluginURL>
+		<PluginUpdateURL>https://github.com/Angelelz/WinHelloUnlock/releases/latest/download/WinHelloUnlock.dll</PluginUpdateURL>
+		<UpdateMode>DllDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>keepass2-haveibeenpwned</PluginName>
+		<PluginURL>https://github.com/andrew-schofield/keepass2-haveibeenpwned</PluginURL>
+		<PluginUpdateURL>https://github.com/andrew-schofield/keepass2-haveibeenpwned/releases/latest/download/HaveIBeenPwned.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 </UpdateInfoExternList>
