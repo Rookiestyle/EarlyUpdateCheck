@@ -293,6 +293,13 @@ from one-click update
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
+		<PluginName>Auto-Type Exclude</PluginName>
+		<PluginURL>https://github.com/michue/AutoTypeExclude</PluginURL>
+		<PluginUpdateURL>https://github.com/michue/AutoTypeExclude/releases/latest/download/AutoTypeExclude-{major}.{minor}.{build}.zip</PluginUpdateURL>
+		<UpdateMode>ZipExtractAll</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
 		<PluginName>CardFileKPPlugin</PluginName>
 		<PluginURL>https://github.com/antboy/CardFileKPPlugin</PluginURL>
 		<PluginUpdateURL>https://github.com/antboy/CardFileKPPlugin/releases/latest/download/CardFileKPPlugin.plgx</PluginUpdateURL>
