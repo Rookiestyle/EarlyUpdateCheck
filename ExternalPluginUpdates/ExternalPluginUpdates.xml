@@ -41,8 +41,8 @@ from one-click update
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>KeeOtp2</PluginName>
-		<PluginURL>https://github.com/tiuub/KeeOtp2#keeotp2</PluginURL>
-		<PluginUpdateURL>https://github.com/tiuub/KeeOtp2/releases/latest/download/KeeOtp2.plgx</PluginUpdateURL>
+		<PluginURL>https://sourceforge.net/projects/keeotp2/</PluginURL>
+		<PluginUpdateURL>https://sourceforge.net/projects/keeotp2/files/latest/download</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -244,13 +244,6 @@ from one-click update
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
-		<PluginName>PasswordAgeColumn</PluginName>
-		<PluginURL>https://github.com/tiuub/PasswordAgeColumn</PluginURL>
-		<PluginUpdateURL>https://github.com/tiuub/PasswordAgeColumn/releases/latest/download/PasswordAgeColumn.plgx</PluginUpdateURL>
-		<UpdateMode>PlgxDirect</UpdateMode>
-		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
 		<PluginName>AutoTypeShow</PluginName>
 		<PluginURL>https://sourceforge.net/projects/autotypeshow/</PluginURL>
 		<PluginUpdateURL>https://sourceforge.net/projects/autotypeshow/files/latest/download</PluginUpdateURL>
@@ -338,13 +331,6 @@ from one-click update
 		<PluginName>KP Floating Panel</PluginName>
 		<PluginURL>https://github.com/mitchcapper/KPFloatingPanel</PluginURL>
 		<PluginUpdateURL>https://github.com/mitchcapper/KPFloatingPanel/releases/latest/download/KPFloatingPanel.plgx</PluginUpdateURL>
-		<UpdateMode>PlgxDirect</UpdateMode>
-		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>KP2faChecker</PluginName>
-		<PluginURL>https://github.com/tiuub/KP2faChecker</PluginURL>
-		<PluginUpdateURL>https://github.com/tiuub/KP2faChecker/releases/latest/download/KP2faChecker.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -625,13 +611,6 @@ from one-click update
 		<PluginName>PasswordChangeAssistant</PluginName>
 		<PluginURL>https://github.com/Rookiestyle/PasswordChangeAssistant</PluginURL>
 		<PluginUpdateURL>https://github.com/Rookiestyle/PasswordChangeAssistant/releases/latest/download/PasswordChangeAssistant.plgx</PluginUpdateURL>
-		<UpdateMode>PlgxDirect</UpdateMode>
-		<AllowVersionStripping>False</AllowVersionStripping>
-	</UpdateInfoExtern>
-	<UpdateInfoExtern>
-		<PluginName>PasswordChangeReminder</PluginName>
-		<PluginURL>https://github.com/tiuub/PasswordChangeReminder</PluginURL>
-		<PluginUpdateURL>https://github.com/tiuub/PasswordChangeReminder/releases/latest/download/PasswordChangeReminder.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
