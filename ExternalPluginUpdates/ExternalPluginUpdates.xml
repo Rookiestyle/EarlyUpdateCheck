@@ -482,6 +482,13 @@ from one-click update
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
+		<PluginName>KeePassHttp fork</PluginName>
+		<PluginURL>https://github.com/alan-null/keepasshttp#keepasshttp</PluginURL>
+		<PluginUpdateURL>https://github.com/alan-null/keepasshttp/releases/latest/download/KeePassHttp.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
 		<PluginName>KeePassMasterSlaveSync</PluginName>
 		<PluginURL>https://github.com/Angelelz/KeePassMasterSlaveSync</PluginURL>
 		<PluginUpdateURL>https://github.com/Angelelz/KeePassMasterSlaveSync/releases/latest/download/KeePassMasterSlaveSync.plgx</PluginUpdateURL>
