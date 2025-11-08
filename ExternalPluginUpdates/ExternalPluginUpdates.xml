@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>24</Version>
+	<Version>26</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -245,7 +245,7 @@ from one-click update
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>PasswordAgeColumn</PluginName>
-		<PluginURL>https://github.com/tiuub/PasswordAgeColumn</PluginURL>
+		<PluginURL>https://github.com/tiuub/PasswordAgeColumn#passwordagecolumn</PluginURL>
 		<PluginUpdateURL>https://github.com/tiuub/PasswordAgeColumn/releases/latest/download/PasswordAgeColumn.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
@@ -343,7 +343,7 @@ from one-click update
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>KP2faChecker</PluginName>
-		<PluginURL>https://github.com/tiuub/KP2faChecker</PluginURL>
+		<PluginURL>https://github.com/tiuub/KP2faChecker#kp2fachecker</PluginURL>
 		<PluginUpdateURL>https://github.com/tiuub/KP2faChecker/releases/latest/download/KP2faChecker.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
@@ -478,6 +478,13 @@ from one-click update
 		<PluginName>KeePassHttp</PluginName>
 		<PluginURL>https://github.com/pfn/keepasshttp/</PluginURL>
 		<PluginUpdateURL>https://raw.githubusercontent.com/pfn/keepasshttp/master/KeePassHttp.plgx</PluginUpdateURL>
+		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+		<PluginName>KeePassHttp fork</PluginName>
+		<PluginURL>https://github.com/alan-null/keepasshttp#keepasshttp</PluginURL>
+		<PluginUpdateURL>https://github.com/alan-null/keepasshttp/releases/latest/download/KeePassHttp.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
@@ -630,7 +637,7 @@ from one-click update
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
 		<PluginName>PasswordChangeReminder</PluginName>
-		<PluginURL>https://github.com/tiuub/PasswordChangeReminder</PluginURL>
+		<PluginURL>https://github.com/tiuub/PasswordChangeReminder#passwordchangereminder</PluginURL>
 		<PluginUpdateURL>https://github.com/tiuub/PasswordChangeReminder/releases/latest/download/PasswordChangeReminder.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
