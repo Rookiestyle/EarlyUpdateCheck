@@ -14,7 +14,7 @@ One-click update for both KeePass and plugins")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("rookiestyle")]
 [assembly: AssemblyProduct("KeePass Plugin")]
-[assembly: AssemblyCopyright("Copyright 2021-2025")]
+[assembly: AssemblyCopyright("Copyright © rookiestyle")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 // This sets the default COM visibility of types in the assembly to invisible.
@@ -26,6 +26,6 @@ One-click update for both KeePass and plugins")]
 //
 // You can specify all the values or you can use the default the Revision and 
 // Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion("4.3")]
-[assembly: AssemblyFileVersion("4.3")]
+[assembly: AssemblyVersion("4.4")]
+[assembly: AssemblyFileVersion("4.4")]
 [assembly: Guid("672570AF-CC57-4980-86F9-D48FD1CC707D")]

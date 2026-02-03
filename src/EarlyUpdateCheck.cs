@@ -423,7 +423,7 @@ namespace EarlyUpdateCheck
         var c = UIThread(() =>
         {
           bool cw = false;
-          lock (m_slUpdateCheck)
+          lock (m_lock) //lock (m_lockUpdateCheck)
           {
             if (m_slUpdateCheck == null) cw = false;
             else cw = m_slUpdateCheck.ContinueWork();
@@ -440,7 +440,7 @@ namespace EarlyUpdateCheck
     {
       UIThread(() =>
       {
-        lock (m_slUpdateCheck)
+        lock (m_lock) //lock (m_lockUpdateCheck)
         {
           if (m_slUpdateCheck != null) m_slUpdateCheck.EndLogging();
           m_slUpdateCheck = null;
@@ -645,6 +645,7 @@ namespace EarlyUpdateCheck
           }
           continue;
         }
+        bool bFoundPluginUpdateDetails = false;
         foreach (PluginUpdate upd in PluginUpdateHandler.Plugins)
         {
           if (item.SubItems[0].Text != upd.Title) continue;
@@ -655,6 +656,7 @@ namespace EarlyUpdateCheck
             lvPlugins.KeyPress += LvPlugins_KeyPress;
             bColumnAdded = true;
           }
+          bFoundPluginUpdateDetails = true;
           ListViewItem.ListViewSubItem lvsiUpdate = new ListViewItem.ListViewSubItem(item, PluginTranslate.PluginUpdate);
           lvsiUpdate.Name = "EarlyUpdateCheck_UpdateColumn_Item" + item.Index.ToString();
           lvsiUpdate.Tag = upd;
@@ -676,10 +678,13 @@ namespace EarlyUpdateCheck
           }
           break;
         }
-        var opns = new OtherPluginNotSupported(item.SubItems[0].Text);
-        opns.SetData(item.SubItems[2].Text, item.SubItems[3].Text);
-        PluginUpdateHandler.Plugins.RemoveAll(x => x.Title == opns.Title);
-        PluginUpdateHandler.Plugins.Add(opns);
+        if (!bFoundPluginUpdateDetails)
+        {
+          var opns = new OtherPluginNotSupported(item.SubItems[0].Text);
+          opns.SetData(item.SubItems[2].Text, item.SubItems[3].Text);
+          PluginUpdateHandler.Plugins.RemoveAll(x => x.Title == opns.Title);
+          PluginUpdateHandler.Plugins.Add(opns);
+        }
       }
       PluginConfig.SetKnownPluginVersions(PluginUpdateHandler.Plugins);
       if (bColumnAdded)
@@ -876,7 +881,7 @@ namespace EarlyUpdateCheck
         bUpdate.Text = kpu.Selected ? PluginTranslate.PluginUpdate : PluginTranslate.PluginUpdateSelected;
       }
       else if (bAtLeast1PluginSelected) bUpdate.Text = PluginTranslate.PluginUpdateSelected;
-      else if (kpu != null & kpu.Selected) bUpdate.Text = PluginTranslate.PluginUpdateKeePass;
+      else if (kpu != null && kpu.Selected) bUpdate.Text = PluginTranslate.PluginUpdateKeePass;
       else
       {
         bUpdate.Enabled = false;
