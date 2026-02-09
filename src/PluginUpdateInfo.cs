@@ -895,6 +895,11 @@ namespace EarlyUpdateCheck
         if (fURL == null) return;
         URL = (string)fURL.GetValue(p);
         if (URL == null) URL = string.Empty;
+        if (string.IsNullOrEmpty(URL))
+        {
+          URL = PluginTools.Tools.PluginURL;
+          URL = URL.Replace("earlyupdatecheck", Name.ToLowerInvariant());
+        }
         URL = UrlUtil.EnsureTerminatingSeparator(URL, true) + "releases/";
       }
       catch { URL = Tools.PluginURL.ToLowerInvariant().Replace("earlyupdatecheck", Name.ToLowerInvariant()); }

@@ -307,6 +307,7 @@ namespace EarlyUpdateCheck
           try
           {
             lock (m_lock) { m_UpdateCheckStatus = UpdateCheckStatus.Checking; }
+            PluginUpdateHandler.LoadPlugins(PluginUpdateHandler.Plugins.Count == 0);
             List<UpdateComponentInfo> lInst = (List<UpdateComponentInfo>)miGetInstalledComponents.Invoke(null, null);
             List<string> lUrls = (List<string>)miGetUrls.Invoke(null, new object[] { lInst });
             Dictionary<string, List<UpdateComponentInfo>> dictAvail =
@@ -1131,6 +1132,7 @@ namespace EarlyUpdateCheck
       bool bOK = true;
       if (m_slUpdatePlugins != null)
         m_slUpdatePlugins.SetText(string.Format(PluginTranslate.PluginUpdating, upd.Title), LogStatusType.Info);
+
       if (UpdateFlagSet(uf, UpdateFlags.Plugin)) bOK = upd.Download(sPluginFolder);
 
       if (upd is OwnPluginUpdate && UpdateFlagSet(uf, UpdateFlags.Translations))
