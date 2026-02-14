@@ -60,6 +60,13 @@ namespace EarlyUpdateCheck
       var t = typeof(KPRes).GetProperty("Type");
       if (t != null) lKeePassInstallType.Text = t.GetValue(null, null) + ":";
       else lKeePassInstallType.Text = "Type:";
+
+      if (PluginTools.Tools.KeePassVersion >= PluginConfig.KeePass_2_61)
+      {
+        cbCheckSync.Visible = false;// PluginTools.Tools.KeePassVersion < PluginConfig.KeePass_2_61;
+        tbCheckSyncDesc.Visible = false;// PluginTools.Tools.KeePassVersion < PluginConfig.KeePass_2_61;
+        gCheckSync.Height -= cbCheckSync.Height + tbCheckSyncDesc.Height;
+      }
     }
 
     private void bUpdateTranslations_Click(object sender, EventArgs e)

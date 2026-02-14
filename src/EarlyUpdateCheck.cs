@@ -151,7 +151,7 @@ namespace EarlyUpdateCheck
         }
         return;
       }
-      if (e.Form is KeyPromptForm) KeyPromptFormAdded();
+      if (e.Form is KeyPromptForm && Tools.KeePassVersion < PluginConfig.KeePass_2_61) KeyPromptFormAdded();
       if (e.Form is LanguageForm) e.Form.Shown += LanguageFormAdded;
       if (e.Form is PluginsForm) e.Form.Shown += PluginsFormShown;
     }
@@ -320,6 +320,18 @@ namespace EarlyUpdateCheck
             foreach (UpdateComponentInfo uc in lInst)
             {
               var mypu = PluginUpdateHandler.Plugins.Find(xyz => xyz.Title == uc.Name);
+              if (uc.Name == "KeePass")
+              {
+                if (uc.Status == UpdateComponentStatus.NewVerAvailable && PluginConfig.KeePassUpdateActive)
+                {
+                  Version v = null;
+                  try { v = new Version(StrUtil.VersionToString(uc.VerAvailable, 2)); }
+                  catch { }
+                  bUpdAvail = true;
+                }
+                continue;
+              }
+
               if (uc.Status == UpdateComponentStatus.NewVerAvailable && mypu != null)
               {
                 mypu.VersionAvailable = new Version(StrUtil.VersionToString(uc.VerAvailable, 2));
@@ -481,7 +493,6 @@ namespace EarlyUpdateCheck
     {
       UpdateCheckType result = UpdateCheckType.NotRequired;
       if (m_bUpdateCheckDone) return result;
-
       m_bUpdateCheckDone = true;
       if (!KeePass.Program.Config.Application.Start.CheckForUpdate) return result;
       if (!KeePass.Program.Config.Application.Start.OpenLastFile) return result;

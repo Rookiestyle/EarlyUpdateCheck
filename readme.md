@@ -4,11 +4,12 @@
 [![Downloads](https://img.shields.io/github/downloads/rookiestyle/earlyupdatecheck/total?color=%2300cc00)](https://github.com/rookiestyle/earlyupdatecheck/releases/latest/download/EarlyUpdateCheck.plgx)\
 [![License: GPL v3](https://img.shields.io/github/license/rookiestyle/earlyupdatecheck)](https://www.gnu.org/licenses/gpl-3.0)
 
-Keepass performs its update check only after all initialization is done and - if configured - the most recently used database has been opened.
-
+Keepass performs its update check only after all initialization is done and - if configured - the most recently used database has been opened.  
 EarlyUpdateCheck helps to run this checks for updates of KeePass and installed plugins BEFORE a database is opened.  
-Additionally, it offers a handy one click update mode for all of my plugins integrated in KeePass' update check and also supports updating KeePass itself. 
-This will invoke Windows UAC if required to copy the downloaded files into KeePass' plugin folder. 
+This feature will become part of the next KeePass release 2.61. EarlyUpdateCheck will check the KeePass version and and only use its early update check for KeePass < 2.61.
+
+Additionally, it offers a handy one click update mode for all of my plugins integrated in KeePass' update check and also supports updating KeePass itself.  
+This will invoke Windows UAC if required to copy the downloaded files into KeePass' plugin folder.  
 Details can be found in the configuration settings.
 
 EarlyUpdateCheck can update other author's plugins as well.

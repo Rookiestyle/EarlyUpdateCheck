@@ -31,6 +31,7 @@ namespace EarlyUpdateCheck
     internal static bool CheckSync = true;
     internal static bool OneClickUpdate = true;
     internal static bool DownloadActiveLanguage = true;
+    internal static Version KeePass_2_61 = new Version(2, 61);
 
     private static List<PluginUpdateSerialized> m_lKnownPlugins = new List<PluginUpdateSerialized>();
     internal static List<PluginUpdateSerialized> KnownPluginVersions
