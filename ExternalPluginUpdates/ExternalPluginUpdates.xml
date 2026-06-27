@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>26</Version>
+	<Version>27</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -527,7 +527,7 @@ from one-click update
 		<PluginName>KeePassProtectedKeyStore</PluginName>
 		<PluginURL>https://github.com/CSquared167/KeePassProtectedKeyStore</PluginURL>
 		<PluginUpdateURL>https://github.com/CSquared167/KeePassProtectedKeyStore/releases/latest/download/KeePassProtectedKeyStore.zip</PluginUpdateURL>
-		<UpdateMode>PlgxDirect</UpdateMode>
+		<UpdateMode>ZipExtractDll</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
 	<UpdateInfoExtern>
