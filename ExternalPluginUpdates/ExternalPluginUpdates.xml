@@ -56,7 +56,7 @@ from one-click update
 	<UpdateInfoExtern>
 		<PluginName>KoenZomers.KeePass.OneDriveSync</PluginName>
 		<PluginURL>https://github.com/KoenZomers/KeePassOneDriveSync#keepass-onedrive-sync</PluginURL>
-		<PluginUpdateURL>https://github.com/KoenZomers/KeePassOneDriveSync/releases/latest/download/KeeOneDriveSync.plgx</PluginUpdateURL>
+		<PluginUpdateURL>https://github.com/KoenZomers/KeePassOneDriveSync/releases/latest/download/KeeOneDriveSync-{major}.{minor}.{build}.{revision}.plgx</PluginUpdateURL>
 		<UpdateMode>PlgxDirect</UpdateMode>
 		<AllowVersionStripping>False</AllowVersionStripping>
 	</UpdateInfoExtern>
