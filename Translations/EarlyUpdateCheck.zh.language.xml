@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Translation>
-  <TranslationVersion>2</TranslationVersion>
+  <TranslationVersion>3</TranslationVersion>
   <item>
     <key>Active</key>
-    <value>活动</value>
+    <value>启用</value>
   </item>
   <item>
     <key>CheckSync</key>
-    <value>前台显示更新</value>
+    <value>在前台执行更新检查</value>
   </item>
   <item>
     <key>CheckSyncDesc</key>
-    <value>EarlyUpdateCheck 将始终尽早开始更新检查。
+    <value>EarlyUpdateCheck 始终会在尽可能早的时间开始更新检查。
 
-如果此选项处于活动状态，则在显示“打开数据库”窗口之前，EarlyUpdateCheck 将另外确保更新检查已完成。
-如果不想等待升级检查完成，可以在后台继续进行升级检查。</value>
+如果启用此选项，EarlyUpdateCheck 还会确保更新检查在“打开数据库”窗口显示之前完成。
+如果不希望等待更新检查完成，可让它在后台继续运行。</value>
   </item>
   <item>
     <key>EnterBackgroundMode</key>
@@ -22,15 +22,15 @@
   </item>
   <item>
     <key>PluginUpdateOneClick</key>
-    <value>一键式插件更新</value>
+    <value>一键更新插件</value>
   </item>
   <item>
     <key>PluginUpdateOneClickDesc</key>
-    <value>通过单击“更新检查”窗口中的插件来安装新版本的插件。
-这需要对 KeePass 的 Plugins 文件夹的具有写访问权。
-之后，必须重新启动 KeePass 才能使用新版本。
+    <value>单击“更新检查”窗口中的插件即可安装其新版本。
+这需要对 KeePass 的插件文件夹有写入权限。
+之后必须重新启动 KeePass 才能使用新版本。
 
-维护文件 ExternalPluginUpdates.xml 以包括其他作者的插件，有关更多详细信息，请参见Wiki。</value>
+其他作者的插件可通过维护 ExternalPluginUpdates.xml 文件来加入，详情请参阅 wiki。</value>
   </item>
   <item>
     <key>PluginUpdate</key>
@@ -42,43 +42,43 @@
   </item>
   <item>
     <key>PluginUpdateSelected</key>
-    <value>开始更新</value>
+    <value>更新插件</value>
   </item>
   <item>
     <key>PluginUpdateCaption</key>
-    <value>Early Update Check - 插件更新</value>
+    <value>Early Update Check - 插件更新程序</value>
   </item>
   <item>
     <key>PluginUpdating</key>
-    <value>正在更新 {0}, 请稍候...</value>
+    <value>正在更新 {0}，请稍候……</value>
   </item>
   <item>
     <key>PluginUpdateSuccess</key>
-    <value>更新成功，新版本将在KeePass重新启动后生效。
-现在重启？</value>
+    <value>更新成功，新版本将在重新启动 KeePass 后生效。
+现在重新启动吗？</value>
   </item>
   <item>
     <key>PluginUpdateFailed</key>
-    <value>移动下载的文件失败。打开临时文件夹？</value>
+    <value>移动已下载的文件失败。要改为打开临时文件夹吗？</value>
   </item>
   <item>
     <key>PluginUpdateFailedSpecific</key>
-    <value>插件 {0}
+    <value>插件：{0}
 更新失败</value>
   </item>
   <item>
     <key>PluginTranslationUpdateFailed</key>
-    <value>插件： {0}
-语言文件 {1} 的更新失败</value>
+    <value>插件：{0}
+语言文件 {1} 更新失败</value>
   </item>
   <item>
     <key>TryUAC</key>
-    <value>更新无法完成。 尝试其他方法？
-这可能会显示UAC提示。</value>
+    <value>更新未能完成，要尝试其他方法吗？
+这可能会弹出 UAC 提示。</value>
   </item>
   <item>
     <key>OpenTempFolder</key>
-    <value>打开包含更新文件的临时文件夹？</value>
+    <value>要打开包含已更新文件的临时文件夹吗？</value>
   </item>
   <item>
     <key>TranslationDownload_Update</key>
@@ -86,7 +86,7 @@
   </item>
   <item>
     <key>TranslationDownload_DownloadCurrent</key>
-    <value>始终下载设置语言的翻译：{0}</value>
+    <value>始终下载当前语言的翻译：{0}</value>
   </item>
   <item>
     <key>TranslationUpdateForm</key>
@@ -98,53 +98,52 @@
   </item>
   <item>
     <key>UpdateExternalInfo</key>
-    <value>可以使用新版本的外部插件Updates.xml。
-下载以更新更多的第三方插件？</value>
-    </item>
-    <item>
+    <value>ExternalPluginUpdates.xml 有新版本可用。
+要下载以更新更多第三方插件吗？</value>
+  </item>
+  <item>
     <key>UpdateExternalInfoInitialDownload</key>
-    <value>EarlyUpdateCheck可以更新其他开发者的插件。
-为此，需要加载ExternalPluginUpdates.xml文件。
-现在要加载这个文件吗？
+    <value>EarlyUpdateCheck 也可以更新选定的第三方插件。
+这需要通过一个名为 ExternalPluginUpdates.xml 的文件来实现。
+现在下载该文件以允许更新这些插件吗？
 
-这个问题不会再次提问。
-如果你现在不想使用这个功能，你也可以稍后在EarlyUpdateCheck的选项中加载该文件。</value>
-    </item>
-    <item>
-      <key>UpdateExternalInfoDownload</key>
-      <value>下载 ExternalPluginUpdates.xml</value>
-    </item>
-    <item>
-      <key>KeePassUpdate_InstallZip</key>
-      <value>EarlyUpdateCheck已经下载了最新的KeePass便携版。
+此问题不会再次询问。
+如果您现在决定不使用此功能，之后可以在 EarlyUpdateCheck 的选项中下载该文件。</value>
+  </item>
+  <item>
+    <key>UpdateExternalInfoDownload</key>
+    <value>下载 ExternalPluginUpdates.xml</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_InstallZip</key>
+    <value>EarlyUpdateCheck 已下载最新版本的 KeePass 便携版。
 
 下载的文件将在一个新窗口中打开。
-要进行更新，请关闭KeePass并将下载的文件复制到你的KeePass文件夹中。</value>
-    </item>
-    <item>
-      <key>KeePassUpdate_InstallSetupOrMsi</key>
-      <value>EarlyUpdateCheck已经成功加载了最新版本的KeePass。
+要执行更新，请关闭 KeePass 并将这些文件复制到当前 KeePass 所在位置。</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_InstallSetupOrMsi</key>
+    <value>EarlyUpdateCheck 已下载最新版本的 KeePass。
+要执行更新，需要关闭 KeePass。
 
-为了进行更新，请先关闭KeePass。
+单击“{0}”立即运行更新。
+单击“{1}”改为打开包含已下载文件的文件夹。</value>
+  </item>
+  <item>
+    <key>KeePassUpdate_RequestInstallType</key>
+    <value>EarlyUpdateCheck 也可以协助更新 KeePass。
+由于 KeePass 有多种安装方式，请确认您的安装类型。
 
-点击{0}开始进行更新。
-点击{1}打开包含已下载安装文件的文件夹。</value>
-    </item>
-    <item>
-      <key>KeePassUpdate_RequestInstallType</key>
-      <value>EarlyUpdateCheck可以帮助你进行KeePass的更新。
-请提供当前的安装方式。
+提供的安装类型：
+- 安装程序：使用 KeePass-&lt;Version&gt;-Setup.exe 安装 KeePass
+- MSI：使用 KeePass-&lt;Version&gt;.msi 安装 KeePass
+- 便携版：使用 KeePass-&lt;Version&gt;.zip 下载并解压 KeePass</value>
+  </item>
+  <item>
+    <key>SecureDesktopMode</key>
+    <value>EarlyUpdateCheck 检测到插件和/或 KeePass 有可用更新。
 
-KeePass提供以下安装方式：
-- 安装程序：KeePass-&lt;Version&gt;-Setup.exe
-- MSI安装包： KeePass-&lt;Version&gt;.msi
-- 便携版： KeePass-&lt;Version&gt;.zip</value>
-    </item>
-    <item>
-      <key>SecureDesktopMode</key>
-      <value>EarlyUpdateCheck检测到插件和/或KeePass的可用更新。
-
-由于选项“{0}”已激活，更新窗口现在无法显示。
-它将在关闭“{1}”窗口后显示。</value>
-    </item>
+由于选项“{0}”已启用，当前无法显示更新界面。
+它将在您关闭“{1}”窗口之后才会显示。</value>
+  </item>
 </Translation>
