@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Translation>
-  <TranslationVersion>3</TranslationVersion>
+  <TranslationVersion>4</TranslationVersion>
   <item>
     <key>Active</key>
-    <value>启用</value>
+    <value>激活</value>
   </item>
   <item>
     <key>CheckSync</key>
@@ -11,7 +11,7 @@
   </item>
   <item>
     <key>CheckSyncDesc</key>
-    <value>EarlyUpdateCheck 始终会在尽可能早的时间开始更新检查。
+    <value>EarlyUpdateCheck 总是会在尽可能早的时间开始更新检查。
 
 如果启用此选项，EarlyUpdateCheck 还会确保更新检查在“打开数据库”窗口显示之前完成。
 如果不希望等待更新检查完成，可让它在后台继续运行。</value>
@@ -86,7 +86,7 @@
   </item>
   <item>
     <key>TranslationDownload_DownloadCurrent</key>
-    <value>始终下载当前语言的翻译：{0}</value>
+    <value>总是下载当前语言的翻译：{0}</value>
   </item>
   <item>
     <key>TranslationUpdateForm</key>
