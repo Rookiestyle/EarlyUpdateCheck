@@ -10,7 +10,7 @@ can use ExternalPluginUpdatesUser.xml to remove certain plugins
 from one-click update
 -->
 <UpdateInfoExternList>
-	<Version>29</Version>
+	<Version>30</Version>
 	<UpdateInfoExtern>
 		<PluginName>WebAutoType</PluginName>
 		<PluginURL>https://sourceforge.net/projects/webautotype/</PluginURL>
@@ -752,6 +752,13 @@ from one-click update
     	<PluginURL>https://github.com/ArtyoZ/KeepLastEntry</PluginURL>
     	<PluginUpdateURL>https://github.com/ArtyoZ/KeepLastEntry/releases/latest/download/KeepLastEntry.plgx</PluginUpdateURL>
    		<UpdateMode>PlgxDirect</UpdateMode>
-    <AllowVersionStripping>False</AllowVersionStripping>
-</UpdateInfoExtern>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
+	<UpdateInfoExtern>
+    	<PluginName>KeeUnicodeURL</PluginName>
+    	<PluginURL>https://github.com/ArtyoZ/KeeUnicodeURL</PluginURL>
+    	<PluginUpdateURL>https://github.com/ArtyoZ/KeeUnicodeURL/releases/latest/download/KeeUnicodeURL.plgx</PluginUpdateURL>
+   		<UpdateMode>PlgxDirect</UpdateMode>
+		<AllowVersionStripping>False</AllowVersionStripping>
+	</UpdateInfoExtern>
 </UpdateInfoExternList>
